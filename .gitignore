@@ -1,0 +1,31 @@
+#Ignore all xlsx files
+*.xlsx
+
+#Ignore all pdf file
+*.pdf
+
+#Ignore all png file
+*.png
+Katherines-MacBook-Pro:BADGERLabRepo khfehr$ nano .gitignore 
+Katherines-MacBook-Pro:BADGERLabRepo khfehr$ cat .git
+cat: .git: No such file or directory
+Katherines-MacBook-Pro:BADGERLabRepo khfehr$ nano .gitignore 
+Katherines-MacBook-Pro:BADGERLabRepo khfehr$ cat .gitignore 
+#Ignore all xlsx files
+*.xlsx
+
+#Ignore all pdf file
+*.pdf
+
+#Ignore all png file
+*.png
+
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
