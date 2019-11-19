@@ -1,6 +1,6 @@
 
 timeTrack = xlsread("timeTracking.xlsx");
-filename = 'excelFiles/IP11'
+filename = 'IP11';
 iPecsData = xlsread(filename);
 
 %% Graph initial data and thresholds

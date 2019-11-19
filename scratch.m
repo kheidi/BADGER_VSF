@@ -1,12 +1,15 @@
+addRange = 40 + 1:40000-40
+
+
 % Xbad = [31787,12444,12493.1682009674,31909]
 % Xg1 = [11856,4477,4530.54095802777,11990]
-Xg2 = [10408,3898,3952.50195038227,10544]
+% Xg2 = [10408,3898,3952.50195038227,10544]
 % mg2 = moment(Xg1,1)
-mg2 = mean(moment(Xg2,1))
+% mg2 = mean(moment(Xg2,1))
 % mb = moment(Xbad,1)
 
 
-% aMatrix = magic(5);
+% aMatrix = magic(5
 % % expression = input('Enter the name of a matrix: ','s');
 % % if (exist(expression,'var'))
 % %     mesh(eval(expression))
