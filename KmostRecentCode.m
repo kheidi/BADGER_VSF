@@ -27,11 +27,11 @@
 %This section imports a fixed document and sets fixed variables
 
 timeTrack = xlsread("timeTracking.xlsx");
-subject = 1
-setting = 1
-ambTask = 's1s1Time'
-ampSide = 'L'
-filename = 'IP11'
+subject = 1;
+setting = 1;
+ambTask = 's1s1Time';
+ampSide = 'L';
+filename = 'IP11';
 iPecsData = xlsread(filename);
 
 %% SECTION 2: GRAPH INITIAL DATA AND THRESHOLDS
@@ -407,9 +407,11 @@ momentCalc(:,6) = momentCalc(:,4) + momentCalc(:,5);
 momentCalc(:,7) = momentCalc(:,6)*shankLength;
 
 figure; hold on;
+title('Time vs. Moment')
 plot(momentCalc(:,1), momentCalc(:,6), 'k-')
 plot(506,0, 'mo')
 plot(552, 0, 'mo')
+
 
 moment = momentCalc(:,7);
 
