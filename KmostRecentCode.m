@@ -27,11 +27,11 @@
 %This section imports a fixed document and sets fixed variables
 
 timeTrack = xlsread("timeTracking.xlsx");
-subject = 1;
+subject = 4;
 setting = 1;
-ambTask = 's1s1Time';
-ampSide = 'L';
-filename = 'IP11';
+ambTask = 's4s1Time';
+ampSide = 'R';
+filename = 'IP41';
 iPecsData = xlsread(filename);
 
 %% SECTION 2: GRAPH INITIAL DATA AND THRESHOLDS
@@ -131,11 +131,11 @@ title('iPecs Forces with Identified HC and TO')
 
 %% SECTION 4 DUMMY
 
-filename = 'proxPosLFT.txt'
+filename = 'proxPosRFT.txt';
 tempFile = importdata(filename);
 heelZPos = tempFile.data;
 
-filename = 'distPosLFT.txt'
+filename = 'distPosRFT.txt';
 tempFile = importdata(filename);
 toeZPos = tempFile.data;
 
@@ -297,34 +297,34 @@ title('Shifted Data Windows')
 
 %% Section 9: Dummy
 % Define task variables:
-urStart1 = timeTrack(2,7); % ur: up ramp
-urEnd1 = timeTrack(2,8);
-lgStart1 = timeTrack(2,9); % lg: level ground
-lgEnd1 = timeTrack(2,10);
-drStart1 = timeTrack(2,11); % dr: down ramp
-drEnd1 = timeTrack(2,12);
-urStart2 = timeTrack(2,13);
-urEnd2 = timeTrack(2,14);
-lgStart2 = timeTrack(2,15);
-lgEnd2 = timeTrack(2,16);
-usStart1 = timeTrack(2,17); % us: up stairs
-usEnd1 = timeTrack(2,18);
-usStart2 = timeTrack(2,19); % ds: down stairs
-usEnd2 = timeTrack(2,20);
-dsStart1 = timeTrack(2,21);
-dsEnd1 = timeTrack(2,22);
-dsStart2 = timeTrack(2,23);
-dsEnd2 = timeTrack(2,24);
-lgStart3 = timeTrack(2,25);
-lgEnd3 = timeTrack(2,26);
-drStart2 = timeTrack(2,27);
-drEnd2 = timeTrack(2,28);
+urStart1 = timeTrack(10,7); % ur: up ramp
+urEnd1 = timeTrack(10,8);
+lgStart1 = timeTrack(10,9); % lg: level ground
+lgEnd1 = timeTrack(10,10);
+drStart1 = timeTrack(10,11); % dr: down ramp
+drEnd1 = timeTrack(10,12);
+urStart2 = timeTrack(10,13);
+urEnd2 = timeTrack(10,14);
+lgStart2 = timeTrack(10,15);
+lgEnd2 = timeTrack(10,16);
+usStart1 = timeTrack(10,17); % us: up stairs
+usEnd1 = timeTrack(10,18);
+usStart2 = timeTrack(10,19); % ds: down stairs
+usEnd2 = timeTrack(10,20);
+dsStart1 = timeTrack(10,21);
+dsEnd1 = timeTrack(10,22);
+dsStart2 = timeTrack(10,23);
+dsEnd2 = timeTrack(10,24);
+lgStart3 = timeTrack(10,25);
+lgEnd3 = timeTrack(10,26);
+drStart2 = timeTrack(10,27);
+drEnd2 = timeTrack(10,28);
 
 %% SECTION 10: CREATE NEW VECTORS TO CLEAN THINGS UP AND MAKE IT EASIER
 % (xsensStart:xsensEnd) for all xsens data
 
 %Dummy file:
-filename = 'shankAngle21.xlsx';
+filename = 'shankAngle41.xlsx';
 %filename = ['/Users/jenniferleestma/Desktop/EMAMA/all_files/SUB_', num2str(subject),'/SET_',num2str(setting),'/shankAngle',num2str(subject),num2str(setting),'.xlsx'];
 shankAngle = xlsread(filename);
 shankAngle = shankAngle * pi/180;
@@ -392,12 +392,12 @@ end
 innateOffset2 = 0.1082;
 innateOffset4 = 0.0647;
 % innateOffset = eval(['innateOffset',num2str(subject)]);
-innateOffset = eval(['innateOffset','2']);
+innateOffset = eval(['innateOffset','4']);
 
 shankLength2 = 0.2516713; % In meters
 shankLength4 = 0.24174289; % In meters
 % shankLength = eval(['shankLength',num2str(subject)]);
-shankLength = eval(['shankLength','2']);
+shankLength = eval(['shankLength','4']);
 
 momentCalc(:,1) = finalIPWindows;
 momentCalc(:,2:3) = finalIPForce; % Fy, Fz
@@ -417,6 +417,30 @@ moment = momentCalc(:,7);
 
 
 % 
+% Create shank angle vector approximation
+shankAngleScaled = [];
+shankAngleScaled(:,1) = ipStart+(xsensStart:xsensEnd)*1/ipMultiplier - xsensStart*1/ipMultiplier; % This is in iPecs time
+shankAngleScaled(:,2) = shankAngle(xsensStart:xsensEnd); % this is the shank angle
+[a,b] = size(shankAngleScaled);
+for len = 1:a
+    modNum = mod(shankAngleScaled(len,1),1); 
+    if modNum > 0.5
+        est = shankAngleScaled(len,1) + (1-modNum);
+    else
+        est = shankAngleScaled(len,1) - modNum;
+    end    
+    for allLarge = 1:length(ipFz)
+        shankAngleScaled(len,3) = ipFy(est); % Est of Y force
+        shankAngleScaled(len,4) = ipFz(est); % Est of Z force
+        shankAngleScaled(len,5) = est; % ipWindow
+        shankAngleScaled(len,6) = (shankAngleScaled(len,3)^2 + shankAngleScaled(len,4)^2)^0.5; % Mag of force
+    end
+end
+
+
+
+
+
 % % Create shank angle vector approximation
 % shankAngleScaled = [];
 % shankAngleScaled(:,1) = ipStart+(xsensStart:xsensEnd)*1/ipMultiplier - xsensStart*1/ipMultiplier; % This is in iPecs time
@@ -433,85 +457,61 @@ moment = momentCalc(:,7);
 %         shankAngleScaled(len,3) = ipFy(est); % Est of Y force
 %         shankAngleScaled(len,4) = ipFz(est); % Est of Z force
 %         shankAngleScaled(len,5) = est; % ipWindow
-%         shankAngleScaled(len,6) = (shankAngleScaled(len,3)^2 + shankAngleScaled(len,4)^2)^0.5; % Mag of force
 %     end
 % end
 
-
-
-
-% 
-% % % Create shank angle vector approximation
-% % shankAngleScaled = [];
-% % shankAngleScaled(:,1) = ipStart+(xsensStart:xsensEnd)*1/ipMultiplier - xsensStart*1/ipMultiplier; % This is in iPecs time
-% % shankAngleScaled(:,2) = shankAngle(xsensStart:xsensEnd); % this is the shank angle
-% % [a,b] = size(shankAngleScaled);
-% % for len = 1:a
-% %     modNum = mod(shankAngleScaled(len,1),1); 
-% %     if modNum > 0.5
-% %         est = shankAngleScaled(len,1) + (1-modNum);
-% %     else
-% %         est = shankAngleScaled(len,1) - modNum;
-% %     end    
-% %     for allLarge = 1:length(ipFz)
-% %         shankAngleScaled(len,3) = ipFy(est); % Est of Y force
-% %         shankAngleScaled(len,4) = ipFz(est); % Est of Z force
-% %         shankAngleScaled(len,5) = est; % ipWindow
-% %     end
-% % end
-% 
-% % perpForces = [];
-% % for len = 1:a
-% %     perpForces(len,1) =  shankAngleScaled(len,3)*cos(innateOffset); % Component from Y
-% %     perpForces(len,2) =  shankAngleScaled(len,4)*sin(innateOffset)*-1;
-% %     perpForces(len,3) = perpForces(len,1) + perpForces(len,2);
-% %     perpForces(len,4) = perpForces(len,3) * shankLength;
-% % end
-% % 
-% % figure; hold on;
-% % plot(shankAngleScaled(:,1), perpForces(:,4), 'b-')
-% % plot(1309,0, 'mo')
-% % plot(1424, 0, 'mo')
-% % 
-% % figure; hold on;
-% % plot(1:length(shankAngle), shankAngle, 'k-')
-% 
-% % Define R vector
-% R = [];
-% forceMag = [];
-% nativeAngle = [];
-% withInnateOffset = [];
-% finalAngle = [];
-% 
-% angles = [];
-% 
-% [a,b] = size(shankAngleScaled);
+% perpForces = [];
 % for len = 1:a
-%     % 2 is Y, 3 is Z, 4 is magnitude FOR R VECTOR
-%     R(len,1:3) = [0, shankLength*sin(shankAngleScaled(len,2)), shankLength*(cos(shankAngleScaled(len,2)))];
-%     R(len,4) = (R(len,2)^2 + R(len,3)^2)^0.5;
-%     % 1 is original, 2 is with innate, 3 is world
-%     angle(len,1) = atan(shankAngleScaled(len,4)/ shankAngleScaled(len,3));
-%     angle(len,2) = angle(len,1) + innateOffset;
-%     angle(len,3) = angle(len,2) + shankAngleScaled(len,2);
-%     
-% %     nativeAngle(len,1) = atan(shankAngleScaled(len,4)/shankAngleScaled(len,3));
-% %     withInnateOffset(len,1) = nativeAngle(len,1) + innateOffset;
-% %     finalAngle(len,1) = withInnateOffset(len,1) +shankAngleScaled(len,2);
-% end
-% for len = 1:a
-%     F(len,1:3) = [0, shankAngleScaled(len,6)*cos(angle(len,3)), -1*shankAngleScaled(len,6)*sin(angle(len,3))];
-% end
-% 
-% crossRF = [];
-% for len = 1:a
-%     crossRF(len,1:3) = cross(R(len,1:3),F(len,1:3));
+%     perpForces(len,1) =  shankAngleScaled(len,3)*cos(innateOffset); % Component from Y
+%     perpForces(len,2) =  shankAngleScaled(len,4)*sin(innateOffset)*-1;
+%     perpForces(len,3) = perpForces(len,1) + perpForces(len,2);
+%     perpForces(len,4) = perpForces(len,3) * shankLength;
 % end
 % 
 % figure; hold on;
-% plot(shankAngleScaled(:,1), crossRF(:,1), 'r-')
+% plot(shankAngleScaled(:,1), perpForces(:,4), 'b-')
 % plot(1309,0, 'mo')
 % plot(1424, 0, 'mo')
+% 
+% figure; hold on;
+% plot(1:length(shankAngle), shankAngle, 'k-')
+
+% Define R vector
+R = [];
+forceMag = [];
+nativeAngle = [];
+withInnateOffset = [];
+finalAngle = [];
+
+angles = [];
+
+[a,b] = size(shankAngleScaled);
+for len = 1:a
+    % 2 is Y, 3 is Z, 4 is magnitude FOR R VECTOR
+    R(len,1:3) = [0, shankLength*sin(shankAngleScaled(len,2)), shankLength*(cos(shankAngleScaled(len,2)))];
+    R(len,4) = (R(len,2)^2 + R(len,3)^2)^0.5;
+    % 1 is original, 2 is with innate, 3 is world
+    angle(len,1) = atan(shankAngleScaled(len,4)/ shankAngleScaled(len,3));
+    angle(len,2) = angle(len,1) + innateOffset;
+    angle(len,3) = angle(len,2) + shankAngleScaled(len,2);
+    
+%     nativeAngle(len,1) = atan(shankAngleScaled(len,4)/shankAngleScaled(len,3));
+%     withInnateOffset(len,1) = nativeAngle(len,1) + innateOffset;
+%     finalAngle(len,1) = withInnateOffset(len,1) +shankAngleScaled(len,2);
+end
+for len = 1:a
+    F(len,1:3) = [0, shankAngleScaled(len,6)*cos(angle(len,3)), -1*shankAngleScaled(len,6)*sin(angle(len,3))];
+end
+
+crossRF = [];
+for len = 1:a
+    crossRF(len,1:3) = cross(R(len,1:3),F(len,1:3));
+end
+
+figure; hold on;
+plot(shankAngleScaled(:,1), crossRF(:,1), 'r-')
+plot(1309,0, 'mo')
+plot(1424, 0, 'mo')
 
 %% SECTION 12: UP RAMP ANALYSIS
 
