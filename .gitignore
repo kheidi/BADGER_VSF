@@ -29,3 +29,5 @@ Katherines-MacBook-Pro:BADGERLabRepo khfehr$ cat .gitignore
 .Trashes
 ehthumbs.db
 Thumbs.db
+*.asv
+scratch.m
