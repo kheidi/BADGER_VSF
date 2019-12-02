@@ -512,6 +512,7 @@ figure; hold on;
 plot(shankAngleScaled(:,1), crossRF(:,1), 'r-')
 plot(1309,0, 'mo')
 plot(1424, 0, 'mo')
+title('Moment (R Cross F) over time')
 
 %% SECTION 12: UP RAMP ANALYSIS
 
@@ -536,7 +537,7 @@ end
 % Calculate average moment over stance phase
 [a,b] = size(urAnalyze);
 for len = 1:a
-    urAnalyze(len,8) = mean( moment(urAnalyze(len,2):urAnalyze(len,5),1));
+    urAnalyze(len,8) = mean( moment(urAnalyze(len,3):urAnalyze(len,6),1));
 end
 urAnalyze(:,9) = urAnalyze(:,8)./urAnalyze(:,7);
 urAnalyze(:,10) = urAnalyze(:,9)/0.24;
@@ -563,11 +564,10 @@ for len = 1:a
 
 % Calculate average moment over stance phase
 [a,b] = size(drAnalyze);
-%CODE BREAKS HERE: (drAnalyze(10,2):drAnalyze(10,5)) writes index to a
-%vector; basically telling the code to search in cells of moment that don't
-%exist
+%CODE BREAKS HERE: The indexes being used are from the original, unadjested
+%force array, however moment is made with the adjusted time
 for len = 1:a
-    drAnalyze(len,8) = mean( moment(drAnalyze(len,2):drAnalyze(len,5),1));
+    drAnalyze(len,8) = mean( moment(drAnalyze(len,3):drAnalyze(len,6),1));
 end
 drAnalyze(:,9) = drAnalyze(:,8)./drAnalyze(:,7);
 drAnalyze(:,10) = drAnalyze(:,9)/0.24;
@@ -595,7 +595,7 @@ end
 % Calculate average moment over stance phase
 [a,b] = size(usAnalyze);
 for len = 1:a
-    usAnalyze(len,8) = mean( moment(usAnalyze(len,2):usAnalyze(len,5),1));
+    usAnalyze(len,8) = mean( moment(usAnalyze(len,3):usAnalyze(len,6),1));
 end
 usAnalyze(:,9) = usAnalyze(:,8)./usAnalyze(:,7);
 usAnalyze(:,10) = usAnalyze(:,9)/0.24;
@@ -623,7 +623,7 @@ end
 % Calculate average moment over stance phase
 [a,b] = size(dsAnalyze);
 for len = 1:a
-    dsAnalyze(len,8) = mean( moment(dsAnalyze(len,2):dsAnalyze(len,5),1));
+    dsAnalyze(len,8) = mean( moment(dsAnalyze(len,3):dsAnalyze(len,6),1));
 end
 dsAnalyze(:,9) = dsAnalyze(:,8)./dsAnalyze(:,7);
 dsAnalyze(:,10) = dsAnalyze(:,9)/0.24;
@@ -652,7 +652,7 @@ end
 % Calculate average moment over stance phase
 [a,b] = size(lgAnalyze);
 for len = 1:a
-    lgAnalyze(len,8) = mean( moment(lgAnalyze(len,2):lgAnalyze(len,5),1));
+    lgAnalyze(len,8) = mean( moment(lgAnalyze(len,3):lgAnalyze(len,6),1));
 end
 lgAnalyze(:,9) = lgAnalyze(:,8)./lgAnalyze(:,7);
 lgAnalyze(:,10) = lgAnalyze(:,9)/0.24;
