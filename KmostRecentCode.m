@@ -665,3 +665,10 @@ FINALDR = drAnalyze(:,10)
 FINALUS = usAnalyze(:,10)
 FINALDS = dsAnalyze(:,10)
 
+%% Find Averages values to plot to compare results
+lgAvg = mean(FINALLG)*100
+urAvg = mean(FINALUR)*100
+drAvg = mean(FINALDR)*100
+usAvg = mean(FINALUS)*100
+dsAvg = mean(FINALDS)*100
+
