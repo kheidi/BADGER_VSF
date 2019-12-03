@@ -63,7 +63,7 @@ ipLength = a;
 plot(1:ipLength, iPecsData(:,3), 'r-')
 plot(1:ipLength, iPecsData(:,4), 'k-')
 legend('Y iPecs Force','Z iPecs Force')
-xlabel('iPecs Windows')
+xlabel('iPecs Time')
 ylabel('Force (N)')
 title('Raw iPecs Data (No Zeroing)')
 hold off
@@ -72,27 +72,42 @@ hold off
 % This actually cuts the data off and creates a vector          
 ipFy = iPecsData(:,3) - iPecsCuts(subject, setting*2-1);
 ipFz = iPecsData(:,4) - iPecsCuts(subject, setting*2);
+ipTime = 1:length(ipFy);
+
+%Calculate vector with all resultant force
 sagForce = (ipFy.^2 + ipFz.^2).^(1/2);
-ipWindows = 1:length(ipFy);
 
 % This creates vectors that can be graphed to show the thresholds         
-thresholdFy(1:length(ipWindows),1) = iPecsThresholds(subject, setting*2-1);
-thresholdFz(1:length(ipWindows),1) = iPecsThresholds(subject, setting*2);
+thresholdFy(1:length(ipTime),1) = iPecsThresholds(subject, setting*2-1);
+thresholdFz(1:length(ipTime),1) = iPecsThresholds(subject, setting*2);
 
 % Figure 2: Zeroed iPecs Data
 subplot(2,1,2)
 hold on
-plot(ipWindows, ipFy, 'r-')
-plot(ipWindows, ipFz, 'k-')
+plot(ipTime, ipFy, 'r-')
+plot(ipTime, ipFz, 'k-')
 legend('Y iPecs Force','Z iPecs Force')
-xlabel('iPecs Windows')
+xlabel('iPecs Time')
 ylabel('Force (N)')
 title('Zeroed iPecs Data')          
-plot(ipWindows, thresholdFy, 'r:', 'LineWidth', 2)
-plot(ipWindows, thresholdFz, 'k:', 'LineWidth', 2)          
+plot(ipTime, thresholdFy, 'r:', 'LineWidth', 2)
+plot(ipTime, thresholdFz, 'k:', 'LineWidth', 2)          
 legend('Fy','Fz', 'Fy Threshold', 'Fz Threshold')
 hold off
 
+% Figure 3: Resultant Force
+figure
+hold on 
+plot(ipTime, sagForce);
+xlabel('iPecs Time')
+ylabel('Resultant Force (N)')
+title('Resultant/Sagital Force over Time')
+hold off
+
+
+%% SECTION 3: IPECS - ID HEEL CONTACT AND TOE-OFF
+% This will find the HC and TO for the iPecs based on the iPecsThresholds
+%information.
 
 
 
