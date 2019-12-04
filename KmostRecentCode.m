@@ -61,7 +61,7 @@ iPecsCuts = [-70, 335,0,0,0,0;
 ipFy = iPecsData(:,3) - iPecsCuts(subject, setting*2-1);
 ipFz = iPecsData(:,4) - iPecsCuts(subject, setting*2);
 sagForce = (ipFy.^2 + ipFz.^2).^(1/2);
-ipWindows = 1:length(ipFy);
+ipTime = 1:length(ipFy);
 
 % These are the threshold for each data set
 iPecsThresholds = [10, 20,0,0,0,0;
@@ -69,20 +69,20 @@ iPecsThresholds = [10, 20,0,0,0,0;
               10,20,0,20,0,20;
               0,20,0,20,0,20];          
 % This creates vectors that can be graphed to show the thresholds         
-thresholdFy(1:length(ipWindows),1) = iPecsThresholds(subject, setting*2-1);
-thresholdFz(1:length(ipWindows),1) = iPecsThresholds(subject, setting*2);
+thresholdFy(1:length(ipTime),1) = iPecsThresholds(subject, setting*2-1);
+thresholdFz(1:length(ipTime),1) = iPecsThresholds(subject, setting*2);
 
 % FIGURE 2: Zeroed iPecs Data
 subplot(2,1,2)
 hold on
-plot(ipWindows, ipFy, 'r-')
-plot(ipWindows, ipFz, 'k-')
+plot(ipTime, ipFy, 'r-')
+plot(ipTime, ipFz, 'k-')
 legend('Y iPecs Force','Z iPecs Force')
 xlabel('iPecs Windows')
 ylabel('Force (N)')
 title('Zeroed iPecs Data')          
-plot(ipWindows, thresholdFy, 'r:', 'LineWidth', 2)
-plot(ipWindows, thresholdFz, 'k:', 'LineWidth', 2)          
+plot(ipTime, thresholdFy, 'r:', 'LineWidth', 2)
+plot(ipTime, thresholdFz, 'k:', 'LineWidth', 2)          
 legend('Fy','Fz', 'Fy Threshold', 'Fz Threshold')
 hold off
 
@@ -109,7 +109,7 @@ end
 figure
 subplot(2,1,1)
 hold on
-plot(ipWindows, ipFz, 'k-')
+plot(ipTime, ipFz, 'k-')
 plot(ipHCValues, ipFz(ipHCValues), 'ko', 'LineWidth',2)
 plot(ipTOValues, ipFz(ipTOValues), 'ro', 'LineWidth',2)
 legend('Z Force - iPecs', 'HC','TO')
