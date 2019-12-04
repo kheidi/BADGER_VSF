@@ -170,104 +170,121 @@ xlabel('iPecs Frame/Time')
 ylabel('Force (N)')
 title('iPecs Forces with Identified HC and TO')
 
-%% SECTION 4: XSENS - ID HEEL CONTACT AND TOE-OFF
+%% SECTION 4: FIND MOMENT VECTOR
 
-% To detect HC and To from XSENS data this section looks for point in the
-% xsens data where the checkRange value of points before and after it are
-% greater than the point you are at. For example, if check range was 4:
-% '555515555'. Essentially this is finding a substantial minimum. Similar
-% technique is used to find TO.
-xsensHCValues = [];
-checkRange = 40;
-[a,b] = size(heelZPos(:,4));
-for len = checkRange + 1:a-checkRange
-    counter = 0;
-    for checkThese = 1:checkRange
-        if heelZPos(len,4) < heelZPos(len+checkThese,4) && heelZPos(len,4) < heelZPos(len-checkThese,4)
-            counter = counter + 1;
-        end
-    end
-    if counter == checkRange;
-        [a,b] = size(xsensHCValues);
-        xsensHCValues(a+1,1) = len;
-    end
-end
+%**move above later
+allInnateOffsets = [0 0.1082 0 0.0647];
+allShankLengths = [0 0.2516713 0 0.24174289]; %in meters
+innateOffset = allInnateOffsets(subject);
+shankLength = allShankLengths(subject);
 
-% ID toe-off using toe position data
-xsensTOValues = [];
-checkRange = 40;
-[a,b] = size(toeZPos(:,4));
-for len = checkRange + 1:a-checkRange
-    counter = 0;
-    for checkThese = 1:checkRange
-        if toeZPos(len,4) < toeZPos(len+checkThese,4) && toeZPos(len,4) < toeZPos(len-checkThese,4)
-            counter = counter + 1;
-        end
-    end
-    if counter == checkRange;
-        [a,b] = size(xsensTOValues);
-        xsensTOValues(a+1,1) = len;
-    end
-end
+fyComponent = ipFy * cos(innateOffset);
+fzComponent = ipFz * sin(innateOffset)*-1;
+fSum = fyComponent + fzComponent;
+moment_h = fSum * shankLength ;
+%Need to add moment about x to moment_h, not sure what cuts to use if any.
+%imX is not loaded into the file yet
 
-subplot(2,1,2)
-hold on
-plot(toeZPos(:,1), toeZPos(:,4), 'r-')
-plot(xsensTOValues, toeZPos(xsensTOValues,4), 'ro', 'LineWidth', 2)
-plot(heelZPos(:,1), heelZPos(:,4), 'k-')
-plot(xsensHCValues, heelZPos(xsensHCValues,4), 'ko', 'LineWidth', 2)
-legend('Toe Z Pos.', 'TO','Heel/Ankle Z Pos.', 'HC')
-xlabel('XSENS Frame/Time')
-ylabel('Height (m)')
-title('XSENS Toe and Heel Data with Identified HC and TO Points')
 
-%% SECTION 5: XSENS - GRAPH AMB MODES
+%% SECTION 4: XSENS - ID HEEL CONTACT AND TOE-OFF *IS THIS EVEN NEEDED
+% 
+% % To detect HC and To from XSENS data this section looks for point in the
+% % xsens data where the checkRange value of points before and after it are
+% % greater than the point you are at. For example, if check range was 4:
+% % '555515555'. Essentially this is finding a substantial minimum. Similar
+% % technique is used to find TO.
+% xsensHCValues = [];
+% checkRange = 40;
+% [a,b] = size(heelZPos(:,4));
+% for len = checkRange + 1:a-checkRange
+%     counter = 0;
+%     for checkThese = 1:checkRange
+%         if heelZPos(len,4) < heelZPos(len+checkThese,4) && heelZPos(len,4) < heelZPos(len-checkThese,4)
+%             counter = counter + 1;
+%         end
+%     end
+%     if counter == checkRange;
+%         [a,b] = size(xsensHCValues);
+%         xsensHCValues(a+1,1) = len;
+%     end
+% end
+% 
+% % ID toe-off using toe position data
+% xsensTOValues = [];
+% checkRange = 40;
+% [a,b] = size(toeZPos(:,4));
+% for len = checkRange + 1:a-checkRange
+%     counter = 0;
+%     for checkThese = 1:checkRange
+%         if toeZPos(len,4) < toeZPos(len+checkThese,4) && toeZPos(len,4) < toeZPos(len-checkThese,4)
+%             counter = counter + 1;
+%         end
+%     end
+%     if counter == checkRange;
+%         [a,b] = size(xsensTOValues);
+%         xsensTOValues(a+1,1) = len;
+%     end
+% end
+% 
+% subplot(2,1,2)
+% hold on
+% plot(toeZPos(:,1), toeZPos(:,4), 'r-')
+% plot(xsensTOValues, toeZPos(xsensTOValues,4), 'ro', 'LineWidth', 2)
+% plot(heelZPos(:,1), heelZPos(:,4), 'k-')
+% plot(xsensHCValues, heelZPos(xsensHCValues,4), 'ko', 'LineWidth', 2)
+% legend('Toe Z Pos.', 'TO','Heel/Ankle Z Pos.', 'HC')
+% xlabel('XSENS Frame/Time')
+% ylabel('Height (m)')
+% title('XSENS Toe and Heel Data with Identified HC and TO Points')
+% 
+% %% SECTION 5: XSENS - GRAPH AMB MODES
+% 
+% %First we need to define at which point in the XSENS data the modes begin
+% %and end based on the info in the timeTrack file
+% %**Note these need to be fixed to work with different data files***
+% 
+% urStart1 = timeTrack(10,7); % ur: up ramp
+% urEnd1 = timeTrack(10,8);
+% lgStart1 = timeTrack(10,9); % lg: level ground
+% lgEnd1 = timeTrack(10,10);
+% drStart1 = timeTrack(10,11); % dr: down ramp
+% drEnd1 = timeTrack(10,12);
+% urStart2 = timeTrack(10,13);
+% urEnd2 = timeTrack(10,14);
+% lgStart2 = timeTrack(10,15);
+% lgEnd2 = timeTrack(10,16);
+% usStart1 = timeTrack(10,17); % us: up stairs
+% usEnd1 = timeTrack(10,18);
+% usStart2 = timeTrack(10,19); % ds: down stairs
+% usEnd2 = timeTrack(10,20);
+% dsStart1 = timeTrack(10,21);
+% dsEnd1 = timeTrack(10,22);
+% dsStart2 = timeTrack(10,23);
+% dsEnd2 = timeTrack(10,24);
+% lgStart3 = timeTrack(10,25);
+% lgEnd3 = timeTrack(10,26);
+% drStart2 = timeTrack(10,27);
+% drEnd2 = timeTrack(10,28);
+% 
+% % Graph Heel and Toe Position from XSENS with lines showing where each mode
+% %begins
+% figure
+% plot(toeZPos(:,1), toeZPos(:,4), 'r-')
+% hold on
+% plot(heelZPos(:,1), heelZPos(:,4), 'k-')
+% hold on
+% xline(urStart1, ':b', 'UR1 Start');
+% xline(lgStart1, ':b', 'LG1 Start');
+% xline(drStart1, ':b', 'DR1 Start');
+% xline(urStart2, ':b', 'UR2 Start');
+% xline(lgStart2, ':b', 'LG2 Start');
+% xline(usStart1, ':b', 'US1 Start');
+% xline(usStart2, ':b', 'US2 Start');
+% xline(dsStart1, ':b', 'DS1 Start');
+% xline(dsStart2, ':b', 'DS2 Start');
+% xline(lgStart3, ':b', 'LG3 Start');
+% xline(drStart2, ':b', 'DR2 Start');
 
-%First we need to define at which point in the XSENS data the modes begin
-%and end based on the info in the timeTrack file
-%**Note these need to be fixed to work with different data files***
-
-urStart1 = timeTrack(10,7); % ur: up ramp
-urEnd1 = timeTrack(10,8);
-lgStart1 = timeTrack(10,9); % lg: level ground
-lgEnd1 = timeTrack(10,10);
-drStart1 = timeTrack(10,11); % dr: down ramp
-drEnd1 = timeTrack(10,12);
-urStart2 = timeTrack(10,13);
-urEnd2 = timeTrack(10,14);
-lgStart2 = timeTrack(10,15);
-lgEnd2 = timeTrack(10,16);
-usStart1 = timeTrack(10,17); % us: up stairs
-usEnd1 = timeTrack(10,18);
-usStart2 = timeTrack(10,19); % ds: down stairs
-usEnd2 = timeTrack(10,20);
-dsStart1 = timeTrack(10,21);
-dsEnd1 = timeTrack(10,22);
-dsStart2 = timeTrack(10,23);
-dsEnd2 = timeTrack(10,24);
-lgStart3 = timeTrack(10,25);
-lgEnd3 = timeTrack(10,26);
-drStart2 = timeTrack(10,27);
-drEnd2 = timeTrack(10,28);
-
-% Graph Heel and Toe Position from XSENS with lines showing where each mode
-%begins
-figure
-plot(toeZPos(:,1), toeZPos(:,4), 'r-')
-hold on
-plot(heelZPos(:,1), heelZPos(:,4), 'k-')
-hold on
-xline(urStart1, ':b', 'UR1 Start');
-xline(lgStart1, ':b', 'LG1 Start');
-xline(drStart1, ':b', 'DR1 Start');
-xline(urStart2, ':b', 'UR2 Start');
-xline(lgStart2, ':b', 'LG2 Start');
-xline(usStart1, ':b', 'US1 Start');
-xline(usStart2, ':b', 'US2 Start');
-xline(dsStart1, ':b', 'DS1 Start');
-xline(dsStart2, ':b', 'DS2 Start');
-xline(lgStart3, ':b', 'LG3 Start');
-xline(drStart2, ':b', 'DR2 Start');
 
 
 
