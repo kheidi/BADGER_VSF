@@ -195,7 +195,7 @@ fSum = fyComponent + fzComponent;
 moment_h = fSum * shankLength ;
 
 
-moment_all = fSum * shankLength + MxKnee;
+moment_all = fSum * shankLength - MxKnee;
 
 figure
 subplot(2,1,1)
@@ -203,12 +203,12 @@ hold on
 plot(1:ipLength, moment_h, 'b-')
 xlabel('iPecs Time')
 ylabel('Moment')
-ylim([-60 80])
+ylim([-60 120])
 title('iPecs Only - Moment, Just Force')
 
 subplot(2,1,2)
 plot(1:ipLength, moment_all, 'b-')
-ylim([-60 80])
+ylim([-60 120])
 xlabel('iPecs Time')
 ylabel('Moment')
 title('iPecs Only - Moment + Knee Moment')
