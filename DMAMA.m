@@ -142,8 +142,42 @@ ylabel('Resultant Force (N)')
 title('Resultant/Sagital Force over Time')
 hold off
 
+%% SECTION 3: FIND MOMENT VECTOR
 
-%% SECTION 3: IPECS - ID HEEL CONTACT AND TOE-OFF
+%**move above later
+allInnateOffsets = [0 0.1082 0 0.0647];
+allShankLengths = [0 0.2516713 0 0.24174289]; %in meters
+innateOffset = allInnateOffsets(subject);
+shankLength = allShankLengths(subject);
+
+fyComponent = ipFy * cos(innateOffset);
+fzComponent = ipFz * sin(innateOffset)*-1;
+fSum = fyComponent + fzComponent;
+moment_h = fSum * shankLength ;
+
+
+moment_all = fSum * shankLength - MxKnee;
+
+figure
+subplot(2,1,1)
+hold on 
+plot(1:ipLength, moment_h, 'b-')
+xlabel('iPecs Time')
+ylabel('Moment')
+ylim([-60 120])
+title('iPecs Only - Moment, Just Force')
+
+subplot(2,1,2)
+plot(1:ipLength, moment_all, 'b-')
+ylim([-60 120])
+xlabel('iPecs Time')
+ylabel('Moment')
+title('iPecs Only - Moment + Knee Moment')
+hold off
+%Need to add moment about x to moment_h, not sure what cuts to use if any.
+%imX is not loaded into the file yet
+
+%% SECTION 4: IPECS - ID HEEL CONTACT AND TOE-OFF
 % This will find the HC and TO for the iPecs based on the iPecsThresholds
 %information.
 
@@ -181,43 +215,9 @@ xlabel('iPecs Frame/Time')
 ylabel('Force (N)')
 title('iPecs Forces with Identified HC and TO')
 hold off
-%% SECTION 4: FIND MOMENT VECTOR
-
-%**move above later
-allInnateOffsets = [0 0.1082 0 0.0647];
-allShankLengths = [0 0.2516713 0 0.24174289]; %in meters
-innateOffset = allInnateOffsets(subject);
-shankLength = allShankLengths(subject);
-
-fyComponent = ipFy * cos(innateOffset);
-fzComponent = ipFz * sin(innateOffset)*-1;
-fSum = fyComponent + fzComponent;
-moment_h = fSum * shankLength ;
 
 
-moment_all = fSum * shankLength - MxKnee;
-
-figure
-subplot(2,1,1)
-hold on 
-plot(1:ipLength, moment_h, 'b-')
-xlabel('iPecs Time')
-ylabel('Moment')
-ylim([-60 120])
-title('iPecs Only - Moment, Just Force')
-
-subplot(2,1,2)
-plot(1:ipLength, moment_all, 'b-')
-ylim([-60 120])
-xlabel('iPecs Time')
-ylabel('Moment')
-title('iPecs Only - Moment + Knee Moment')
-hold off
-%Need to add moment about x to moment_h, not sure what cuts to use if any.
-%imX is not loaded into the file yet
-
-
-%% SECTION 4: XSENS - ID HEEL CONTACT AND TOE-OFF *IS THIS EVEN NEEDED
+%% SECTION 5: XSENS - ID HEEL CONTACT AND TOE-OFF *IS THIS EVEN NEEDED
 
 % To detect HC and To from XSENS data this section looks for point in the
 % xsens data where the checkRange value of points before and after it are
@@ -257,18 +257,18 @@ for len = checkRange + 1:a-checkRange
     end
 end
 
-% subplot(2,1,2)
-% hold on
-% plot(toeZPos(:,1), toeZPos(:,4), 'r-')
-% plot(xsensTOValues, toeZPos(xsensTOValues,4), 'ro', 'LineWidth', 2)
-% plot(heelZPos(:,1), heelZPos(:,4), 'k-')
-% plot(xsensHCValues, heelZPos(xsensHCValues,4), 'ko', 'LineWidth', 2)
-% legend('Toe Z Pos.', 'TO','Heel/Ankle Z Pos.', 'HC')
-% xlabel('XSENS Frame/Time')
-% ylabel('Height (m)')
-% title('XSENS Toe and Heel Data with Identified HC and TO Points')
+subplot(2,1,2)
+hold on
+plot(toeZPos(:,1), toeZPos(:,4), 'r-')
+plot(xsensTOValues, toeZPos(xsensTOValues,4), 'ro', 'LineWidth', 2)
+plot(heelZPos(:,1), heelZPos(:,4), 'k-')
+plot(xsensHCValues, heelZPos(xsensHCValues,4), 'ko', 'LineWidth', 2)
+legend('Toe Z Pos.', 'TO','Heel/Ankle Z Pos.', 'HC')
+xlabel('XSENS Frame/Time')
+ylabel('Height (m)')
+title('XSENS Toe and Heel Data with Identified HC and TO Points')
 
-%% SECTION 5: XSENS - GRAPH AMB MODES
+%% SECTION 6: XSENS - GRAPH AMB MODES
 
 %First we need to define at which point in the XSENS data the modes begin
 %and end based on the info in the timeTrack file
