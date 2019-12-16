@@ -175,7 +175,7 @@ ylabel('Moment')
 title('iPecs Only - Moment + Knee Moment')
 hold off
 %Need to add moment about x to moment_h, not sure what cuts to use if any.
-%imX is not loaded into the file yet
+
 
 %% SECTION 4: IPECS - ID HEEL CONTACT AND TOE-OFF
 % This will find the HC and TO for the iPecs based on the iPecsThresholds
@@ -191,7 +191,7 @@ ipTOValues = [];
 % threshold and the next point is greater than the threshold.
 % Point is TO if it is greater than the threshold and the next point is
 % less than the threshold.
-% These points are placed in a vectore called ipHCValues or ipTOValues
+% These points are placed in a vector called ipHCValues or ipTOValues
 for all = 1:length(ipFz)-1
     if ipFz(all,1) < thresholdFz(1) && ipFz(all+1,1) >= thresholdFz(1)
         [a,b] = size(ipHCValues);
@@ -225,7 +225,11 @@ hold off
 % '555515555'. Essentially this is finding a substantial minimum. Similar
 % technique is used to find TO.
 xsensHCValues = [];
-checkRange = 40;
+%The check range number might have to be adjusted, look at the XSENS Toe
+%and Heel position graph to see if there are obvious points missing or if
+%there are too many points. Increase the number to get rid of extra points,
+%decrease to accept more points.
+checkRange = 17;
 [a,b] = size(heelZPos(:,4));
 for len = checkRange + 1:a-checkRange
     counter = 0;
@@ -236,13 +240,15 @@ for len = checkRange + 1:a-checkRange
     end
     if counter == checkRange;
         [a,b] = size(xsensHCValues);
-        xsensHCValues(a+1,1) = len;
+        %This variable holds the index of each time heel contact is made
+        xsensHCValues(a+1,1) = len; 
     end
 end
 
 % ID toe-off using toe position data
 xsensTOValues = [];
-checkRange = 40;
+%Also may need to be adjusted
+checkRange = 20;
 [a,b] = size(toeZPos(:,4));
 for len = checkRange + 1:a-checkRange
     counter = 0;
@@ -304,8 +310,11 @@ plot(toeZPos(:,1), toeZPos(:,4), 'r-')
 hold on
 plot(heelZPos(:,1), heelZPos(:,4), 'k-')
 hold on
+plot(xsensHCValues, heelZPos(xsensHCValues,4), 'ko', 'LineWidth', 2)
 xline(urStart1, ':b', 'UR1 Start');
+xline(urEnd1, ':r', 'UR1 End');
 xline(lgStart1, ':b', 'LG1 Start');
+xline(lgEnd1, ':r', 'LG1 End');
 xline(drStart1, ':b', 'DR1 Start');
 xline(urStart2, ':b', 'UR2 Start');
 xline(lgStart2, ':b', 'LG2 Start');
@@ -316,6 +325,93 @@ xline(dsStart2, ':b', 'DS2 Start');
 xline(lgStart3, ':b', 'LG3 Start');
 xline(drStart2, ':b', 'DR2 Start');
 title('XSENS Toe and Heel Position with Ambulation Modes')
+
+%% SECTION 7: COUNTS THE NUMBER OF STEPS (HC TO HC) IN EACH AMB MODE BASED ON XSENS
+
+%To find the different ambulation mode sections in the iPecs data we will
+%count the number of steps in each mode in the xsens data and then count
+%the steps in the ipecs data. The steps will be counted based on heel
+%contact.
+
+%Sometimes there are gaps with steps that dont correspond to an ambulation
+%mode, because of this there will be a counter that counts all steps and
+%each Amb mode will get a varaible that commmunicates on which step they
+%start.
+
+allSteps = 1;
+ur1Steps = 0;
+lg1Steps = 0;
+dr1Steps = 0;
+ur2Steps = 0;
+lg2Steps = 0;
+us1Steps = 0;
+us2Steps = 0;
+ds1Steps = 0;
+ds2Steps = 0;
+lg3Steps = 0;
+dr2Steps = 0;
+
+for i = 1:length(xsensHCValues)
+    
+    if (xsensHCValues(i) > urStart1) && (xsensHCValues(i) < urEnd1)
+        ur1LastStep = allSteps;
+        ur1Steps = ur1Steps + 1;
+    elseif (xsensHCValues(i) > lgStart1) && (xsensHCValues(i) < lgEnd1)
+        lg1LastStep = allSteps;
+        lg1Steps = lg1Steps + 1;
+    elseif (xsensHCValues(i) > drStart1) && (xsensHCValues(i) < drEnd1)
+        dr1LastStep = allSteps;
+        dr1Steps = dr1Steps + 1;
+    elseif (xsensHCValues(i) > urStart2) && (xsensHCValues(i) < urEnd2)
+        ur2LastStep = allSteps;
+        ur2Steps = ur2Steps + 1;
+    elseif (xsensHCValues(i) > lgStart2) && (xsensHCValues(i) < lgEnd2)
+        lg2LastStep = allSteps;
+        lg2Steps = lg2Steps + 1;
+    elseif (xsensHCValues(i) > usStart1) && (xsensHCValues(i) < usEnd1)
+        us1LastStep = allSteps;
+        us1Steps = us1Steps + 1;
+    elseif (xsensHCValues(i) > usStart2) && (xsensHCValues(i) < usEnd2)
+        us2LastStep = allSteps
+        us2Steps = us2Steps + 1;
+    elseif (xsensHCValues(i) > dsStart1) && (xsensHCValues(i) < dsEnd1)
+        ds1LastStep = allSteps;
+        ds1Steps = ds1Steps + 1;
+    elseif (xsensHCValues(i) > dsStart2) && (xsensHCValues(i) < dsEnd2)
+        ds2LastStep = allSteps;
+        ds2Steps = ds2Steps + 1;
+    elseif (xsensHCValues(i) > lgStart3) && (xsensHCValues(i) < lgEnd3)
+        lg3LastStep = allSteps;
+        lg3Steps = lg3Steps + 1;
+    elseif (xsensHCValues(i) > drStart2) && (xsensHCValues(i) < drEnd2)
+        dr2LastStep = allSteps;
+        dr2Steps = dr2Steps + 1;
+    end
+    
+    allSteps = allSteps + 1;
+end
+
+%Find the first step of each mode:
+ur1FirstStep = ur1LastStep - ur1Steps + 1;
+lg1FirstStep = lg1LastStep - lg1Steps + 1;
+dr1FirstStep = dr1LastStep - dr1Steps + 1;
+ur2FirstStep = ur2LastStep - ur2Steps + 1;
+lg2FirstStep = lg2LastStep - lg2Steps + 1;
+us1FirstStep = us1LastStep - us1Steps + 1;
+us2FirstStep = us2LastStep - us2Steps + 1;
+ds1FirstStep = ds1LastStep - ds1Steps + 1;
+ds2FirstStep = ds2LastStep - ds2Steps + 1;
+lg3FirstStep = lg3LastStep - lg3Steps + 1;
+dr2FirstStep = dr2LastStep - dr2Steps + 1;
+
+%% ADJUST XSENS TO LENGTH OF IPECS AND GRAPH
+xsensIpecsTime_ToeZ = interp1(toeZPos,linspace(1, length(toeZPos), length(moment_all))');
+figure
+plot(1:ipLength, moment_all(:,1))
+yyaxis right
+plot(1:ipLength, xsensIpecsTime_ToeZ(:,4),'r-')
+ylim([-2 5])
+title('XSENS Toe Position and Momement')
 
 
 
