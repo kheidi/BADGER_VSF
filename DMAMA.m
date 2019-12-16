@@ -404,6 +404,17 @@ ds2FirstStep = ds2LastStep - ds2Steps + 1;
 lg3FirstStep = lg3LastStep - lg3Steps + 1;
 dr2FirstStep = dr2LastStep - dr2Steps + 1;
 
+%% SECTION 8: NUMBERS EACH IPECS STEP
+
+for i = 1:(length(ipHCValues)-1)
+    for j = 1:length(moment_all)
+        if ipHCValues(i) <= j && j < ipHCValues(i+1)
+            moment_all(j,2) = i;
+        elseif j >= ipHCValues(end)
+            moment_all(j,2) = length(ipHCValues);
+        end
+    end
+end
 %% ADJUST XSENS TO LENGTH OF IPECS AND GRAPH
 xsensIpecsTime_ToeZ = interp1(toeZPos,linspace(1, length(toeZPos), length(moment_all))');
 figure
