@@ -406,15 +406,114 @@ dr2FirstStep = dr2LastStep - dr2Steps + 1;
 
 %% SECTION 8: NUMBERS EACH IPECS STEP
 
+%The following for loop looks at the iPecs heel contact values. With this
+%information it writes the step number alongside the moment value in the
+%moment_all matrix. For example "step 1" is from the first HC value to the
+%second HC value. On the moment array every data point between these two
+%values will have a "1" in the second column
+
 for i = 1:(length(ipHCValues)-1)
     for j = 1:length(moment_all)
         if ipHCValues(i) <= j && j < ipHCValues(i+1)
             moment_all(j,2) = i;
+            sagForce(j,2) = i;
         elseif j >= ipHCValues(end)
             moment_all(j,2) = length(ipHCValues);
+            sagForce(j,2) = length(ipHCValues);
         end
     end
 end
+
+%% SECTION 9: FIND MEAN OF MOMENT AND SAG FORCE FOR EACH AMB TASK
+%These next sections will be broken up into each amb task
+
+%% SECTION 9A: UP RAMP ANALYSIS
+count = 0;
+sumForce = 0;
+sumMoment = 0;
+for i = 1:length(moment_all)
+    if moment_all(i,2) >= ur1FirstStep && moment_all(i,2) < ur1LastStep + 1 || ...
+            moment_all(i,2) >= ur2FirstStep && moment_all(i,2) < ur2LastStep + 1    
+        count = count + 1;
+        sumForce = sumForce + sagForce(i,1);
+        sumMoment = sumMoment + moment_all(i,1);
+    end
+end
+urForceMean = sumForce/count;
+urMomentMean = sumMoment/count;
+urMomentArm = urMomentMean / urForceMean;
+urMomentArmPercentFoot = (urMomentArm / 0.24)*100
+
+%% SECTION 9B: LEVEL GROUND ANALYSIS
+count = 0;
+sumForce = 0;
+sumMoment = 0;
+for i = 1:length(moment_all)
+    if moment_all(i,2) >= lg1FirstStep && moment_all(i,2) < lg1LastStep + 1 || ...
+            moment_all(i,2) >= lg2FirstStep && moment_all(i,2) < lg2LastStep + 1 || ...
+                moment_all(i,2) >= lg3FirstStep && moment_all(i,2) < lg3LastStep + 1
+        count = count + 1;
+        sumForce = sumForce + sagForce(i,1);
+        sumMoment = sumMoment + moment_all(i,1);
+    end
+end
+lgForceMean = sumForce/count;
+lgMomentMean = sumMoment/count;
+lgMomentArm = lgMomentMean / lgForceMean;
+lgMomentArmPercentFoot = (lgMomentArm / 0.24)*100
+
+%% SECTION 9C: DOWN RAMP ANALYSIS
+count = 0;
+sumForce = 0;
+sumMoment = 0;
+for i = 1:length(moment_all)
+    if moment_all(i,2) >= dr1FirstStep && moment_all(i,2) < dr1LastStep + 1 || ...
+            moment_all(i,2) >= dr2FirstStep && moment_all(i,2) < dr2LastStep + 1
+        count = count + 1;
+        sumForce = sumForce + sagForce(i,1);
+        sumMoment = sumMoment + moment_all(i,1);
+    end
+end
+drForceMean = sumForce/count;
+drMomentMean = sumMoment/count;
+drMomentArm = drMomentMean / drForceMean;
+drMomentArmPercentFoot = (drMomentArm / 0.24)*100
+
+%% SECTION 9D: UP STAIRS ANALYSIS
+count = 0;
+sumForce = 0;
+sumMoment = 0;
+for i = 1:length(moment_all)
+    if moment_all(i,2) >= us1FirstStep && moment_all(i,2) < us1LastStep + 1 || ...
+            moment_all(i,2) >= us2FirstStep && moment_all(i,2) < us2LastStep + 1
+        count = count + 1;
+        sumForce = sumForce + sagForce(i,1);
+        sumMoment = sumMoment + moment_all(i,1);
+    end
+end
+usForceMean = sumForce/count;
+usMomentMean = sumMoment/count;
+usMomentArm = usMomentMean / usForceMean;
+usMomentArmPercentFoot = (usMomentArm / 0.24)*100
+
+%% SECTION 9E: DOWN STAIRS ANALYSIS
+count = 0;
+sumForce = 0;
+sumMoment = 0;
+for i = 1:length(moment_all)
+    if moment_all(i,2) >= ds1FirstStep && moment_all(i,2) < ds1LastStep + 1 || ...
+            moment_all(i,2) >= ds2FirstStep && moment_all(i,2) < ds2LastStep + 1
+        count = count + 1;
+        sumForce = sumForce + sagForce(i,1);
+        sumMoment = sumMoment + moment_all(i,1);
+    end
+end
+dsForceMean = sumForce/count;
+dsMomentMean = sumMoment/count;
+dsMomentArm = dsMomentMean / dsForceMean;
+dsMomentArmPercentFoot = (dsMomentArm / 0.24)*100
+
+
 %% ADJUST XSENS TO LENGTH OF IPECS AND GRAPH
 xsensIpecsTime_ToeZ = interp1(toeZPos,linspace(1, length(toeZPos), length(moment_all))');
 figure
