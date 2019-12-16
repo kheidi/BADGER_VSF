@@ -513,15 +513,27 @@ dsMomentMean = sumMoment/count;
 dsMomentArm = dsMomentMean / dsForceMean;
 dsMomentArmPercentFoot = (dsMomentArm / 0.24)*100
 
+%% SECTION 10: GRAPH DMAMA
 
-%% ADJUST XSENS TO LENGTH OF IPECS AND GRAPH
-xsensIpecsTime_ToeZ = interp1(toeZPos,linspace(1, length(toeZPos), length(moment_all))');
-figure
-plot(1:ipLength, moment_all(:,1))
-yyaxis right
-plot(1:ipLength, xsensIpecsTime_ToeZ(:,4),'r-')
-ylim([-2 5])
-title('XSENS Toe Position and Momement')
+figure 
+X = categorical({'Level Ground','Up Ramp','Down Ramp','Up Stairs','Down Stairs'});
+X = reordercats(X,{'Level Ground','Up Ramp','Down Ramp','Up Stairs','Down Stairs'});
+Y = [lgMomentArmPercentFoot urMomentArmPercentFoot drMomentArmPercentFoot ...
+    usMomentArmPercentFoot dsMomentArmPercentFoot];
+bar(X,Y)
+ylim([0 50])
+title('Subject 4 at Soft Setting')
+ylabel('DMAMA (% of foot length)')
+text(1:length(Y),Y,num2str(Y'),'vert','bottom','horiz','center');
+
+% %% ADJUST XSENS TO LENGTH OF IPECS AND GRAPH
+% xsensIpecsTime_ToeZ = interp1(toeZPos,linspace(1, length(toeZPos), length(moment_all))');
+% figure
+% plot(1:ipLength, moment_all(:,1))
+% yyaxis right
+% plot(1:ipLength, xsensIpecsTime_ToeZ(:,4),'r-')
+% ylim([-2 5])
+% title('XSENS Toe Position and Momement')
 
 
 
