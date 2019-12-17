@@ -366,11 +366,6 @@ moment = momentCalc(:,7);
 
 
 
-
-
-
-
-
 % 
 % % Create shank angle vector approximation
 % shankAngleScaled = [];
