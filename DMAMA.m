@@ -424,6 +424,22 @@ for i = 1:(length(ipHCValues)-1)
     end
 end
 
+%% SECTION NEW 5: FIND MOMENT OF STANCE PHASE ONLY
+k = 1;
+momentStance = zeros(length(moment_all),2);
+for j = 1:(length(ipTOValues)-1)
+    for i = 1:length(moment_all)
+        if i > ipHCValues(j,1) && i < ipTOValues(j+1,1)
+            momentStance(k,1) = moment_all(i,1);
+            momentStance(k,2) = moment_all(i,2);
+            k = k + 1;
+        end
+    end
+end
+
+%momentStance(k:end, 1:2) = []
+    
+
 %% SECTION 9: FIND MEAN OF MOMENT AND SAG FORCE FOR EACH AMB TASK
 %These next sections will be broken up into each amb task
 
@@ -431,12 +447,12 @@ end
 count = 0;
 sumForce = 0;
 sumMoment = 0;
-for i = 1:length(moment_all)
-    if moment_all(i,2) >= ur1FirstStep && moment_all(i,2) < ur1LastStep + 1 || ...
-            moment_all(i,2) >= ur2FirstStep && moment_all(i,2) < ur2LastStep + 1    
+for i = 1:length(momentStance)
+    if momentStance(i,2) >= ur1FirstStep && momentStance(i,2) < ur1LastStep + 1 || ...
+            momentStance(i,2) >= ur2FirstStep && momentStance(i,2) < ur2LastStep + 1
         count = count + 1;
         sumForce = sumForce + sagForce(i,1);
-        sumMoment = sumMoment + moment_all(i,1);
+        sumMoment = sumMoment + momentStance(i,1);
     end
 end
 urForceMean = sumForce/count;
@@ -448,13 +464,13 @@ urMomentArmPercentFoot = (urMomentArm / 0.24)*100
 count = 0;
 sumForce = 0;
 sumMoment = 0;
-for i = 1:length(moment_all)
-    if moment_all(i,2) >= lg1FirstStep && moment_all(i,2) < lg1LastStep + 1 || ...
-            moment_all(i,2) >= lg2FirstStep && moment_all(i,2) < lg2LastStep + 1 || ...
-                moment_all(i,2) >= lg3FirstStep && moment_all(i,2) < lg3LastStep + 1
+for i = 1:length(momentStance)
+    if momentStance(i,2) >= lg1FirstStep && momentStance(i,2) < lg1LastStep + 1 || ...
+            momentStance(i,2) >= lg2FirstStep && momentStance(i,2) < lg2LastStep + 1 || ...
+            momentStance(i,2) >= lg3FirstStep && momentStance(i,2) < lg3LastStep + 1
         count = count + 1;
         sumForce = sumForce + sagForce(i,1);
-        sumMoment = sumMoment + moment_all(i,1);
+        sumMoment = sumMoment + momentStance(i,1);
     end
 end
 lgForceMean = sumForce/count;
@@ -466,12 +482,12 @@ lgMomentArmPercentFoot = (lgMomentArm / 0.24)*100
 count = 0;
 sumForce = 0;
 sumMoment = 0;
-for i = 1:length(moment_all)
-    if moment_all(i,2) >= dr1FirstStep && moment_all(i,2) < dr1LastStep + 1 || ...
-            moment_all(i,2) >= dr2FirstStep && moment_all(i,2) < dr2LastStep + 1
+for i = 1:length(momentStance)
+    if momentStance(i,2) >= dr1FirstStep && momentStance(i,2) < dr1LastStep + 1 || ...
+            momentStance(i,2) >= dr2FirstStep && momentStance(i,2) < dr2LastStep + 1
         count = count + 1;
         sumForce = sumForce + sagForce(i,1);
-        sumMoment = sumMoment + moment_all(i,1);
+        sumMoment = sumMoment + momentStance(i,1);
     end
 end
 drForceMean = sumForce/count;
@@ -483,12 +499,12 @@ drMomentArmPercentFoot = (drMomentArm / 0.24)*100
 count = 0;
 sumForce = 0;
 sumMoment = 0;
-for i = 1:length(moment_all)
-    if moment_all(i,2) >= us1FirstStep && moment_all(i,2) < us1LastStep + 1 || ...
-            moment_all(i,2) >= us2FirstStep && moment_all(i,2) < us2LastStep + 1
+for i = 1:length(momentStance)
+    if momentStance(i,2) >= us1FirstStep && momentStance(i,2) < us1LastStep + 1 || ...
+            momentStance(i,2) >= us2FirstStep && momentStance(i,2) < us2LastStep + 1
         count = count + 1;
         sumForce = sumForce + sagForce(i,1);
-        sumMoment = sumMoment + moment_all(i,1);
+        sumMoment = sumMoment + momentStance(i,1);
     end
 end
 usForceMean = sumForce/count;
@@ -500,12 +516,12 @@ usMomentArmPercentFoot = (usMomentArm / 0.24)*100
 count = 0;
 sumForce = 0;
 sumMoment = 0;
-for i = 1:length(moment_all)
-    if moment_all(i,2) >= ds1FirstStep && moment_all(i,2) < ds1LastStep + 1 || ...
-            moment_all(i,2) >= ds2FirstStep && moment_all(i,2) < ds2LastStep + 1
+for i = 1:length(momentStance)
+    if momentStance(i,2) >= ds1FirstStep && momentStance(i,2) < ds1LastStep + 1 || ...
+            moment_all(i,2) >= ds2FirstStep && momentStance(i,2) < ds2LastStep + 1
         count = count + 1;
         sumForce = sumForce + sagForce(i,1);
-        sumMoment = sumMoment + moment_all(i,1);
+        sumMoment = sumMoment + momentStance(i,1);
     end
 end
 dsForceMean = sumForce/count;
@@ -515,7 +531,7 @@ dsMomentArmPercentFoot = (dsMomentArm / 0.24)*100
 
 %% SECTION 10: GRAPH DMAMA
 
-figure 
+figure
 X = categorical({'Level Ground','Up Ramp','Down Ramp','Up Stairs','Down Stairs'});
 X = reordercats(X,{'Level Ground','Up Ramp','Down Ramp','Up Stairs','Down Stairs'});
 Y = [lgMomentArmPercentFoot urMomentArmPercentFoot drMomentArmPercentFoot ...
