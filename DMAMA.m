@@ -58,7 +58,7 @@ file_ambModeTiming = 'timeTracking';
 file_heelZPos = 'proxPosRFT.txt';
 file_toeZPos = 'distPosRFT.txt';
 
-% Add a row to the below matrices to manually trim the data to the correct
+% Add a row (row per participant, column per setting) to the below matrices to manually trim the data to the correct
 % stop and stopping point.
 % XSENS starting and end values to subtract off data.
 xsensStartValues = [593,    0,      0;
@@ -72,6 +72,7 @@ xsensEndValues = [  13403,  0,      0;
                     8779,   8528,   9060];  
 %% SECTION 1: IMPORT DATA
 
+% Imports the iPecs data, timetracking file, heel and toe Z position
 iPecsData = xlsread(file_iPecs);
 timeTrack = xlsread(file_ambModeTiming);
 tempFile = importdata(file_heelZPos);
@@ -217,7 +218,7 @@ title('iPecs Forces with Identified HC and TO')
 hold off
 
 
-%% SECTION 5: XSENS - ID HEEL CONTACT AND TOE-OFF *IS THIS EVEN NEEDED
+%% SECTION 5: XSENS - ID HEEL CONTACT AND TOE-OFF 
 
 % To detect HC and To from XSENS data this section looks for point in the
 % xsens data where the checkRange value of points before and after it are
@@ -278,7 +279,7 @@ title('XSENS Toe and Heel Data with Identified HC and TO Points')
 
 %First we need to define at which point in the XSENS data the modes begin
 %and end based on the info in the timeTrack file
-%**Note these need to be fixed to work with different data files***
+%**Note these need to be fixed to work with different subjects files***
 
 urStart1 = timeTrack(10,7); % ur: up ramp
 urEnd1 = timeTrack(10,8);
@@ -425,6 +426,10 @@ for i = 1:(length(ipHCValues)-1)
 end
 
 %% SECTION NEW 5: FIND MOMENT OF STANCE PHASE ONLY
+% This creates a table where the first column is the moment value and the
+% second column is the number of the step. Only the values from HC to TO
+% will be here ("ignoring" the values from TO back to HC where the foot is
+% in the air)
 k = 1;
 momentStance = zeros(length(moment_all),2);
 for j = 1:(length(ipTOValues)-1)
