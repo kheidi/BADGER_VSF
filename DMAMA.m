@@ -352,6 +352,8 @@ ds2Steps = 0;
 lg3Steps = 0;
 dr2Steps = 0;
 
+% This counts HC's in each amb mode based only on XSENS data
+
 for i = 1:length(xsensHCValues)
     
     if (xsensHCValues(i) > urStart1) && (xsensHCValues(i) < urEnd1)
@@ -373,7 +375,7 @@ for i = 1:length(xsensHCValues)
         us1LastStep = allSteps;
         us1Steps = us1Steps + 1;
     elseif (xsensHCValues(i) > usStart2) && (xsensHCValues(i) < usEnd2)
-        us2LastStep = allSteps
+        us2LastStep = allSteps;
         us2Steps = us2Steps + 1;
     elseif (xsensHCValues(i) > dsStart1) && (xsensHCValues(i) < dsEnd1)
         ds1LastStep = allSteps;
@@ -392,7 +394,9 @@ for i = 1:length(xsensHCValues)
     allSteps = allSteps + 1;
 end
 
-%Find the first step of each mode:
+%Find the first HC of each mode: (Like you're assigning a number to each
+%HC)
+
 ur1FirstStep = ur1LastStep - ur1Steps + 1;
 lg1FirstStep = lg1LastStep - lg1Steps + 1;
 dr1FirstStep = dr1LastStep - dr1Steps + 1;
@@ -425,18 +429,21 @@ for i = 1:(length(ipHCValues)-1)
     end
 end
 
-%% SECTION NEW 5: FIND MOMENT OF STANCE PHASE ONLY
+%% SECTION NEW 5: FIND MOMENT & FORCE OF STANCE PHASE ONLY
 % This creates a table where the first column is the moment value and the
 % second column is the number of the step. Only the values from HC to TO
 % will be here ("ignoring" the values from TO back to HC where the foot is
 % in the air)
 k = 1;
 momentStance = zeros(length(moment_all),2);
+forceStance = zeros(length(sagForce),2);
 for j = 1:(length(ipTOValues)-1)
     for i = 1:length(moment_all)
         if i > ipHCValues(j,1) && i < ipTOValues(j+1,1)
             momentStance(k,1) = moment_all(i,1);
             momentStance(k,2) = moment_all(i,2);
+            forceStance(k,1) = sagForce(i,1);
+            forceStance(k,2) = sagForce(i,2);
             k = k + 1;
         end
     end
@@ -456,7 +463,7 @@ for i = 1:length(momentStance)
     if momentStance(i,2) >= ur1FirstStep && momentStance(i,2) < ur1LastStep + 1 || ...
             momentStance(i,2) >= ur2FirstStep && momentStance(i,2) < ur2LastStep + 1
         count = count + 1;
-        sumForce = sumForce + sagForce(i,1);
+        sumForce = sumForce + forceStance(i,1);
         sumMoment = sumMoment + momentStance(i,1);
     end
 end
@@ -474,14 +481,24 @@ for i = 1:length(momentStance)
             momentStance(i,2) >= lg2FirstStep && momentStance(i,2) < lg2LastStep + 1 || ...
             momentStance(i,2) >= lg3FirstStep && momentStance(i,2) < lg3LastStep + 1
         count = count + 1;
-        sumForce = sumForce + sagForce(i,1);
+        lgForce(count,1) = forceStance(i,1);
+        lgMoment(count,1) = momentStance(i,1);
+        lgMomentArm(count,1) = lgMoment(count,1) / lgForce(count,1);
+        lgMomentArmPercentFoot(count,1) = (lgMomentArm(count,1)/0.24)*100;
+        sumForce = sumForce + forceStance(i,1);
         sumMoment = sumMoment + momentStance(i,1);
     end
 end
+lgStDev = std(lgMomentArmPercentFoot)
 lgForceMean = sumForce/count;
 lgMomentMean = sumMoment/count;
-lgMomentArm = lgMomentMean / lgForceMean;
-lgMomentArmPercentFoot = (lgMomentArm / 0.24)*100
+lgMomentArmMean = lgMomentMean / lgForceMean;
+lgMomentArmPercentFootMean = (lgMomentArmMean / 0.24)*100
+
+figure
+hold on
+bar(lgMomentArmPercentFootMean)
+errorbar(lgMomentArmPercentFootMean, lgStDev, '.')
 
 %% SECTION 9C: DOWN RAMP ANALYSIS
 count = 0;
@@ -491,7 +508,7 @@ for i = 1:length(momentStance)
     if momentStance(i,2) >= dr1FirstStep && momentStance(i,2) < dr1LastStep + 1 || ...
             momentStance(i,2) >= dr2FirstStep && momentStance(i,2) < dr2LastStep + 1
         count = count + 1;
-        sumForce = sumForce + sagForce(i,1);
+        sumForce = sumForce + forceStance(i,1);
         sumMoment = sumMoment + momentStance(i,1);
     end
 end
@@ -508,7 +525,7 @@ for i = 1:length(momentStance)
     if momentStance(i,2) >= us1FirstStep && momentStance(i,2) < us1LastStep + 1 || ...
             momentStance(i,2) >= us2FirstStep && momentStance(i,2) < us2LastStep + 1
         count = count + 1;
-        sumForce = sumForce + sagForce(i,1);
+        sumForce = sumForce + forceStance(i,1);
         sumMoment = sumMoment + momentStance(i,1);
     end
 end
@@ -525,7 +542,7 @@ for i = 1:length(momentStance)
     if momentStance(i,2) >= ds1FirstStep && momentStance(i,2) < ds1LastStep + 1 || ...
             moment_all(i,2) >= ds2FirstStep && momentStance(i,2) < ds2LastStep + 1
         count = count + 1;
-        sumForce = sumForce + sagForce(i,1);
+        sumForce = sumForce + forceStance(i,1);
         sumMoment = sumMoment + momentStance(i,1);
     end
 end
@@ -539,7 +556,7 @@ dsMomentArmPercentFoot = (dsMomentArm / 0.24)*100
 figure
 X = categorical({'Level Ground','Up Ramp','Down Ramp','Up Stairs','Down Stairs'});
 X = reordercats(X,{'Level Ground','Up Ramp','Down Ramp','Up Stairs','Down Stairs'});
-Y = [lgMomentArmPercentFoot urMomentArmPercentFoot drMomentArmPercentFoot ...
+Y = [lgMomentArmPercentFootMean urMomentArmPercentFoot drMomentArmPercentFoot ...
     usMomentArmPercentFoot dsMomentArmPercentFoot];
 bar(X,Y)
 ylim([0 50])
