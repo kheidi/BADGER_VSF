@@ -1,3 +1,13 @@
+%% TO-DO
+%-Implement new calculations to all amb modes
+%-Graph with std devs
+%-Make presentation
+%   -describing new method
+%   -discussing big standard deviation
+%   -Showing excel proof
+%   -rounding error
+
+
 %% OVERALL CODE DESCRIPTION
 
 % This code is intended to calculate the EMAMA values for trials using the
@@ -463,14 +473,19 @@ for i = 1:length(momentStance)
     if momentStance(i,2) >= ur1FirstStep && momentStance(i,2) < ur1LastStep + 1 || ...
             momentStance(i,2) >= ur2FirstStep && momentStance(i,2) < ur2LastStep + 1
         count = count + 1;
+        urForce(count,1) = forceStance(i,1);
+        urMoment(count,1) = momentStance(i,1);
+        urMomentArm(count,1) = urMoment(count,1) / urForce(count,1);
+        urMomentArmPercentFoot(count,1) = (urMomentArm(count,1)/0.24)*100;
         sumForce = sumForce + forceStance(i,1);
         sumMoment = sumMoment + momentStance(i,1);
     end
 end
+urStDev = std(urMomentArmPercentFoot)
 urForceMean = sumForce/count;
 urMomentMean = sumMoment/count;
-urMomentArm = urMomentMean / urForceMean;
-urMomentArmPercentFoot = (urMomentArm / 0.24)*100
+urMomentArmMean = urMomentMean / urForceMean;
+urMomentArmPercentFootMean = (urMomentArmMean / 0.24)*100
 
 %% SECTION 9B: LEVEL GROUND ANALYSIS
 count = 0;
@@ -495,10 +510,6 @@ lgMomentMean = sumMoment/count;
 lgMomentArmMean = lgMomentMean / lgForceMean;
 lgMomentArmPercentFootMean = (lgMomentArmMean / 0.24)*100
 
-figure
-hold on
-bar(lgMomentArmPercentFootMean)
-errorbar(lgMomentArmPercentFootMean, lgStDev, '.')
 
 %% SECTION 9C: DOWN RAMP ANALYSIS
 count = 0;
@@ -508,14 +519,19 @@ for i = 1:length(momentStance)
     if momentStance(i,2) >= dr1FirstStep && momentStance(i,2) < dr1LastStep + 1 || ...
             momentStance(i,2) >= dr2FirstStep && momentStance(i,2) < dr2LastStep + 1
         count = count + 1;
+        drForce(count,1) = forceStance(i,1);
+        drMoment(count,1) = momentStance(i,1);
+        drMomentArm(count,1) = drMoment(count,1) / drForce(count,1);
+        drMomentArmPercentFoot(count,1) = (drMomentArm(count,1)/0.24)*100;
         sumForce = sumForce + forceStance(i,1);
         sumMoment = sumMoment + momentStance(i,1);
     end
 end
+drStDev = std(drMomentArmPercentFoot)
 drForceMean = sumForce/count;
 drMomentMean = sumMoment/count;
-drMomentArm = drMomentMean / drForceMean;
-drMomentArmPercentFoot = (drMomentArm / 0.24)*100
+drMomentArmMean = drMomentMean / drForceMean;
+drMomentArmPercentFootMean = (drMomentArmMean / 0.24)*100
 
 %% SECTION 9D: UP STAIRS ANALYSIS
 count = 0;
@@ -525,14 +541,19 @@ for i = 1:length(momentStance)
     if momentStance(i,2) >= us1FirstStep && momentStance(i,2) < us1LastStep + 1 || ...
             momentStance(i,2) >= us2FirstStep && momentStance(i,2) < us2LastStep + 1
         count = count + 1;
+        usForce(count,1) = forceStance(i,1);
+        usMoment(count,1) = momentStance(i,1);
+        usMomentArm(count,1) = usMoment(count,1) / usForce(count,1);
+        usMomentArmPercentFoot(count,1) = (usMomentArm(count,1)/0.24)*100;
         sumForce = sumForce + forceStance(i,1);
         sumMoment = sumMoment + momentStance(i,1);
     end
 end
+usStDev = std(usMomentArmPercentFoot)
 usForceMean = sumForce/count;
 usMomentMean = sumMoment/count;
-usMomentArm = usMomentMean / usForceMean;
-usMomentArmPercentFoot = (usMomentArm / 0.24)*100
+usMomentArmMean = usMomentMean / usForceMean;
+usMomentArmPercentFootMean = (usMomentArmMean / 0.24)*100
 
 %% SECTION 9E: DOWN STAIRS ANALYSIS
 count = 0;
@@ -542,24 +563,33 @@ for i = 1:length(momentStance)
     if momentStance(i,2) >= ds1FirstStep && momentStance(i,2) < ds1LastStep + 1 || ...
             moment_all(i,2) >= ds2FirstStep && momentStance(i,2) < ds2LastStep + 1
         count = count + 1;
+        dsForce(count,1) = forceStance(i,1);
+        dsMoment(count,1) = momentStance(i,1);
+        dsMomentArm(count,1) = dsMoment(count,1) / dsForce(count,1);
+        dsMomentArmPercentFoot(count,1) = (dsMomentArm(count,1)/0.24)*100;
         sumForce = sumForce + forceStance(i,1);
         sumMoment = sumMoment + momentStance(i,1);
     end
 end
+dsStDev = std(dsMomentArmPercentFoot)
 dsForceMean = sumForce/count;
 dsMomentMean = sumMoment/count;
-dsMomentArm = dsMomentMean / dsForceMean;
-dsMomentArmPercentFoot = (dsMomentArm / 0.24)*100
+dsMomentArmMean = dsMomentMean / dsForceMean;
+dsMomentArmPercentFootMean = (dsMomentArmMean / 0.24)*100
 
 %% SECTION 10: GRAPH DMAMA
 
-figure
 X = categorical({'Level Ground','Up Ramp','Down Ramp','Up Stairs','Down Stairs'});
 X = reordercats(X,{'Level Ground','Up Ramp','Down Ramp','Up Stairs','Down Stairs'});
-Y = [lgMomentArmPercentFootMean urMomentArmPercentFoot drMomentArmPercentFoot ...
-    usMomentArmPercentFoot dsMomentArmPercentFoot];
+Y = [lgMomentArmPercentFootMean urMomentArmPercentFootMean drMomentArmPercentFootMean ...
+    usMomentArmPercentFootMean dsMomentArmPercentFootMean];
+error = [lgStDev urStDev drStDev usStDev dsStDev];
+
+figure
 bar(X,Y)
-ylim([0 50])
+hold on
+errorbar(Y, error, '.')
+%ylim([0 50])
 title('Subject 4 at Soft Setting')
 ylabel('DMAMA (% of foot length)')
 text(1:length(Y),Y,num2str(Y'),'vert','bottom','horiz','center');
