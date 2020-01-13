@@ -19,12 +19,13 @@
 
 % Set subject and stiffness setting, this will find correct data in
 %matrices of provided, known values
-subject = 4;
+subject = 1;
 setting = 1;
-
+cd Data
 % -----------------iPecs Data-----------------
 % iPecs Filename, forces & moments in X, Y, Z
-file_iPecs = 'IP41'; 
+fileName=(['IP', num2str(subject), num2str(setting)]);
+file_iPecs = fileName; 
 % Add a row to this matrix for each subject. These are 'cuts' used to zero
 %the iPecs data. If unsure of what cuts to use, run code until Figure 1 is
 %generated.
@@ -64,8 +65,10 @@ file_ambModeTiming = 'timeTracking';
 % XSENS foot position data, used to align heel contact (and toe off) point
 %using position in the z-axis of the proximal foot (ankle). REALLY ONLY
 %USED FOR AMBULATION TASKS IDENTIFICATION. See 'proxPosRFT.txt' for format.
-file_heelZPos = 'proxPosRFT.txt';
-file_toeZPos = 'distPosRFT.txt';
+fileName=(['heel', num2str(subject), num2str(setting),'.txt']);
+file_heelZPos = fileName;
+fileName=(['toe', num2str(subject), num2str(setting),'.txt']);
+file_toeZPos = fileName;
 
 % Add a row (row per participant, column per setting) to the below matrices to manually trim the data to the correct
 % stop and stopping point.
@@ -290,28 +293,68 @@ title('XSENS Toe and Heel Data with Identified HC and TO Points')
 %and end based on the info in the timeTrack file
 %**Note these need to be fixed to work with different subjects files***
 
-urStart1 = timeTrack(10,7); % ur: up ramp
-urEnd1 = timeTrack(10,8);
-lgStart1 = timeTrack(10,9); % lg: level ground
-lgEnd1 = timeTrack(10,10);
-drStart1 = timeTrack(10,11); % dr: down ramp
-drEnd1 = timeTrack(10,12);
-urStart2 = timeTrack(10,13);
-urEnd2 = timeTrack(10,14);
-lgStart2 = timeTrack(10,15);
-lgEnd2 = timeTrack(10,16);
-usStart1 = timeTrack(10,17); % us: up stairs
-usEnd1 = timeTrack(10,18);
-usStart2 = timeTrack(10,19); % ds: down stairs
-usEnd2 = timeTrack(10,20);
-dsStart1 = timeTrack(10,21);
-dsEnd1 = timeTrack(10,22);
-dsStart2 = timeTrack(10,23);
-dsEnd2 = timeTrack(10,24);
-lgStart3 = timeTrack(10,25);
-lgEnd3 = timeTrack(10,26);
-drStart2 = timeTrack(10,27);
-drEnd2 = timeTrack(10,28);
+if subject == 1
+    if setting == 1
+        tTY = 2;
+    elseif setting == 2
+        tTY = 1;
+    elseif setting == 3
+        tTY = 3;
+    end
+end
+
+if subject == 2
+    if setting == 1
+        tTY = 6;
+    elseif setting == 2
+        tTY = 5;
+    elseif setting == 3
+        tTY = 4;
+    end
+end
+
+if subject == 3
+    if setting == 1
+        tTY = 7;
+    elseif setting == 2
+        tTY = 9;
+    elseif setting == 3
+        tTY = 8;
+    end
+end
+
+if subject == 4
+    if setting == 1
+        tTY = 10;
+    elseif setting == 2
+        tTY = 12;
+    elseif setting == 3
+        tTY = 11;
+    end
+end
+
+urStart1 = timeTrack(tTY,7); % ur: up ramp
+urEnd1 = timeTrack(tTY,8);
+lgStart1 = timeTrack(tTY,9); % lg: level ground
+lgEnd1 = timeTrack(tTY,10);
+drStart1 = timeTrack(tTY,11); % dr: down ramp
+drEnd1 = timeTrack(tTY,12);
+urStart2 = timeTrack(tTY,13);
+urEnd2 = timeTrack(tTY,14);
+lgStart2 = timeTrack(tTY,15);
+lgEnd2 = timeTrack(tTY,16);
+usStart1 = timeTrack(tTY,17); % us: up stairs
+usEnd1 = timeTrack(tTY,18);
+usStart2 = timeTrack(tTY,19); % ds: down stairs
+usEnd2 = timeTrack(tTY,20);
+dsStart1 = timeTrack(tTY,21);
+dsEnd1 = timeTrack(tTY,22);
+dsStart2 = timeTrack(tTY,23);
+dsEnd2 = timeTrack(tTY,24);
+lgStart3 = timeTrack(tTY,25);
+lgEnd3 = timeTrack(tTY,26);
+drStart2 = timeTrack(tTY,27);
+drEnd2 = timeTrack(tTY,28);
 
 % Graph Heel and Toe Position from XSENS with lines showing where each mode
 %begins
@@ -321,19 +364,21 @@ hold on
 plot(heelZPos(:,1), heelZPos(:,4), 'k-')
 hold on
 plot(xsensHCValues, heelZPos(xsensHCValues,4), 'ko', 'LineWidth', 2)
-xline(urStart1, ':b', 'UR1 Start');
-xline(urEnd1, ':r', 'UR1 End');
-xline(lgStart1, ':b', 'LG1 Start');
-xline(lgEnd1, ':r', 'LG1 End');
-xline(drStart1, ':b', 'DR1 Start');
-xline(urStart2, ':b', 'UR2 Start');
-xline(lgStart2, ':b', 'LG2 Start');
-xline(usStart1, ':b', 'US1 Start');
-xline(usStart2, ':b', 'US2 Start');
-xline(dsStart1, ':b', 'DS1 Start');
-xline(dsStart2, ':b', 'DS2 Start');
-xline(lgStart3, ':b', 'LG3 Start');
-xline(drStart2, ':b', 'DR2 Start');
+plot(xsensTOValues, toeZPos(xsensTOValues,4), 'ro', 'LineWidth', 2)
+legend('Toe Z Pos.', 'Heel/Ankle Z Pos.', 'HC', 'TO')
+xline(urStart1, ':b', 'UR1 Start','HandleVisibility','off');
+xline(urEnd1, ':r', 'UR1 End','HandleVisibility','off');
+xline(lgStart1, ':b', 'LG1 Start','HandleVisibility','off');
+xline(lgEnd1, ':r', 'LG1 End','HandleVisibility','off');
+xline(drStart1, ':b', 'DR1 Start','HandleVisibility','off');
+xline(urStart2, ':b', 'UR2 Start','HandleVisibility','off');
+xline(lgStart2, ':b', 'LG2 Start','HandleVisibility','off');
+xline(usStart1, ':b', 'US1 Start','HandleVisibility','off');
+xline(usStart2, ':b', 'US2 Start','HandleVisibility','off');
+xline(dsStart1, ':b', 'DS1 Start','HandleVisibility','off');
+xline(dsStart2, ':b', 'DS2 Start','HandleVisibility','off');
+xline(lgStart3, ':b', 'LG3 Start','HandleVisibility','off');
+xline(drStart2, ':b', 'DR2 Start','HandleVisibility','off');
 title('XSENS Toe and Heel Position with Ambulation Modes')
 
 %% SECTION 7: COUNTS THE NUMBER OF STEPS (HC TO HC) IN EACH AMB MODE BASED ON XSENS
@@ -485,6 +530,7 @@ urForceMean = sumForce/count;
 urMomentMean = sumMoment/count;
 urMomentArmMean = urMomentMean / urForceMean;
 urMomentArmPercentFootMean = (urMomentArmMean / 0.24)*100
+urMeanMean = mean(urMomentArmPercentFoot)
 
 %% SECTION 9B: LEVEL GROUND ANALYSIS
 count = 0;
@@ -508,6 +554,7 @@ lgForceMean = sumForce/count;
 lgMomentMean = sumMoment/count;
 lgMomentArmMean = lgMomentMean / lgForceMean;
 lgMomentArmPercentFootMean = (lgMomentArmMean / 0.24)*100
+lgMeanMean = mean(lgMomentArmPercentFoot)
 
 
 %% SECTION 9C: DOWN RAMP ANALYSIS
@@ -531,6 +578,7 @@ drForceMean = sumForce/count;
 drMomentMean = sumMoment/count;
 drMomentArmMean = drMomentMean / drForceMean;
 drMomentArmPercentFootMean = (drMomentArmMean / 0.24)*100
+drMeanMean = mean(drMomentArmPercentFoot)
 
 %% SECTION 9D: UP STAIRS ANALYSIS
 count = 0;
@@ -553,6 +601,7 @@ usForceMean = sumForce/count;
 usMomentMean = sumMoment/count;
 usMomentArmMean = usMomentMean / usForceMean;
 usMomentArmPercentFootMean = (usMomentArmMean / 0.24)*100
+usMeanMean = mean(usMomentArmPercentFoot)
 
 %% SECTION 9E: DOWN STAIRS ANALYSIS
 %something is not right
@@ -576,6 +625,7 @@ dsForceMean = sumForce/count;
 dsMomentMean = sumMoment/count;
 dsMomentArmMean = dsMomentMean / dsForceMean;
 dsMomentArmPercentFootMean = (dsMomentArmMean / 0.24)*100
+dsMeanMean = mean(dsMomentArmPercentFoot)
 
 %% SECTION 10: GRAPH DMAMA
 
@@ -585,14 +635,19 @@ Y = [lgMomentArmPercentFootMean urMomentArmPercentFootMean drMomentArmPercentFoo
     usMomentArmPercentFootMean dsMomentArmPercentFootMean];
 error = [lgStDev urStDev drStDev usStDev dsStDev];
 
+
+titleV=(['Division of Means: Subject ', num2str(subject), ' on Setting ', num2str(setting)]);
+
 figure
 bar(X,Y)
 hold on
 errorbar(Y, error, '.')
 %ylim([0 50])
-title('Subject 4 at Soft Setting')
+title(titleV)
 ylabel('DMAMA (% of foot length)')
 text(1:length(Y),Y,num2str(Y'),'vert','bottom','horiz','center');
+hold off
+
 
 % %% ADJUST XSENS TO LENGTH OF IPECS AND GRAPH
 % xsensIpecsTime_ToeZ = interp1(toeZPos,linspace(1, length(toeZPos), length(moment_all))');
@@ -603,8 +658,26 @@ text(1:length(Y),Y,num2str(Y'),'vert','bottom','horiz','center');
 % ylim([-2 5])
 % title('XSENS Toe Position and Momement')
 
+%% SECTION 10: GRAPH DMAMA with Different Mean 
+
+X = categorical({'Level Ground','Up Ramp','Down Ramp','Up Stairs','Down Stairs'});
+X = reordercats(X,{'Level Ground','Up Ramp','Down Ramp','Up Stairs','Down Stairs'});
+Y = [lgMeanMean urMeanMean drMeanMean ...
+    usMeanMean dsMeanMean];
+error = [lgStDev urStDev drStDev usStDev dsStDev];
+
+titleV=(['Mean of Array: Subject ', num2str(subject), ' on Setting ', num2str(setting)]);
+
+figure
+bar(X,Y)
+hold on
+errorbar(Y, error, '.')
+%ylim([0 50])
+title(titleV)
+ylabel('DMAMA (% of foot length)')
+text(1:length(Y),Y,num2str(Y'),'vert','bottom','horiz','center');
 
 
-
+cd ..
 
 
