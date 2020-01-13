@@ -1,6 +1,5 @@
 %% TO-DO
-%-Implement new calculations to all amb modes
-%-Graph with std devs
+%-Issue with DS
 %-Make presentation
 %   -describing new method
 %   -discussing big standard deviation
@@ -445,8 +444,8 @@ end
 % will be here ("ignoring" the values from TO back to HC where the foot is
 % in the air)
 k = 1;
-momentStance = zeros(length(moment_all),2);
-forceStance = zeros(length(sagForce),2);
+%momentStance = zeros(length(moment_all),2);
+%forceStance = zeros(length(sagForce),2);
 for j = 1:(length(ipTOValues)-1)
     for i = 1:length(moment_all)
         if i > ipHCValues(j,1) && i < ipTOValues(j+1,1)
@@ -556,6 +555,7 @@ usMomentArmMean = usMomentMean / usForceMean;
 usMomentArmPercentFootMean = (usMomentArmMean / 0.24)*100
 
 %% SECTION 9E: DOWN STAIRS ANALYSIS
+%something is not right
 count = 0;
 sumForce = 0;
 sumMoment = 0;
