@@ -1,3 +1,4 @@
+clear
 %% TO-DO
 %-Issue with DS
 %-Make presentation
@@ -22,6 +23,12 @@
 subject = 4;
 setting = 1;
 cd Data
+
+allInnateOffsets = [0 0.1082 0 0.0647];
+allShankLengths = [0 0.2516713 0 0.24174289]; %in meters
+innateOffset = allInnateOffsets(subject);
+shankLength = allShankLengths(subject);
+
 % -----------------iPecs Data-----------------
 % iPecs Filename, forces & moments in X, Y, Z
 fileName=(['IP', num2str(subject), num2str(setting)]);
@@ -91,6 +98,7 @@ tempFile = importdata(file_heelZPos);
 heelZPos = tempFile.data;
 tempFile = importdata(file_toeZPos);
 toeZPos = tempFile.data;
+cd ..
 
 %% SECTION 2: INITIAL GRAPHS
 % These graphs are not trimmed in length.
@@ -157,11 +165,6 @@ hold off
 
 %% SECTION 3: FIND MOMENT VECTOR
 
-%**move above later
-allInnateOffsets = [0 0.1082 0 0.0647];
-allShankLengths = [0 0.2516713 0 0.24174289]; %in meters
-innateOffset = allInnateOffsets(subject);
-shankLength = allShankLengths(subject);
 
 fyComponent = ipFy * cos(innateOffset);
 fzComponent = ipFz * sin(innateOffset)*-1;
@@ -242,7 +245,7 @@ xsensHCValues = [];
 %and Heel position graph to see if there are obvious points missing or if
 %there are too many points. Increase the number to get rid of extra points,
 %decrease to accept more points.
-checkRange = 17;
+checkRange = 30;
 [a,b] = size(heelZPos(:,4));
 for len = checkRange + 1:a-checkRange
     counter = 0;
@@ -519,18 +522,16 @@ for i = 1:length(momentStance)
         count = count + 1;
         urForce(count,1) = forceStance(i,1);
         urMoment(count,1) = momentStance(i,1);
-        urMomentArm(count,1) = urMoment(count,1) / urForce(count,1);
-        urMomentArmPercentFoot(count,1) = (urMomentArm(count,1)/0.24)*100;
         sumForce = sumForce + forceStance(i,1);
         sumMoment = sumMoment + momentStance(i,1);
     end
 end
-urStDev = std(urMomentArmPercentFoot)
+%urStDev = std(urMomentArmPercentFoot)
 urForceMean = sumForce/count;
 urMomentMean = sumMoment/count;
 urMomentArmMean = urMomentMean / urForceMean;
 urMomentArmPercentFootMean = (urMomentArmMean / 0.24)*100
-urMeanMean = mean(urMomentArmPercentFoot)
+
 
 %% SECTION 9B: LEVEL GROUND ANALYSIS
 count = 0;
@@ -543,19 +544,16 @@ for i = 1:length(momentStance)
         count = count + 1;
         lgForce(count,1) = forceStance(i,1);
         lgMoment(count,1) = momentStance(i,1);
-        lgMomentArm(count,1) = lgMoment(count,1) / lgForce(count,1);
-        lgMomentArmPercentFoot(count,1) = (lgMomentArm(count,1)/0.24)*100;
         sumForce = sumForce + forceStance(i,1);
         sumMoment = sumMoment + momentStance(i,1);
     end
 end
-lgStDev = std(lgMomentArmPercentFoot)
+
+%lgStDev = std(lgMomentArmPercentFoot)
 lgForceMean = sumForce/count;
 lgMomentMean = sumMoment/count;
 lgMomentArmMean = lgMomentMean / lgForceMean;
 lgMomentArmPercentFootMean = (lgMomentArmMean / 0.24)*100
-lgMeanMean = mean(lgMomentArmPercentFoot)
-
 
 %% SECTION 9C: DOWN RAMP ANALYSIS
 count = 0;
@@ -567,18 +565,16 @@ for i = 1:length(momentStance)
         count = count + 1;
         drForce(count,1) = forceStance(i,1);
         drMoment(count,1) = momentStance(i,1);
-        drMomentArm(count,1) = drMoment(count,1) / drForce(count,1);
-        drMomentArmPercentFoot(count,1) = (drMomentArm(count,1)/0.24)*100;
         sumForce = sumForce + forceStance(i,1);
         sumMoment = sumMoment + momentStance(i,1);
     end
 end
-drStDev = std(drMomentArmPercentFoot)
+
+%drStDev = std(drMomentArmPercentFoot)
 drForceMean = sumForce/count;
 drMomentMean = sumMoment/count;
 drMomentArmMean = drMomentMean / drForceMean;
 drMomentArmPercentFootMean = (drMomentArmMean / 0.24)*100
-drMeanMean = mean(drMomentArmPercentFoot)
 
 %% SECTION 9D: UP STAIRS ANALYSIS
 count = 0;
@@ -590,18 +586,18 @@ for i = 1:length(momentStance)
         count = count + 1;
         usForce(count,1) = forceStance(i,1);
         usMoment(count,1) = momentStance(i,1);
-        usMomentArm(count,1) = usMoment(count,1) / usForce(count,1);
-        usMomentArmPercentFoot(count,1) = (usMomentArm(count,1)/0.24)*100;
+
         sumForce = sumForce + forceStance(i,1);
         sumMoment = sumMoment + momentStance(i,1);
     end
 end
-usStDev = std(usMomentArmPercentFoot)
+
+%usStDev = std(usMomentArmPercentFoot)
 usForceMean = sumForce/count;
 usMomentMean = sumMoment/count;
 usMomentArmMean = usMomentMean / usForceMean;
 usMomentArmPercentFootMean = (usMomentArmMean / 0.24)*100
-usMeanMean = mean(usMomentArmPercentFoot)
+
 
 %% SECTION 9E: DOWN STAIRS ANALYSIS
 %something is not right
@@ -614,18 +610,17 @@ for i = 1:length(momentStance)
         count = count + 1;
         dsForce(count,1) = forceStance(i,1);
         dsMoment(count,1) = momentStance(i,1);
-        dsMomentArm(count,1) = dsMoment(count,1) / dsForce(count,1);
-        dsMomentArmPercentFoot(count,1) = (dsMomentArm(count,1)/0.24)*100;
         sumForce = sumForce + forceStance(i,1);
         sumMoment = sumMoment + momentStance(i,1);
     end
 end
-dsStDev = std(dsMomentArmPercentFoot)
+
+%dsStDev = std(dsMomentArmPercentFoot)
 dsForceMean = sumForce/count;
 dsMomentMean = sumMoment/count;
 dsMomentArmMean = dsMomentMean / dsForceMean;
 dsMomentArmPercentFootMean = (dsMomentArmMean / 0.24)*100
-dsMeanMean = mean(dsMomentArmPercentFoot)
+
 
 %% SECTION 10: GRAPH DMAMA
 
@@ -633,7 +628,7 @@ X = categorical({'Level Ground','Up Ramp','Down Ramp','Up Stairs','Down Stairs'}
 X = reordercats(X,{'Level Ground','Up Ramp','Down Ramp','Up Stairs','Down Stairs'});
 Y = [lgMomentArmPercentFootMean urMomentArmPercentFootMean drMomentArmPercentFootMean ...
     usMomentArmPercentFootMean dsMomentArmPercentFootMean];
-error = [lgStDev urStDev drStDev usStDev dsStDev];
+%error = [lgStDev urStDev drStDev usStDev dsStDev];
 
 
 titleV=(['Division of Means: Subject ', num2str(subject), ' on Setting ', num2str(setting)]);
@@ -641,43 +636,130 @@ titleV=(['Division of Means: Subject ', num2str(subject), ' on Setting ', num2st
 figure
 bar(X,Y)
 hold on
-errorbar(Y, error, '.')
+%errorbar(Y, error, '.')
 %ylim([0 50])
 title(titleV)
 ylabel('DMAMA (% of foot length)')
 text(1:length(Y),Y,num2str(Y'),'vert','bottom','horiz','center');
 hold off
 
+%% SECTION 11: EXTRA INFO GRAPHS
+%Show the moment and force graphs, bad graph because its just showing
+%stance phase, but good for seeing outliers and trends.
 
-% %% ADJUST XSENS TO LENGTH OF IPECS AND GRAPH
-% xsensIpecsTime_ToeZ = interp1(toeZPos,linspace(1, length(toeZPos), length(moment_all))');
-% figure
-% plot(1:ipLength, moment_all(:,1))
-% yyaxis right
-% plot(1:ipLength, xsensIpecsTime_ToeZ(:,4),'r-')
-% ylim([-2 5])
-% title('XSENS Toe Position and Momement')
-
-%% SECTION 10: GRAPH DMAMA with Different Mean 
-
-X = categorical({'Level Ground','Up Ramp','Down Ramp','Up Stairs','Down Stairs'});
-X = reordercats(X,{'Level Ground','Up Ramp','Down Ramp','Up Stairs','Down Stairs'});
-Y = [lgMeanMean urMeanMean drMeanMean ...
-    usMeanMean dsMeanMean];
-error = [lgStDev urStDev drStDev usStDev dsStDev];
-
-titleV=(['Mean of Array: Subject ', num2str(subject), ' on Setting ', num2str(setting)]);
-
+%Force
+titleV=(['Force Plot of Each Ambulation Mode for: Subject ', num2str(subject), ' on Setting ', num2str(setting)]);
 figure
-bar(X,Y)
-hold on
-errorbar(Y, error, '.')
-%ylim([0 50])
-title(titleV)
-ylabel('DMAMA (% of foot length)')
-text(1:length(Y),Y,num2str(Y'),'vert','bottom','horiz','center');
+subplot(5,1,1)
+plot(lgForce)
+title('Level Ground')
+ylabel('Force (N)')
 
+subplot(5,1,2)
+plot(urForce)
+title('Up Ramp')
+ylabel('Force (N)')
 
-cd ..
+subplot(5,1,3)
+plot(drForce)
+title('Down Ramp')
+ylabel('Force (N)')
 
+subplot(5,1,4)
+plot(usForce)
+title('Up Stairs')
+ylabel('Force (N)')
 
+subplot(5,1,5)
+plot(dsForce)
+title('Down Stairs')
+ylabel('Force (N)')
+
+sgtitle(titleV)
+
+%Moment
+titleV=(['Moment Plot of Each Ambulation Mode for: Subject ', num2str(subject), ' on Setting ', num2str(setting)]);
+figure
+subplot(5,1,1)
+plot(lgMoment)
+title('Level Ground')
+ylabel('Moment (Nm)')
+
+subplot(5,1,2)
+plot(urMoment)
+title('Up Ramp')
+ylabel('Moment (Nm)')
+
+subplot(5,1,3)
+plot(drMoment)
+title('Down Ramp')
+ylabel('Moment (Nm)')
+
+subplot(5,1,4)
+plot(usMoment)
+title('Up Stairs')
+ylabel('Moment (Nm)')
+
+subplot(5,1,5)
+plot(dsMoment)
+title('Down Stairs')
+ylabel('Moment (Nm)')
+
+sgtitle(titleV)
+
+%Both
+titleV=(['Force Plot of Each Ambulation Mode for: Subject ', num2str(subject), ' on Setting ', num2str(setting)]);
+figure
+subplot(5,1,1)
+yyaxis left
+plot(lgForce)
+ylabel('Force (N)')
+yyaxis right
+plot(lgMoment)
+ylabel('Moment (Nm)')
+title('Level Ground')
+
+subplot(5,1,2)
+yyaxis left
+plot(urForce)
+ylabel('Force (N)')
+yyaxis right
+plot(urMoment)
+ylabel('Moment (Nm)')
+title('Up Ramp')
+
+subplot(5,1,3)
+yyaxis left
+plot(drForce)
+ylabel('Force (N)')
+yyaxis right
+plot(drMoment)
+ylabel('Moment (Nm)')
+title('Down Ramp')
+
+subplot(5,1,4)
+yyaxis left
+plot(usForce)
+ylabel('Force (N)')
+yyaxis right
+plot(usMoment)
+ylabel('Moment (Nm)')
+title('Up Stairs')
+
+subplot(5,1,5)
+yyaxis left
+plot(dsForce)
+ylabel('Force (N)')
+yyaxis right
+plot(dsMoment)
+ylabel('Moment (Nm)')
+title('Down Stairs')
+
+sgtitle(titleV)
+
+%Print out step count
+lgTotalSteps = lg1Steps++lg2Steps+lg3Steps
+urTotalSteps = ur1Steps+ur2Steps
+drTotalSteps = dr1Steps+dr2Steps
+usTotalSteps = us1Steps+us2Steps
+dsTotalSteps = ds1Steps+ds2Steps
