@@ -19,7 +19,7 @@
 
 % Set subject and stiffness setting, this will find correct data in
 %matrices of provided, known values
-subject = 1;
+subject = 4;
 setting = 1;
 cd Data
 % -----------------iPecs Data-----------------

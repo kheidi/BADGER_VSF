@@ -1,5 +1,5 @@
 #Ignore all xlsx files
-*.xlsx
+#*.xlsx
 
 #Ignore all pdf file
 *.pdf
@@ -12,7 +12,7 @@ cat: .git: No such file or directory
 Katherines-MacBook-Pro:BADGERLabRepo khfehr$ nano .gitignore 
 Katherines-MacBook-Pro:BADGERLabRepo khfehr$ cat .gitignore 
 #Ignore all xlsx files
-*.xlsx
+#*.xlsx
 
 #Ignore all pdf file
 *.pdf
