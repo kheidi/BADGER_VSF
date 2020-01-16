@@ -13,6 +13,8 @@
 subject = 4;
 setting = 1;
 
+cd Data
+
 % -----------------iPecs Data-----------------
 % iPecs Filename, forces & moments in X, Y, Z
 file_iPecs = 'IP41'; 
@@ -45,6 +47,10 @@ ipEndValues = [34185,   0,      0;
               0,        0,      0;
               24003,    21688,  22758];
 
+ipStart = ipStartValues(subject,setting);
+ipEnd = ipEndValues(subject,setting);
+
+
 % -----------------timeTracking Data-----------------          
 % timeTracking, file that holds time stamps for the different ambulation
 %modes (Up ramp, level ground). These time stamps correspond to the XSENS
@@ -72,6 +78,9 @@ xsensEndValues = [  13403,  0,      0;
                     10371,  10916,  12330;
                     0,      0,      0;
                     8779,   8528,   9060];  
+                
+xsensStart = xsensStartValues(subject,setting);
+xsensEnd = xsensEndValues(subject,setting);
 %% SECTION 1: IMPORT DATA
 
 % Imports the iPecs data, timetracking file, heel and toe Z position
@@ -279,7 +288,31 @@ xlabel('XSENS Frame/Time')
 ylabel('Height (m)')
 title('XSENS Toe and Heel Data with Identified HC and TO Points')
 
-%% SECTION 6: XSENS - GRAPH AMB MODES
+%% SECTION 6: ALIGN DATA & DEFINE TASK TIMES
+
+% Create multiplier for stretching xsens data to iPecs data length
+ipLength = ipEnd - ipStart;
+xsensLength = xsensEnd - xsensStart;
+
+% Create iPecs multipler
+% Doing this because time of events is marker in xsens so want to leave
+% that as is
+ipMultiplier = xsensLength/ipLength;
+ipAdjustedWindows = (xsensStart:ipMultiplier:xsensEnd);
+ipTONew = xsensStart+(ipTOValues-ipStart)*ipMultiplier;
+ipHCNew = xsensStart+(ipHCValues-ipStart)*ipMultiplier;
+
+% FIGURE: aligned data for toe-off
+figure
+hold on
+plot(ipAdjustedWindows, ipFz(ipStart:ipEnd), 'k-')
+plot(toeZPos(xsensStart:xsensEnd,1), toeZPos(xsensStart:xsensEnd,4)*250, 'r-')
+plot(ipTONew, ipFz(ipTOValues), 'ko', 'LineWidth',2)
+plot(xsensTOValues, toeZPos(xsensTOValues,4), 'ro', 'LineWidth', 2)
+legend('Fz iPecs','Z pos. toe','ip TO','xsens TO')
+xlabel('Windows')
+
+%% SECTION 7: XSENS - GRAPH AMB MODES
 
 %First we need to define at which point in the XSENS data the modes begin
 %and end based on the info in the timeTrack file
@@ -330,25 +363,6 @@ xline(dsStart2, ':b', 'DS2 Start');
 xline(lgStart3, ':b', 'LG3 Start');
 xline(drStart2, ':b', 'DR2 Start');
 title('XSENS Toe and Heel Position with Ambulation Modes')
-
-
-%% SECTION 7: INTERPOLATE IPECS MOMENT TO MATCH XSENS
-
-moment_in_xsens_time = interp1(moment_all,linspace(1, length(moment_all), length(heelZPos))');
-figure
-plot(1:xsensLength, moment_in_xsens_time,'b-')
-%ylim([-2 5])
-hold on
-%yyaxis right
-plot(heelZPos(:,1), heelZPos(:,4), 'k-')
-plot(xsensTOValues, toeZPos(xsensTOValues,4), 'ro', 'LineWidth', 2)
-plot(xsensHCValues, heelZPos(xsensHCValues,4), 'ko', 'LineWidth', 2)
-ylim([-2.5 5])
-
-legend('Moment','Heel Pos', 'HC')
-xlabel('XSENS Frame/Time')
-ylabel('Moment')
-title('Moment in XSENS time')
 
 
 
