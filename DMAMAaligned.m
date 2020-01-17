@@ -1,12 +1,8 @@
 clear
 %% TO-DO
-%-Issue with DS
-%-Make presentation
-%   -describing new method
-%   -discussing big standard deviation
-%   -Showing excel proof
-%   -rounding error
-
+%-Find HC and TO with trimmed version of moment
+%-Find moment stances
+%-Calculate DMAMA for amb modes
 
 %% OVERALL CODE DESCRIPTION
 
