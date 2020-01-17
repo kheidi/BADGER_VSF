@@ -20,8 +20,8 @@ clear
 
 % Set subject and stiffness setting, this will find correct data in
 %matrices of provided, known values
-subject = 4;
-setting = 1;
+subject = 2;
+setting = 2;
 cd Data
 
 allInnateOffsets = [0 0.1082 0 0.0647];
@@ -264,7 +264,7 @@ end
 % ID toe-off using toe position data
 xsensTOValues = [];
 %Also may need to be adjusted
-checkRange = 20;
+checkRange = 22;
 [a,b] = size(toeZPos(:,4));
 for len = checkRange + 1:a-checkRange
     counter = 0;
@@ -383,6 +383,58 @@ xline(dsStart2, ':b', 'DS2 Start','HandleVisibility','off');
 xline(lgStart3, ':b', 'LG3 Start','HandleVisibility','off');
 xline(drStart2, ':b', 'DR2 Start','HandleVisibility','off');
 title('XSENS Toe and Heel Position with Ambulation Modes')
+
+%% ALIGNMENT METHOD
+
+%% SECTION 8: ATTEMPT AT DATA ALIGNMENT CODE
+
+% Create iPecs multipler:
+% Doing this because time of events is marker in xsens so want to leave
+% that as is
+
+ipStart = ipStartValues(subject,setting);
+ipEnd = ipEndValues(subject,setting);
+xsensStart = xsensStartValues(subject,setting);
+xsensEnd = xsensEndValues(subject,setting);
+
+% Create multiplier for stretching xsens data to iPecs data length
+ipLength = ipEnd - ipStart;
+xsensLength = xsensEnd - xsensStart;
+
+ipMultiplier = xsensLength/ipLength;
+ipAdjustedWindows = (xsensStart:ipMultiplier:xsensEnd);
+ipTONew = xsensStart+(ipTOValues-ipStart)*ipMultiplier;
+ipHCNew = xsensStart+(ipHCValues-ipStart)*ipMultiplier;
+
+% FIGURE: aligned data for toe-off
+figure
+hold on
+plot(ipAdjustedWindows, ipFz(ipStart:ipEnd), 'k-') % plots a continuous line of the adjusted iPecs readings
+plot(toeZPos(xsensStart:xsensEnd,1), toeZPos(xsensStart:xsensEnd,4)*250, 'r-') % matching xsens data lines
+plot(ipTONew, ipFz(ipTOValues), 'ko', 'LineWidth',2) % plots iPecs toe-off data
+plot(xsensTOValues, toeZPos(xsensTOValues,4), 'ro', 'LineWidth', 2) % plots xsens toe-off data
+legend('Fz iPecs','Z pos. toe','ip TO','xsens TO')
+xlabel('Windows')
+%Trying to multiply the amb mode?
+urStart1
+urStart1stretch = urStart1 * ipMultiplier
+xline(urStart1, ':b', 'UR1 Start','HandleVisibility','off');
+xline(urEnd1, ':r', 'UR1 End','HandleVisibility','off');
+xline(lgStart1, ':b', 'LG1 Start','HandleVisibility','off');
+xline(lgEnd1, ':r', 'LG1 End','HandleVisibility','off');
+xline(drStart1, ':b', 'DR1 Start','HandleVisibility','off');
+xline(urStart2, ':b', 'UR2 Start','HandleVisibility','off');
+xline(lgStart2, ':b', 'LG2 Start','HandleVisibility','off');
+xline(usStart1, ':b', 'US1 Start','HandleVisibility','off');
+xline(usStart2, ':b', 'US2 Start','HandleVisibility','off');
+xline(dsStart1, ':b', 'DS1 Start','HandleVisibility','off');
+xline(dsStart2, ':b', 'DS2 Start','HandleVisibility','off');
+xline(lgStart3, ':b', 'LG3 Start','HandleVisibility','off');
+xline(drStart2, ':b', 'DR2 Start','HandleVisibility','off');
+title('Shifted Data Windows')
+%plot(ambTask, toeZPos(ambTask,4), 'bo', 'LineWidth', 2)
+
+
 
 %% SECTION 7: COUNTS THE NUMBER OF STEPS (HC TO HC) IN EACH AMB MODE BASED ON XSENS
 
