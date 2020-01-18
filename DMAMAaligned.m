@@ -1,8 +1,7 @@
 clear
 %% TO-DO
-%-Find HC and TO with trimmed version of moment
-%-Find moment stances
-%-Calculate DMAMA for amb modes
+%-The current error is that ipHC values are longer than moment_all? and for
+%some reason momentStance appears to be only capturing TO to HC?!
 
 %% OVERALL CODE DESCRIPTION
 
@@ -16,8 +15,8 @@ clear
 
 % Set subject and stiffness setting, this will find correct data in
 %matrices of provided, known values
-subject = 2;
-setting = 2;
+subject = 4;
+setting = 1;
 cd Data
 
 allInnateOffsets = [0 0.1082 0 0.0647];
@@ -352,7 +351,7 @@ title('XSENS Toe and Heel Position with Ambulation Modes')
 
 %% ALIGNMENT METHOD
 
-%% SECTION 8: ATTEMPT AT DATA ALIGNMENT CODE
+%% SECTION 8: DATA ALIGNMENT CODE
 
 % Create iPecs multipler:
 % Doing this because time of events is marker in xsens so want to leave
@@ -369,17 +368,13 @@ xsensLength = xsensEnd - xsensStart;
 
 ipMultiplier = xsensLength/ipLength;
 newTime = (xsensStart:ipMultiplier:xsensEnd);
-ipTONew = xsensStart+(ipTOValues-ipStart)*ipMultiplier;
-ipHCNew = xsensStart+(ipHCValues-ipStart)*ipMultiplier;
 
 % FIGURE: aligned data for toe-off
 figure
 hold on
 plot(newTime, ipFz(ipStart:ipEnd), 'k-') % plots a continuous line of the adjusted iPecs readings
 plot(toeZPos(xsensStart:xsensEnd,1), toeZPos(xsensStart:xsensEnd,4)*250, 'r-') % matching xsens data lines
-plot(ipTONew, ipFz(ipTOValues), 'ko', 'LineWidth',2) % plots iPecs toe-off data
 plot(xsensTOValues, toeZPos(xsensTOValues,4), 'ro', 'LineWidth', 2) % plots xsens toe-off data
-legend('Fz iPecs','Z pos. toe','ip TO','xsens TO')
 xlabel('Windows')
 %Trying to multiply the amb mode?
 urStart1X
@@ -400,11 +395,27 @@ xline(drStart2X, ':b', 'DR2 Start','HandleVisibility','off');
 title('Shifted Data Windows')
 %plot(ambTask, toeZPos(ambTask,4), 'bo', 'LineWidth', 2)
 
-%% SECTION 3: FIND MOMENT VECTOR
+%% SECTION ?: APPLY CUTS
 
+%Apply cuts to Data so that it aligns nicely with XSENS
 ipFy = ipFy(ipStart:ipEnd);
 ipFz = ipFz(ipStart:ipEnd);
 MxKnee = MxKnee(ipStart:ipEnd);
+clear sagForce;
+sagForce = (ipFy.^2 + ipFz.^2).^(1/2);
+
+%Get rid of HC and TO that are outside of the designated cuts
+
+HCStart = find(ipHCValues>=ipStart,1,'first');
+HCEnd = find(ipHCValues>=ipEnd,1,'first');
+ipHCValues = ipHCValues(HCStart:HCEnd);
+
+TOStart = find(ipTOValues>=ipStart,1,'first');
+TOEnd = find(ipTOValues>=ipEnd,1,'first');
+ipTOValues = ipTOValues(TOStart:TOEnd);
+
+%% SECTION 3: FIND MOMENT VECTOR
+
 fyComponent = ipFy * cos(innateOffset);
 fzComponent = ipFz * sin(innateOffset)*-1;
 fSum = fyComponent + fzComponent;
@@ -499,7 +510,77 @@ xlabel('XSENS Frame/Time')
 ylabel('Height (m)')
 title(titleV)
 
+%% SECTION NEW 5: FIND MOMENT & FORCE OF STANCE PHASE ONLY
+% This creates a table where the first column is the moment value and the
+% second column is the number of the step. Only the values from HC to TO
+% will be here ("ignoring" the values from TO back to HC where the foot is
+% in the air)
+k = 1;
+if ipTOValues(1)<ipHCValues(1)
+    check = 1
+else
+    check = 0
+end
+%momentStance = zeros(length(moment_all),2);
+%forceStance = zeros(length(sagForce),2);
+for j = 1:(length(ipHCValues)-1)
+    for i = 1:length(moment_all)
+        if i > ipHCValues(j,1) && i < ipTOValues(j+check,1)
+            momentStance(k,1) = i;
+            momentStance(k,2) = moment_all(i,1);
+            forceStance(k,1) = i;
+            forceStance(k,2) = sagForce(i,1);
+            k = k + 1;
+        end
+    end
+end
 
+%% SECTION 9: FIND MEAN OF MOMENT AND SAG FORCE FOR EACH AMB TASK
+%These next sections will be broken up into each amb task
+
+%% SECTION 9A: UP RAMP ANALYSIS
+count = 0;
+sumForce = 0;
+sumMoment = 0;
+for i = 1:length(momentStance)
+    if momentStance(i,1) >= urStart1 && momentStance(i,1) < urEnd1 + 1 || ...
+            momentStance(i,1) >= urStart2 && momentStance(i,1) < urEnd2 + 1
+        count = count + 1;
+        urForce(count,1) = forceStance(i,2);
+        urMoment(count,1) = momentStance(i,2);
+        sumForce = sumForce + forceStance(i,2);
+        sumMoment = sumMoment + momentStance(i,2);
+    end
+end
+%urStDev = std(urMomentArmPercentFoot)
+urForceMean = sumForce/count;
+urMomentMean = sumMoment/count;
+urMomentArmMean = urMomentMean / urForceMean;
+urMomentArmPercentFootMean = (urMomentArmMean / 0.24)*100
+
+%%Checking some graphs
+titleV=(['Moment with Amb Tasks and HC and TO: Subject ', num2str(subject), ' on Setting ', num2str(setting)]);
+figure
+plot(moment_all, 'k-')
+plot(ipHCValues, moment_all(ipHCValues), 'ko', 'LineWidth',2)
+plot(ipTOValues, moment_all(ipTOValues), 'ro', 'LineWidth',2)
+xline(urStart1, ':b', 'UR1 Start','HandleVisibility','off');
+xline(urEnd1, ':r', 'UR1 End','HandleVisibility','off');
+xline(lgStart1, ':b', 'LG1 Start','HandleVisibility','off');
+xline(lgEnd1, ':r', 'LG1 End','HandleVisibility','off');
+xline(drStart1, ':b', 'DR1 Start','HandleVisibility','off');
+xline(urStart2, ':b', 'UR2 Start','HandleVisibility','off');
+xline(lgStart2, ':b', 'LG2 Start','HandleVisibility','off');
+xline(usStart1, ':b', 'US1 Start','HandleVisibility','off');
+xline(usStart2, ':b', 'US2 Start','HandleVisibility','off');
+xline(dsStart1, ':b', 'DS1 Start','HandleVisibility','off');
+xline(dsStart2, ':b', 'DS2 Start','HandleVisibility','off');
+xline(lgStart3, ':b', 'LG3 Start','HandleVisibility','off');
+xline(drStart2, ':b', 'DR2 Start','HandleVisibility','off');
+xlim([0 length(moment_all)])
+xlabel('iPecs Frame/Time')
+ylabel('Moment (Nm)')
+title(titleV)
 
 
 
