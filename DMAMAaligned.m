@@ -1,7 +1,6 @@
 clear
 %% TO-DO
-%-The current error is that ipHC values are longer than moment_all? and for
-%some reason momentStance appears to be only capturing TO to HC?!
+%-Stance vector cannot use the same Amb mode index points as moment_all
 
 %% OVERALL CODE DESCRIPTION
 
@@ -406,13 +405,53 @@ sagForce = (ipFy.^2 + ipFz.^2).^(1/2);
 
 %Get rid of HC and TO that are outside of the designated cuts
 
-HCStart = find(ipHCValues>=ipStart,1,'first');
-HCEnd = find(ipHCValues>=ipEnd,1,'first');
-ipHCValues = ipHCValues(HCStart:HCEnd);
+%% SECTION ??: RE-DO IPECS - ID HEEL CONTACT AND TOE-OFF
+% This will find the HC and TO for the iPecs based on the iPecsThresholds
+%information.
 
-TOStart = find(ipTOValues>=ipStart,1,'first');
-TOEnd = find(ipTOValues>=ipEnd,1,'first');
-ipTOValues = ipTOValues(TOStart:TOEnd);
+ipHCValues = []; % Sets a blank matrix to be filled by the following loops
+ipTOValues = []; 
+ipTime = 1:length(ipFy);
+
+% Loops that create matrices of all heel contact and toe-off points of the
+% iPecs data.
+
+% Points are determined to be HC if the point is less than the
+% threshold and the next point is greater than the threshold.
+% Point is TO if it is greater than the threshold and the next point is
+% less than the threshold.
+% These points are placed in a vector called ipHCValues or ipTOValues
+for all = 1:length(ipFz)-1
+    if ipFz(all,1) < thresholdFz(1) && ipFz(all+1,1) >= thresholdFz(1)
+        [a,b] = size(ipHCValues);
+        ipHCValues(a+1,1) = all;
+    end
+    if ipFz(all,1) > thresholdFz(1) && ipFz(all+1,1) <= thresholdFz(1)
+        [c,d] = size(ipTOValues);
+        ipTOValues(c+1,1) = all+1;
+    end
+end
+
+% Figure 4: Graph Z Ground Reaction Force, HC & TO
+figure
+subplot(2,1,1)
+hold on
+plot(ipTime, ipFz, 'k-')
+plot(ipHCValues, ipFz(ipHCValues), 'ko', 'LineWidth',2)
+plot(ipTOValues, ipFz(ipTOValues), 'ro', 'LineWidth',2)
+legend('Z Force - iPecs', 'HC','TO')
+xlabel('iPecs Frame/Time')
+ylabel('Force (N)')
+title('iPecs Forces with Identified HC and TO')
+hold off
+
+% HCStart = find(ipHCValues>=ipStart,1,'first');
+% HCEnd = find(ipHCValues>=ipEnd,1,'first')-1;
+% ipHCValues = ipHCValues(HCStart:HCEnd);
+% 
+% TOStart = find(ipTOValues>=ipStart,1,'first');
+% TOEnd = find(ipTOValues>=ipEnd,1,'first')-1;
+% ipTOValues = ipTOValues(TOStart:TOEnd);
 
 %% SECTION 3: FIND MOMENT VECTOR
 
@@ -535,6 +574,33 @@ for j = 1:(length(ipHCValues)-1)
     end
 end
 
+
+%% Checking some graphs
+titleV=(['Moment with Amb Tasks and HC and TO: Subject ', num2str(subject), ' on Setting ', num2str(setting)]);
+figure
+plot(moment_all, 'k-')
+hold on
+plot(ipHCValues, moment_all(ipHCValues), 'ko', 'LineWidth',2)
+plot(ipTOValues, moment_all(ipTOValues), 'ro', 'LineWidth',2)
+xline(urStart1, ':b', 'UR1 Start','HandleVisibility','off');
+xline(urEnd1, ':r', 'UR1 End','HandleVisibility','off');
+xline(lgStart1, ':b', 'LG1 Start','HandleVisibility','off');
+xline(lgEnd1, ':r', 'LG1 End','HandleVisibility','off');
+xline(drStart1, ':b', 'DR1 Start','HandleVisibility','off');
+xline(urStart2, ':b', 'UR2 Start','HandleVisibility','off');
+xline(lgStart2, ':b', 'LG2 Start','HandleVisibility','off');
+xline(usStart1, ':b', 'US1 Start','HandleVisibility','off');
+xline(usStart2, ':b', 'US2 Start','HandleVisibility','off');
+xline(dsStart1, ':b', 'DS1 Start','HandleVisibility','off');
+xline(dsStart2, ':b', 'DS2 Start','HandleVisibility','off');
+xline(lgStart3, ':b', 'LG3 Start','HandleVisibility','off');
+xline(drStart2, ':b', 'DR2 Start','HandleVisibility','off');
+xlim([0 length(moment_all)])
+xlabel('iPecs Frame/Time')
+ylabel('Moment (Nm)')
+title(titleV)
+
+
 %% SECTION 9: FIND MEAN OF MOMENT AND SAG FORCE FOR EACH AMB TASK
 %These next sections will be broken up into each amb task
 
@@ -558,29 +624,93 @@ urMomentMean = sumMoment/count;
 urMomentArmMean = urMomentMean / urForceMean;
 urMomentArmPercentFootMean = (urMomentArmMean / 0.24)*100
 
-%%Checking some graphs
-titleV=(['Moment with Amb Tasks and HC and TO: Subject ', num2str(subject), ' on Setting ', num2str(setting)]);
+%% SECTION 9C: DOWN RAMP ANALYSIS
+count = 0;
+sumForce = 0;
+sumMoment = 0;
+for i = 1:length(momentStance)
+    if momentStance(i,2) >= drStart1 && momentStance(i,2) < drEnd1 + 1 || ...
+            momentStance(i,2) >= drStart2 && momentStance(i,2) < drEnd2 + 1
+        count = count + 1;
+        drForce(count,1) = forceStance(i,1);
+        drMoment(count,1) = momentStance(i,1);
+        sumForce = sumForce + forceStance(i,1);
+        sumMoment = sumMoment + momentStance(i,1);
+    end
+end
+
+%drStDev = std(drMomentArmPercentFoot)
+drForceMean = sumForce/count;
+drMomentMean = sumMoment/count;
+drMomentArmMean = drMomentMean / drForceMean;
+drMomentArmPercentFootMean = (drMomentArmMean / 0.24)*100
+
+%% SECTION 9D: UP STAIRS ANALYSIS
+count = 0;
+sumForce = 0;
+sumMoment = 0;
+for i = 1:length(momentStance)
+    if momentStance(i,2) >= usStart1 && momentStance(i,2) < usEnd1 + 1 || ...
+            momentStance(i,2) >= usStart2 && momentStance(i,2) < usEnd2 + 1
+        count = count + 1;
+        usForce(count,1) = forceStance(i,1);
+        usMoment(count,1) = momentStance(i,1);
+
+        sumForce = sumForce + forceStance(i,1);
+        sumMoment = sumMoment + momentStance(i,1);
+    end
+end
+
+%usStDev = std(usMomentArmPercentFoot)
+usForceMean = sumForce/count;
+usMomentMean = sumMoment/count;
+usMomentArmMean = usMomentMean / usForceMean;
+usMomentArmPercentFootMean = (usMomentArmMean / 0.24)*100
+
+
+%% SECTION 9E: DOWN STAIRS ANALYSIS
+%something is not right
+count = 0;
+sumForce = 0;
+sumMoment = 0;
+for i = 1:length(momentStance)
+    if momentStance(i,2) >= dsStart1 && momentStance(i,2) < dsEnd1 + 1 || ...
+            moment_all(i,2) >= dsStart2 && momentStance(i,2) < dsEnd2 + 1
+        count = count + 1;
+        dsForce(count,1) = forceStance(i,1);
+        dsMoment(count,1) = momentStance(i,1);
+        sumForce = sumForce + forceStance(i,1);
+        sumMoment = sumMoment + momentStance(i,1);
+    end
+end
+
+%dsStDev = std(dsMomentArmPercentFoot)
+dsForceMean = sumForce/count;
+dsMomentMean = sumMoment/count;
+dsMomentArmMean = dsMomentMean / dsForceMean;
+dsMomentArmPercentFootMean = (dsMomentArmMean / 0.24)*100
+
+
+%% SECTION 10: GRAPH DMAMA
+
+X = categorical({'Level Ground','Up Ramp','Down Ramp','Up Stairs','Down Stairs'});
+X = reordercats(X,{'Level Ground','Up Ramp','Down Ramp','Up Stairs','Down Stairs'});
+Y = [lgMomentArmPercentFootMean urMomentArmPercentFootMean drMomentArmPercentFootMean ...
+    usMomentArmPercentFootMean dsMomentArmPercentFootMean];
+%error = [lgStDev urStDev drStDev usStDev dsStDev];
+
+
+titleV=(['Division of Means: Subject ', num2str(subject), ' on Setting ', num2str(setting)]);
+
 figure
-plot(moment_all, 'k-')
-plot(ipHCValues, moment_all(ipHCValues), 'ko', 'LineWidth',2)
-plot(ipTOValues, moment_all(ipTOValues), 'ro', 'LineWidth',2)
-xline(urStart1, ':b', 'UR1 Start','HandleVisibility','off');
-xline(urEnd1, ':r', 'UR1 End','HandleVisibility','off');
-xline(lgStart1, ':b', 'LG1 Start','HandleVisibility','off');
-xline(lgEnd1, ':r', 'LG1 End','HandleVisibility','off');
-xline(drStart1, ':b', 'DR1 Start','HandleVisibility','off');
-xline(urStart2, ':b', 'UR2 Start','HandleVisibility','off');
-xline(lgStart2, ':b', 'LG2 Start','HandleVisibility','off');
-xline(usStart1, ':b', 'US1 Start','HandleVisibility','off');
-xline(usStart2, ':b', 'US2 Start','HandleVisibility','off');
-xline(dsStart1, ':b', 'DS1 Start','HandleVisibility','off');
-xline(dsStart2, ':b', 'DS2 Start','HandleVisibility','off');
-xline(lgStart3, ':b', 'LG3 Start','HandleVisibility','off');
-xline(drStart2, ':b', 'DR2 Start','HandleVisibility','off');
-xlim([0 length(moment_all)])
-xlabel('iPecs Frame/Time')
-ylabel('Moment (Nm)')
+bar(X,Y)
+hold on
+%errorbar(Y, error, '.')
+%ylim([0 50])
 title(titleV)
+ylabel('DMAMA (% of foot length)')
+text(1:length(Y),Y,num2str(Y'),'vert','bottom','horiz','center');
+hold off
 
 
 
