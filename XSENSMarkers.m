@@ -14,10 +14,13 @@ RSK2 = [-0.184406 -0.434458 0.283818];
 iP = [RSK3;RSK4;RSK2];
 iP_normal = planeNormal(RSK3,RSK4,RSK2);
 
-floor_normal = [0 0 -1];
+floor_normal = [0 0 11];
 
 s_ThetaInRad = atan2(norm(cross(a_normal,iP_normal)),dot(a_normal,iP_normal));
 s_ThetaInDegrees = atan2d(norm(cross(a_normal,iP_normal)),dot(a_normal,iP_normal));
+
+sa2f_ThetaInRad = atan2(norm(cross(floor_normal,iP_normal)),dot(floor_normal,iP_normal));
+sa2f_ThetaInDegrees = atan2d(norm(cross(floor_normal,iP_normal)),dot(floor_normal,iP_normal));
 
 sF_ThetaInRad = atan2(norm(cross(floor_normal,iP_normal)),dot(floor_normal,iP_normal));
 sF_ThetaInDegrees = atan2d(norm(cross(floor_normal,iP_normal)),dot(floor_normal,iP_normal));
@@ -57,13 +60,15 @@ RSK4 = [-0.153173 0.102854 0.300557];
 RSK2 = [-0.237762 0.126015 0.305196];
 iP = [RSK3;RSK4;RSK2];
 iP_normal = planeNormal(RSK3,RSK4,RSK2)
+iP_normaldiv = iP_normal/iP_normal(1)
 
 floor_normal = [0 0 -1]
 
 ThetaInRad_a2iP = atan2(norm(cross(a_normal,iP_normal)),dot(a_normal,iP_normal))
 ThetaInDegrees_a2iP = atan2d(norm(cross(a_normal,iP_normal)),dot(a_normal,iP_normal))
 
-
+ThetaInRad_f2iP = atan2(norm(cross(floor_normal,iP_normal)),dot(floor_normal,iP_normal))
+ThetaInDegrees_f2iP = atan2d(norm(cross(floor_normal,iP_normal)),dot(floor_normal,iP_normal))
 
 ThetaInRad_f2a = atan2(norm(cross(floor_normal,a_normal)),dot(floor_normal,a_normal))
 ThetaInDegrees_f2a = atan2d(norm(cross(floor_normal,a_normal)),dot(floor_normal,a_normal))
