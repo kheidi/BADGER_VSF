@@ -222,7 +222,7 @@ xsensEnd = xsensEndValues(subject,setting);
 ipLength = ipEnd - ipStart;
 xsensLength = xsensEnd - xsensStart;
 
-% Create iPecs multipler
+% Create iPecs multipleripAdjustedWindowsipAdjustedWindows
 % Doing this because time of events is marker in xsens so want to leave
 % that as is
 ipMultiplier = xsensLength/ipLength;
