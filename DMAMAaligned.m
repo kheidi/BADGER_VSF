@@ -733,6 +733,130 @@ ylabel('DMAMA (% of foot length)')
 text(1:length(Y),Y,num2str(Y'),'vert','bottom','horiz','center');
 hold off
 
+%% SECTION 11: EXTRA INFO GRAPHS
+%Show the moment and force graphs, bad graph because its just showing
+%stance phase, but good for seeing outliers and trends.
+
+%Force
+titleV=(['Force Plot of Each Ambulation Mode for: Subject ', num2str(subject), ' on Setting ', num2str(setting)]);
+figure
+subplot(5,1,1)
+plot(lgForce)
+xlim([0 length(lgForce)])
+title('Level Ground')
+ylabel('Force (N)')
+
+subplot(5,1,2)
+plot(urForce)
+xlim([0 length(urForce)])
+title('Up Ramp')
+ylabel('Force (N)')
+
+subplot(5,1,3)
+plot(drForce)
+title('Down Ramp')
+xlim([0 length(drForce)])
+ylabel('Force (N)')
+
+subplot(5,1,4)
+plot(usForce)
+title('Up Stairs')
+xlim([0 length(usForce)])
+ylabel('Force (N)')
+
+subplot(5,1,5)
+plot(dsForce)
+title('Down Stairs')
+xlim([0 length(dsForce)])
+ylabel('Force (N)')
+
+sgtitle(titleV)
+
+%Moment
+titleV=(['Moment Plot of Each Ambulation Mode for: Subject ', num2str(subject), ' on Setting ', num2str(setting)]);
+figure
+subplot(5,1,1)
+plot(lgMoment, 'r')
+xlim([0 length(lgForce)])
+title('Level Ground')
+ylabel('Moment (Nm)')
+
+subplot(5,1,2)
+plot(urMoment, 'r')
+xlim([0 length(urForce)])
+title('Up Ramp')
+ylabel('Moment (Nm)')
+
+subplot(5,1,3)
+plot(drMoment, 'r')
+xlim([0 length(drForce)])
+title('Down Ramp')
+ylabel('Moment (Nm)')
+
+subplot(5,1,4)
+plot(usMoment, 'r')
+xlim([0 length(usForce)])
+title('Up Stairs')
+ylabel('Moment (Nm)')
+
+subplot(5,1,5)
+plot(dsMoment, 'r')
+xlim([0 length(dsForce)])
+title('Down Stairs')
+ylabel('Moment (Nm)')
+
+sgtitle(titleV)
+
+%Both
+titleV=(['Force Plot of Each Ambulation Mode for: Subject ', num2str(subject), ' on Setting ', num2str(setting)]);
+figure
+subplot(5,1,1)
+yyaxis left
+plot(lgForce)
+ylabel('Force (N)')
+yyaxis right
+plot(lgMoment)
+ylabel('Moment (Nm)')
+title('Level Ground')
+
+subplot(5,1,2)
+yyaxis left
+plot(urForce)
+ylabel('Force (N)')
+yyaxis right
+plot(urMoment)
+ylabel('Moment (Nm)')
+title('Up Ramp')
+
+subplot(5,1,3)
+yyaxis left
+plot(drForce)
+ylabel('Force (N)')
+yyaxis right
+plot(drMoment)
+ylabel('Moment (Nm)')
+title('Down Ramp')
+
+subplot(5,1,4)
+yyaxis left
+plot(usForce)
+ylabel('Force (N)')
+yyaxis right
+plot(usMoment)
+ylabel('Moment (Nm)')
+title('Up Stairs')
+
+subplot(5,1,5)
+yyaxis left
+plot(dsForce)
+ylabel('Force (N)')
+yyaxis right
+plot(dsMoment)
+ylabel('Moment (Nm)')
+title('Down Stairs')
+
+sgtitle(titleV)
+
 
 
 
