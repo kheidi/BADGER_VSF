@@ -608,14 +608,14 @@ title(titleV)
 count = 0;
 sumForce = 0;
 sumMoment = 0;
-for i = 1:length(momentStance)
-    if momentStance(i,1) >= urStart1 && momentStance(i,1) < urEnd1 + 1 || ...
-            momentStance(i,1) >= urStart2 && momentStance(i,1) < urEnd2 + 1
+for i = 1:length(moment_all)
+    if i >= urStart1 && i < urEnd1 + 1 || ...
+            i >= urStart2 && i < urEnd2 + 1
         count = count + 1;
-        urForce(count,1) = forceStance(i,2);
-        urMoment(count,1) = momentStance(i,2);
-        sumForce = sumForce + forceStance(i,2);
-        sumMoment = sumMoment + momentStance(i,2);
+        urForce(count,1) = sagForce(i,1);
+        urMoment(count,1) = moment_all(i,1);
+        sumForce = sumForce + sagForce(i,1);
+        sumMoment = sumMoment + moment_all(i,1);
     end
 end
 %urStDev = std(urMomentArmPercentFoot)
@@ -624,18 +624,40 @@ urMomentMean = sumMoment/count;
 urMomentArmMean = urMomentMean / urForceMean;
 urMomentArmPercentFootMean = (urMomentArmMean / 0.24)*100
 
+%% SECTION 9B: LEVEL GROUND ANALYSIS
+count = 0;
+sumForce = 0;
+sumMoment = 0;
+for i = 1:length(moment_all)
+    if i >= lgStart1 && i < lgEnd1 + 1 || ...
+            i >= lgStart2 && i < lgEnd2 + 1 || ...
+            i >= lgStart3 && i < lgEnd3 + 1
+        count = count + 1;
+        lgForce(count,1) = sagForce(i,1);
+        lgMoment(count,1) = moment_all(i,1);
+        sumForce = sumForce + sagForce(i,1);
+        sumMoment = sumMoment + moment_all(i,1);
+    end
+end
+
+%lgStDev = std(lgMomentArmPercentFoot)
+lgForceMean = sumForce/count;
+lgMomentMean = sumMoment/count;
+lgMomentArmMean = lgMomentMean / lgForceMean;
+lgMomentArmPercentFootMean = (lgMomentArmMean / 0.24)*100
+
 %% SECTION 9C: DOWN RAMP ANALYSIS
 count = 0;
 sumForce = 0;
 sumMoment = 0;
-for i = 1:length(momentStance)
-    if momentStance(i,2) >= drStart1 && momentStance(i,2) < drEnd1 + 1 || ...
-            momentStance(i,2) >= drStart2 && momentStance(i,2) < drEnd2 + 1
+for i = 1:length(moment_all)
+    if i >= drStart1 && i < drEnd1 + 1 || ...
+            i >= drStart2 && i < drEnd2 + 1
         count = count + 1;
-        drForce(count,1) = forceStance(i,1);
-        drMoment(count,1) = momentStance(i,1);
-        sumForce = sumForce + forceStance(i,1);
-        sumMoment = sumMoment + momentStance(i,1);
+        drForce(count,1) = sagForce(i,1);
+        drMoment(count,1) = moment_all(i,1);
+        sumForce = sumForce + sagForce(i,1);
+        sumMoment = sumMoment + moment_all(i,1);
     end
 end
 
@@ -649,15 +671,14 @@ drMomentArmPercentFootMean = (drMomentArmMean / 0.24)*100
 count = 0;
 sumForce = 0;
 sumMoment = 0;
-for i = 1:length(momentStance)
-    if momentStance(i,2) >= usStart1 && momentStance(i,2) < usEnd1 + 1 || ...
-            momentStance(i,2) >= usStart2 && momentStance(i,2) < usEnd2 + 1
+for i = 1:length(moment_all)
+    if i >= usStart1 && i < usEnd1 + 1 || ...
+            i >= usStart2 && i < usEnd2 + 1
         count = count + 1;
-        usForce(count,1) = forceStance(i,1);
-        usMoment(count,1) = momentStance(i,1);
-
-        sumForce = sumForce + forceStance(i,1);
-        sumMoment = sumMoment + momentStance(i,1);
+        usForce(count,1) = sagForce(i,1);
+        usMoment(count,1) = moment_all(i,1);
+        sumForce = sumForce + sagForce(i,1);
+        sumMoment = sumMoment + moment_all(i,1);
     end
 end
 
@@ -673,14 +694,14 @@ usMomentArmPercentFootMean = (usMomentArmMean / 0.24)*100
 count = 0;
 sumForce = 0;
 sumMoment = 0;
-for i = 1:length(momentStance)
-    if momentStance(i,2) >= dsStart1 && momentStance(i,2) < dsEnd1 + 1 || ...
-            moment_all(i,2) >= dsStart2 && momentStance(i,2) < dsEnd2 + 1
+for i = 1:length(moment_all)
+    if i >= dsStart1 && i < dsEnd1 + 1 || ...
+            i >= dsStart2 && i < dsEnd2 + 1
         count = count + 1;
-        dsForce(count,1) = forceStance(i,1);
-        dsMoment(count,1) = momentStance(i,1);
-        sumForce = sumForce + forceStance(i,1);
-        sumMoment = sumMoment + momentStance(i,1);
+        dsForce(count,1) = sagForce(i,1);
+        dsMoment(count,1) = moment_all(i,1);
+        sumForce = sumForce + sagForce(i,1);
+        sumMoment = sumMoment + moment_all(i,1);
     end
 end
 
