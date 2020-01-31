@@ -466,13 +466,14 @@ moment_withXsensTime(:,2) = moment_all;
 figure
 yyaxis left
 plot(newTime, moment_all, 'b-')
-ylim([-120,120])
+ylim([-220,220])
 xlabel('iPecs Time')
 ylabel('Moment')
 yyaxis right
 plot(toeZPos(xsensStart:xsensEnd,1), toeZPos(xsensStart:xsensEnd,4)*250, 'r-')
-ylim([-1200,1200])
-title('iPecs Only - Moment + Knee Moment')
+ylabel('Toe Position')
+ylim([-1600,1600])
+title('Moment about Knee + Knee Moment & Toe Moment')
 
 %% Find Amb tasks in iPecs time
 
@@ -548,7 +549,6 @@ xline(drStart2X, ':b', 'DR2 Start','HandleVisibility','off');
 xlabel('XSENS Frame/Time')
 ylabel('Height (m)')
 title(titleV)
-
 %% SECTION NEW 5: FIND MOMENT & FORCE OF STANCE PHASE ONLY
 % This creates a table where the first column is the moment value and the
 % second column is the number of the step. Only the values from HC to TO
@@ -603,6 +603,32 @@ title(titleV)
 
 %% SECTION 9: FIND MEAN OF MOMENT AND SAG FORCE FOR EACH AMB TASK
 %These next sections will be broken up into each amb task
+
+figure
+yyaxis left
+plot(moment_all, '-r')
+ylabel('Moment')
+ylim([-40 900])
+yyaxis right
+plot(sagForce, '-r')
+ylabel('Force')
+ylim([-40 900])
+xlim([-1000 length(moment_all)+1000])
+xline(urStart1, ':b', 'UR1 Start','HandleVisibility','off');
+xline(urEnd1, ':r', 'UR1 End','HandleVisibility','off');
+xline(lgStart1, ':b', 'LG1 Start','HandleVisibility','off');
+xline(lgEnd1, ':r', 'LG1 End','HandleVisibility','off');
+xline(drStart1, ':b', 'DR1 Start','HandleVisibility','off');
+xline(urStart2, ':b', 'UR2 Start','HandleVisibility','off');
+xline(lgStart2, ':b', 'LG2 Start','HandleVisibility','off');
+xline(usStart1, ':b', 'US1 Start','HandleVisibility','off');
+xline(usStart2, ':b', 'US2 Start','HandleVisibility','off');
+xline(dsStart1, ':b', 'DS1 Start','HandleVisibility','off');
+xline(dsStart2, ':b', 'DS2 Start','HandleVisibility','off');
+xline(lgStart3, ':b', 'LG3 Start','HandleVisibility','off');
+xline(drStart2, ':b', 'DR2 Start','HandleVisibility','off');
+
+
 
 %% SECTION 9A: UP RAMP ANALYSIS
 count = 0;
@@ -811,6 +837,7 @@ sgtitle(titleV)
 titleV=(['Force Plot of Each Ambulation Mode for: Subject ', num2str(subject), ' on Setting ', num2str(setting)]);
 figure
 subplot(5,1,1)
+xlim([0 length(lgForce)])
 yyaxis left
 plot(lgForce)
 ylabel('Force (N)')
@@ -820,6 +847,7 @@ ylabel('Moment (Nm)')
 title('Level Ground')
 
 subplot(5,1,2)
+xlim([0 length(urForce)])
 yyaxis left
 plot(urForce)
 ylabel('Force (N)')
@@ -829,6 +857,7 @@ ylabel('Moment (Nm)')
 title('Up Ramp')
 
 subplot(5,1,3)
+xlim([0 length(drForce)])
 yyaxis left
 plot(drForce)
 ylabel('Force (N)')
@@ -838,6 +867,7 @@ ylabel('Moment (Nm)')
 title('Down Ramp')
 
 subplot(5,1,4)
+xlim([0 length(usForce)])
 yyaxis left
 plot(usForce)
 ylabel('Force (N)')
@@ -847,6 +877,7 @@ ylabel('Moment (Nm)')
 title('Up Stairs')
 
 subplot(5,1,5)
+xlim([0 length(dsForce)])
 yyaxis left
 plot(dsForce)
 ylabel('Force (N)')
