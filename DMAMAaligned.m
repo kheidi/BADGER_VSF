@@ -453,15 +453,28 @@ hold off
 % TOEnd = find(ipTOValues>=ipEnd,1,'first')-1;
 % ipTOValues = ipTOValues(TOStart:TOEnd);
 
-%% SECTION 3: FIND MOMENT VECTOR
+%% NEW MOMENT CALCULATION
 
-fyComponent = ipFy * cos(innateOffset);
-fzComponent = ipFz * sin(innateOffset)*-1;
-fSum = fyComponent + fzComponent;
+%Test only for subject 4
+%Perpendicular distance from center of iPecs to shank segment
+pDistance = 0.004971213025264;
+%New innate offset
+innateOffset = 0.032302314647697 - (0.004709902012499*2)
+%Standard deviations: pDistance = 0.001354980508601 and innateOffset = 0.004709902012499
 
-moment_all = fSum * shankLength - MxKnee;
+moment_all = -ipFz*sin(innateOffset)*shankLength - ipFz*cos(innateOffset)*pDistance - ipFy*sin(innateOffset)*pDistance + ipFy*cos(innateOffset)*shankLength - MxKnee;
 moment_withXsensTime(:,1) = newTime;
 moment_withXsensTime(:,2) = moment_all;
+
+%% SECTION 3: FIND MOMENT VECTOR
+% 
+% fyComponent = ipFy * cos(innateOffset);
+% fzComponent = ipFz * sin(innateOffset)*-1;
+% fSum = fyComponent + fzComponent;
+% 
+% moment_all = fSum * shankLength - MxKnee;
+% moment_withXsensTime(:,1) = newTime;
+% moment_withXsensTime(:,2) = moment_all;
 
 figure
 yyaxis left
@@ -747,7 +760,7 @@ Y = [lgMomentArmPercentFootMean urMomentArmPercentFootMean drMomentArmPercentFoo
 %error = [lgStDev urStDev drStDev usStDev dsStDev];
 
 
-titleV=(['Division of Means: Subject ', num2str(subject), ' on Setting ', num2str(setting)]);
+titleV=(['DMAMA: Subject ', num2str(subject), ' on Setting ', num2str(setting)]);
 
 figure
 bar(X,Y)
