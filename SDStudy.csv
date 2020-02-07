@@ -1,4 +1,25 @@
 ,Level Ground,Up Ramp,Down Ramp ,Up Stairs ,Down Stairs
-Nominal,21.5799,26.6328,22.6181,26.8853,33.7587
- +2SD,20.6687,25.7215,21.71,25.9647,32.855
- -2SD,22.4905,27.5436,23.5251,27.8049,34.6607
+ -2SD Angle,22.49,27.54,23.53,27.80,34.66
+Nominal,21.58,26.63,22.62,26.89,33.76
+ +2SD Angle,20.67,25.72,21.71,25.96,32.86
+,,,,,
+Difference - to Nominal,0.91,0.91,0.91,0.92,0.90
+Difference Nominal to +,0.91,0.91,0.91,0.92,0.90
+,,,,,
+,,,,,
+,Level Ground,Up Ramp,Down Ramp ,Up Stairs ,Down Stairs
+ -2SD Dist,22.66,27.72,23.70,27.98,34.83
+Nominal,21.58,26.63,22.62,26.89,33.76
+ +2SD Dist,20.50,25.55,21.54,25.79,32.69
+,,,,,
+Difference - to Nominal,1.08,1.08,1.08,1.09,1.07
+Difference Nominal to +,1.08,1.08,1.08,1.09,1.07
+,,,,,
+,,,,,
+,Level Ground,Up Ramp,Down Ramp ,Up Stairs ,Down Stairs
+ -2SD Dist & -2SD Angle,23.57,28.62,24.60,28.90,35.73
+Nominal,21.58,26.63,22.62,26.89,33.76
+ +2SD Dist & +2SD Angle,19.59,24.64,20.63,24.87,31.78
+,,,,,
+Difference - to Nominal,1.99,1.99,1.98,2.01,1.97
+Difference Nominal to +,1.99,1.99,1.99,2.01,1.98
