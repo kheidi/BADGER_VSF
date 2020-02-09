@@ -18,10 +18,26 @@ subject = 4;
 setting = 1;
 cd Data
 
-allInnateOffsets = [0 0.1082 0 0.0647];
-allShankLengths = [0 0.2516713 0 0.24174289]; %in meters
+%Original
+% allInnateOffsets = [0 0.1082 0 0.0647];
+% allShankLengths = [0 0.2516713 0 0.24174289]; %in meters
+
+%New
+allInnateOffsets = [0 0.1082 0 0.032082869690773];
+%Shank refers to distance from knee to vsf ankle
+allShankLengths = [0 0.2516713 0 0.478404686098158]; %in meters
+%PDistance is the perpendicular distance from the iPecs center to the shank
+%segment
+allPDistance = [0 0 0 0.004798525775061];
+%Segment refers to the distance along the shank segment 
+allSegmentLengths = [0 0 0 0.203618717034026];
+%Standard deviations for Sub4: pDistance = 0.001304104276957 and innateOffset = 0.004945312841900
+
+
 innateOffset = allInnateOffsets(subject);
 shankLength = allShankLengths(subject);
+pDistance = allPDistance(subject);
+SegmentLength = allSegmentLengths(subject);
 
 % -----------------iPecs Data-----------------
 % iPecs Filename, forces & moments in X, Y, Z
@@ -60,7 +76,6 @@ ipEndValues = [34185,   0,      0;
 %modes (Up ramp, level ground). These time stamps correspond to the XSENS
 %time. Follow "timetracking.xlsx" formatting for correct column usage.
 file_ambModeTiming = 'timeTracking';
-
 
 % -----------------XSENS Data-----------------
 % XSENS foot position data, used to align heel contact (and toe off) point
@@ -111,7 +126,6 @@ ylabel('Force (N)')
 title('Raw iPecs Data (No Zeroing)')
 hold off
 
-
 % Apply cuts and thresholds
 % This actually cuts the data off and creates a vector          
 ipFy = iPecsData(:,3) - iPecsCuts(subject, setting*2-1);
@@ -144,9 +158,9 @@ hold on
 plot(1:ipLength, iPecsData(:,5), 'b-')
 xlabel('iPecs Time')
 ylabel('Moment')
-title('Moment Around Knee (Mx)')
+title('Moment Around iPecs (Mx)')
 hold off
-MxKnee = iPecsData(:,5);
+MxiPecs = iPecsData(:,5);
 
 % Figure 3: Resultant Force
 figure
@@ -399,7 +413,7 @@ title('Shifted Data Windows')
 %Apply cuts to Data so that it aligns nicely with XSENS
 ipFy = ipFy(ipStart:ipEnd);
 ipFz = ipFz(ipStart:ipEnd);
-MxKnee = MxKnee(ipStart:ipEnd);
+MxiPecs = MxiPecs(ipStart:ipEnd);
 clear sagForce;
 sagForce = (ipFy.^2 + ipFz.^2).^(1/2);
 
@@ -455,14 +469,7 @@ hold off
 
 %% NEW MOMENT CALCULATION
 
-%Test only for subject 4
-%Perpendicular distance from center of iPecs to shank segment
-pDistance = 0.004971213025264;
-%New innate offset
-innateOffset = 0.032302314647697 - (0.004709902012499*2)
-%Standard deviations: pDistance = 0.001354980508601 and innateOffset = 0.004709902012499
-
-moment_all = -ipFz*sin(innateOffset)*shankLength - ipFz*cos(innateOffset)*pDistance - ipFy*sin(innateOffset)*pDistance + ipFy*cos(innateOffset)*shankLength - MxKnee;
+moment_all = -ipFz*sin(innateOffset)*SegmentLength - ipFz*cos(innateOffset)*pDistance - ipFy*sin(innateOffset)*pDistance + ipFy*cos(innateOffset)*SegmentLength - MxiPecs;
 moment_withXsensTime(:,1) = newTime;
 moment_withXsensTime(:,2) = moment_all;
 
@@ -901,6 +908,46 @@ title('Down Stairs')
 
 sgtitle(titleV)
 
+%% Data Used
+% 
+% diffAvg =
+% 
+%   -0.032372532179232
+% 
+% 
+% diffS =
+% 
+%    0.004945312841900
+% 
+% 
+% distAvg =
+% 
+%    0.004882641899963
+% 
+% 
+% distS =
+% 
+%    0.001304104276957
+% 
+% 
+% shanklength =
+% 
+%    0.478306605690246
+% 
+% 
+% shanklenthS =
+% 
+%    0.002368984382397
+% 
+% 
+% iP2a_Length =
+% 
+%    0.274665179214768
+% 
+% 
+% iP2a_LengthS =
+% 
+%    0.002345347846982
 
 
 

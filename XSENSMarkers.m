@@ -15,6 +15,7 @@
 % 5. Find the difference between them.
 
 %% From visual3D
+clear
 load visual3d_latest.mat
 shankAngle_all = shkang{1,1}(:,1);
 RSK2_all = RSK2{1,1}(:,1:3);
@@ -24,7 +25,7 @@ RSK4_all = RSK4{1,1}(:,1:3);
 %% Loop
 
 %Randomly generated frames from 410 - 870
-frames = randi([410 870], 1, 200);
+frames = randi([410 870], 1, 300);
 diff = zeros(length(frames),1);
 diffR = zeros(length(frames),1);
 iP_normaldiv = zeros(length(frames),3);
@@ -77,6 +78,7 @@ rKnee_all = RKNEE{1,1}(:,1:3);
 vsf_ankle_all = VSF_RANKLE{1,1}(:,1:3);
 iPMid = zeros(length(frames),3);
 dist = zeros(length(frames),1);
+allShankLength = zeros(length(frames),1);        
 
 for i = 1: length(frames)
     frame_curr = frames(i);
@@ -107,6 +109,11 @@ for i = 1: length(frames)
     K2A = sqrt((rKnee(2)-vsf_ankle(2))^2+(rKnee(3)-vsf_ankle(3))^2);
     %distance from iPecs midpoint to shank midline
     dist(i) = iP2K*sind(theta);
+    
+    %FIND LENGTH FROM KNEE TO ANKLE
+    allShankLength(i) = sqrt((rKnee(1)-vsf_ankle(1))^2 + (rKnee(2)-vsf_ankle(2))^2 +(rKnee(3)-vsf_ankle(3))^2);
+    alliP2a_Length(i) = sqrt((iPMid(i,1)-rKnee(1))^2 + (iPMid(i,2)-rKnee(2))^2 + (iPMid(i,3)-rKnee(3))^2);
+    alliP2a_Length(i) =  allShankLength(i) - alliP2a_Length(i)*cosd(theta);
 end
 
 rInstance = frames(end);
@@ -128,6 +135,10 @@ hold off
 dist_mm = dist.*1000;
 distAvg = mean(dist)
 distS = std(dist) 
+shanklength = mean(allShankLength)
+shanklenthS = std(allShankLength)
+iP2a_Length = mean(alliP2a_Length)
+iP2a_LengthS = std(alliP2a_Length) 
 
 figure
 plot(frames, dist, '*' )
@@ -136,6 +147,5 @@ figure
 bar(abs(distAvg))
 hold on
 errorbar(abs(distAvg), abs(distS))
-
 
 
