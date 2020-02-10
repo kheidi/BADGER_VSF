@@ -14,7 +14,7 @@ clear
 
 % Set subject and stiffness setting, this will find correct data in
 %matrices of provided, known values
-subject = 4;
+subject = 2;
 setting = 1;
 cd Data
 
@@ -23,14 +23,14 @@ cd Data
 % allShankLengths = [0 0.2516713 0 0.24174289]; %in meters
 
 %New
-allInnateOffsets = [0 0.1082 0 0.032082869690773];
+allInnateOffsets = [0 0.209065499133499 0 0.032082869690773];
 %Shank refers to distance from knee to vsf ankle
-allShankLengths = [0 0.2516713 0 0.478404686098158]; %in meters
+allShankLengths = [0 0.4475139434746180 0.478404686098158]; %in meters
 %PDistance is the perpendicular distance from the iPecs center to the shank
 %segment
-allPDistance = [0 0 0 0.004798525775061];
+allPDistance = [0 0.009190607199018 0 0.004798525775061];
 %Segment refers to the distance along the shank segment 
-allSegmentLengths = [0 0 0 0.203618717034026];
+allSegmentLengths = [0 0.184529474318973 0 0.203618717034026];
 %Standard deviations for Sub4: pDistance = 0.001304104276957 and innateOffset = 0.004945312841900
 
 

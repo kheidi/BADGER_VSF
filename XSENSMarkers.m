@@ -14,9 +14,19 @@
 % 4. Go to the same frame in the shank angle file you created.
 % 5. Find the difference between them.
 
-%% From visual3D
+%% Subject 2
 clear
-load visual3d_latest.mat
+load visual3d_sub4.mat
+RSK2 = LSK2;
+RSK3 = LSK3;
+RSK4 = LSK4;
+shkang = lshang;
+RKNEE = LKNEE;
+VSF_RANKLE = VSF_LANKLE;
+
+%% 4 From visual3D
+% clear
+% load visual3d_latest.mat
 shankAngle_all = shkang{1,1}(:,1);
 RSK2_all = RSK2{1,1}(:,1:3);
 RSK3_all = RSK3{1,1}(:,1:3);
