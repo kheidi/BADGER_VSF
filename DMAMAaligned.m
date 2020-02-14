@@ -1,4 +1,3 @@
-clear
 %% TO-DO
 %-Stance vector cannot use the same Amb mode index points as moment_all
 
@@ -14,7 +13,7 @@ clear
 
 % Set subject and stiffness setting, this will find correct data in
 %matrices of provided, known values
-subject = 2;
+subject = 4;
 setting = 1;
 cd Data
 
@@ -25,7 +24,7 @@ cd Data
 %New
 allInnateOffsets = [0 0.209065499133499 0 0.032082869690773];
 %Shank refers to distance from knee to vsf ankle
-allShankLengths = [0 0.4475139434746180 0.478404686098158]; %in meters
+allShankLengths = [0 0.4475139434746180 0 0.478404686098158]; %in meters
 %PDistance is the perpendicular distance from the iPecs center to the shank
 %segment
 allPDistance = [0 0.009190607199018 0 0.004798525775061];
