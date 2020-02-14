@@ -14,15 +14,15 @@ r = zeros(length(frames),3);
 for i= 1: length(frames)
     fN = frames(i); %frame number
     shankframe_origen = [vsf_ankle_all(fN,:)];
+    knee = rKnee_all(fN,:);
 
-    %Unit vectors
-    u_rsk4 = RSK4_all(fN,:) / norm(RSK4_all(fN,:));
-    u_rsk3 = RSK3_all(fN,:) / norm(RSK3_all(fN,:));
-    u_rsk2 = RSK2_all(fN,:) / norm(RSK2_all(fN,:));
+    rsk4 = RSK4_all(fN,:)
+    rsk3 = RSK3_all(fN,:)
+    rsk2 = RSK2_all(fN,:)
 
-    v_4to2 = u_rsk2 - u_rsk4;
+    v_4to2 = rsk2 - rsk4;
     v_4to2 = v_4to2/norm(v_4to2);
-    v_4to3 = u_rsk3 - u_rsk4;
+    v_4to3 = rsk3 - rsk4;
     v_4to3 = v_4to3/norm(v_4to3);
 
     u_firstN = cross(v_4to3, v_4to2);
@@ -38,7 +38,7 @@ for i= 1: length(frames)
     F = v_4to3;
     G = u_firstN;
     H = u_secondN;
-    r(i,:) = u_rsk4 - shankframe_origen;
+    r(i,:) = rsk4 - shankframe_origen;
 
     A(i,:) = {[F.',G.',H.']};
     %identity = A.'*A;
@@ -63,27 +63,36 @@ AAverage = reshape(AAverage, [3,3])
 AstdDev = std(AinCols);
 AstdDev = reshape(AstdDev, [3,3])
 
-% figure 
-% plot3(u_rsk4(1), u_rsk4(2), u_rsk4(3), '*')
-% hold on
-% plot3([u_rsk4(1) F(1)], [u_rsk4(2) F(2)], [u_rsk4(3) F(3)])
-% plot3([u_rsk4(1) G(1)], [u_rsk4(2) G(2)], [u_rsk4(3) G(3)])
-% plot3([u_rsk4(1) H(1)], [u_rsk4(2) H(2)], [u_rsk4(3) H(3)])
-% plot3([shankframe_origen(1) u_rsk4(1)], [shankframe_origen(2) u_rsk4(2)], [shankframe_origen(3) u_rsk4(3)])
-% legend('iPecs Origen','F', 'G', 'H', 'r');
-% grid on
-% hold off
-% 
+figure 
+plot3(rsk4(1), rsk4(2), rsk4(3), '*')
+hold on
+plot3([rsk4(1) F(1)], [rsk4(2) F(2)], [rsk4(3) F(3)])
+plot3([rsk4(1) G(1)], [rsk4(2) G(2)], [rsk4(3) G(3)])
+plot3([rsk4(1) H(1)], [rsk4(2) H(2)], [rsk4(3) H(3)])
+plot3([shankframe_origen(1) rsk4(1)], [shankframe_origen(2) rsk4(2)], [shankframe_origen(3) rsk4(3)],...
+    'LineWidth',3)
+plot3([shankframe_origen(1) knee(1)], [shankframe_origen(2) knee(2)], [shankframe_origen(3) knee(3)],...
+    'LineWidth',3)
+xlim([-1 1]);
+ylim([-1 1]);
+zlim([-1 1]);
+legend('iPecs Origen','F', 'G', 'H', 'r', 'knee');
+grid on
+xlabel('X')
+ylabel('Y')
+zlabel('Z')
+hold off
+
 % figure
-% plot3(u_rsk2(1), u_rsk2(2), u_rsk2(3), 'o')
+% plot3(rsk2(1), rsk2(2), rsk2(3), 'o')
 % hold on
-% plot3(u_rsk3(1), u_rsk3(2), u_rsk3(3), 'o')
-% plot3(u_rsk4(1), u_rsk4(2), u_rsk4(3), 'o')
+% plot3(rsk3(1), rsk3(2), rsk3(3), 'o')
+% plot3(rsk4(1), rsk4(2), rsk4(3), 'o')
 % plot3(u_firstN(1), u_firstN(2), u_firstN(3), '*')
 % plot3(u_secondN(1), u_secondN(2), u_secondN(3), '*')
-% plot3([u_rsk4(1) u_firstN(1)], [u_rsk4(2) u_firstN(2)], [u_rsk4(3) u_firstN(3)])
-% plot3([u_rsk4(1) u_secondN(1)], [u_rsk4(2) u_secondN(2)], [u_rsk4(3) u_secondN(3)])
-% plot3([u_rsk4(1) u_rsk3(1)], [u_rsk4(2) u_rsk3(2)], [u_rsk4(3) u_rsk3(3)])
+% plot3([rsk4(1) u_firstN(1)], [rsk4(2) u_firstN(2)], [rsk4(3) u_firstN(3)])
+% plot3([rsk4(1) u_secondN(1)], [rsk4(2) u_secondN(2)], [rsk4(3) u_secondN(3)])
+% plot3([rsk4(1) rsk3(1)], [rsk4(2) rsk3(2)], [rsk4(3) rsk3(3)])
 % legend('RSK2', 'RSK3', 'RSK4', '1', '2','firstN', 'secondN');
 % grid on
 % xlabel('X')
