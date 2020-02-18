@@ -7,18 +7,24 @@ RSK4_all = RSK4{1,1}(:,1:3);
 rKnee_all = RKNEE{1,1}(:,1:3);
 vsf_ankle_all = VSF_RANKLE{1,1}(:,1:3);
 
-frames = randi([410 870], 1, 300);
+frames = randi([410 870], 1, 100);
 A = cell(length(frames),1);
 r = zeros(length(frames),3);
 
 for i= 1: length(frames)
     fN = frames(i); %frame number
+    %fN = 781
     shankframe_origen = [vsf_ankle_all(fN,:)];
     knee = rKnee_all(fN,:);
 
     rsk4 = RSK4_all(fN,:)
     rsk3 = RSK3_all(fN,:)
     rsk2 = RSK2_all(fN,:)
+    
+    % Find iPecs center
+    % Midpoint b/w RSK3 and RSK4
+    mp1 = (rsk3 + rsk4)/2
+    iPecsMid = (mp1 + rsk2)/2
 
     v_4to2 = rsk2 - rsk4;
     v_4to2 = v_4to2/norm(v_4to2);
@@ -28,17 +34,17 @@ for i= 1: length(frames)
     u_firstN = cross(v_4to3, v_4to2);
     u_firstN = u_firstN / norm(u_firstN);
 
-    u_secondN = cross(u_firstN, v_4to3);
+    u_secondN = cross(v_4to3, u_firstN);
     u_secondN = u_secondN / norm(u_secondN);
 
     ucheck1 = dot(v_4to3, u_firstN);
     ucheck2 = dot(u_firstN, u_secondN);
     ucheck3 = dot(v_4to3, u_secondN);
 
-    F = v_4to3;
-    G = u_firstN;
-    H = u_secondN;
-    r(i,:) = rsk4 - shankframe_origen;
+    F = u_secondN;
+    G = v_4to3;
+    H = u_firstN;
+    r(i,:) = iPecsMid - shankframe_origen;
 
     A(i,:) = {[F.',G.',H.']};
     %identity = A.'*A;
@@ -76,7 +82,7 @@ plot3([shankframe_origen(1) knee(1)], [shankframe_origen(2) knee(2)], [shankfram
 xlim([-1 1]);
 ylim([-1 1]);
 zlim([-1 1]);
-legend('iPecs Origen','F', 'G', 'H', 'r', 'knee');
+legend('iPecs Origen',"F, x' ", "G, y'", "H, z'", 'r', 'knee');
 grid on
 xlabel('X')
 ylabel('Y')

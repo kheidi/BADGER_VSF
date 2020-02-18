@@ -18,10 +18,10 @@ cd Data
 %subject
 
 if subject == 4
-    A = [0.424535672333893, -0.0898907646877880, -0.889254114645269;
-        0.869743333202949, 0.116116555072736, 0.431152383609996;
-        -0.06663080740520790, 0.958881344179918, -0.139396886556128];
-    r = [0.00444078664916257,-0.0275620380043983,0.203752917697032];
+    A = [0.886823136938580,0.435497956852924,-0.0648307102313962;
+        -0.439068446651361,0.862786317116369,0.143708947456757;
+        0.131168338373478,-0.100967612281922,0.958981022880935];
+    r = [-0.0153846291312948,0.0223711649328470,0.196106641292572];
 end
 
 % -----------------iPecs Data-----------------
@@ -465,17 +465,21 @@ end
 
 figure
 subplot(2,1,1)
-hold on
-plot(F_shankframe(:,1), '-r')
-plot(F_shankframe(:,2), '-g')
-plot(F_shankframe(:,3), '-b')
-legend('Fx Shank Frame', 'Fy Shank Frame','Fz Shank Frame')
-subplot(2,1,2)
+xlim([0 length(F_shankframe)/4])
 hold on
 plot(ipFx, '-r')
 plot(ipFy, '-g')
 plot(ipFz, '-b')
 legend('Fx', 'Fy','Fz')
+title('Raw iPecs Forces');
+subplot(2,1,2)
+xlim([0 length(F_shankframe)/4])
+hold on
+plot(F_shankframe(:,1), '-r')
+plot(F_shankframe(:,2), '-g')
+plot(F_shankframe(:,3), '-b')
+legend('Fx Shank Frame', 'Fy Shank Frame','Fz Shank Frame')
+title('Transformed iPecs Forces');
 
 % Moment r X f
 
