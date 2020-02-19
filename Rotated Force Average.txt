@@ -1,0 +1,46 @@
+Fx_Avg =
+
+   30.1937
+
+
+Fy_Avg =
+
+  124.8530
+
+
+Fz_Avg =
+
+  278.2822
+  
+Plus 2 Std.Dev
+
+Fx_Avg =
+
+  120.6583
+
+
+Fy_Avg =
+
+  255.1300
+
+
+Fz_Avg =
+
+  341.1192
+
+Minus 2Std Dev
+
+Fx_Avg =
+
+  -60.2709
+
+
+Fy_Avg =
+
+   -5.4241
+
+
+Fz_Avg =
+
+  215.4451
+
