@@ -7,7 +7,7 @@ RSK4_all = RSK4{1,1}(:,1:3);
 rKnee_all = RKNEE{1,1}(:,1:3);
 vsf_ankle_all = VSF_RANKLE{1,1}(:,1:3);
 
-frames = randi([410 870], 1, 300);
+frames = randi([410 870], 1, 3);
 wRip = cell(length(frames),1);
 r = zeros(length(frames),3);
 
@@ -17,9 +17,9 @@ for i= 1: length(frames)
     shankframe_origen = [vsf_ankle_all(fN,:)];
     knee = rKnee_all(fN,:);
 
-    rsk4 = RSK4_all(fN,:)
-    rsk3 = RSK3_all(fN,:)
-    rsk2 = RSK2_all(fN,:)
+    rsk4 = RSK4_all(fN,:);
+    rsk3 = RSK3_all(fN,:);
+    rsk2 = RSK2_all(fN,:);
     
     % Find iPecs center
     % Midpoint b/w RSK3 and RSK4
@@ -47,24 +47,24 @@ for i= 1: length(frames)
     r(i,:) = iPecsMid - shankframe_origen;
 
     wRip(i,:) = {[F.',G.',H.']};
-    temp = [F.',G.',H.']
-    identity = temp.'*temp
+    temp = [F.',G.',H.'];
+    identity = temp.'*temp;
     
-    shankangle = deg2rad(shankAngle_all(fN,:));
-    euler2rotm = eul2rotm(shankangle, 'ZYX');
-    identity = euler2rotm.'*euler2rotm
+    shankangle = deg2rad(shankAngle_all(fN,:))
+    euler2rotm = eul2rotm(shankangle, 'XYZ')
+    identity = euler2rotm.'*euler2rotm;
     wRs(i,:) = {euler2rotm};
     
     Acurr = wRs{i,:}.' * wRip{i,:};
     A(i,:) = {Acurr};
-    identity = Acurr.'*Acurr
+    identity = Acurr.'*Acurr;
     
 end
 
 %stdDev = cell(length(frames),1);
 %rows are column wise
 AinCols = zeros(length(frames), 9);
-wRsinCols = zeros(length(frames), 9)
+wRsinCols = zeros(length(frames), 9);
 counter = 1;
 for i= 1: length(frames)
     for j = 1:9
@@ -102,11 +102,13 @@ plot3([shankframe_origen(1) knee(1)], [shankframe_origen(2) knee(2)], [shankfram
 xlim([-1 1]);
 ylim([-1 1]);
 zlim([-1 1]);
-legend('iPecs Origen',"F, x' ", "G, y'", "H, z'", 'r', 'knee');
+legend('iPecs Origen',"F, x' ", "G, y'", "H, z'",  'x shank','y shank','z shank','r', 'knee');
 grid on
+pbaspect([1 1 1])
 xlabel('X')
 ylabel('Y')
 zlabel('Z')
+set(gca,'FontSize',18)
 hold off
 
 % figure

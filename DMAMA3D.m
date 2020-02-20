@@ -18,14 +18,14 @@ cd Data
 %subject
 
 if subject == 4
-    A = [0.992990564863044,-0.115966190848998,0.0228381407506957;
-        0.118049900001980,0.963565044517528,-0.240013803964402;
-        0.00582745248778809,0.241027483005388,0.970500795071075];
+    A = [0.943002841265898,-0.331155256489776,0.0324364943621740;
+        0.331677280688792,0.943289081570651,-0.0121289861041006;
+        -0.0265891547267582,0.0221987530183549,0.999386188735788];
 %     A = A + 2*[0.00160063739924877,0.00460682362164111,0.00232560959367942;
 %         0.00465882452728376,0.00158579909277376,0.00522040032965714;
 %         0.00266021935797665,0.00509193380884148,0.000128325700606441];
 
-    r = [-0.0153846291312948,0.0223711649328470,0.196106641292572];
+    r = [-0.0197686973881597,0.0162834202994903,0.195677459314466];
 end
 
 % -----------------iPecs Data-----------------
@@ -754,11 +754,13 @@ ylim([0 30])
 title(titleV)
 ylabel('DMAMA (% of foot length)')
 text(1:length(Y),Y,num2str(Y'),'vert','bottom','horiz','center');
+set(gca,'FontSize',30)
 hold off
 
 %% SECTION 11: EXTRA INFO GRAPHS
 %Show the moment and force graphs, bad graph because its just showing
 %stance phase, but good for seeing outliers and trends.
+
 
 %Force
 titleV=(['Force Plot of Each Ambulation Mode for: Subject ', num2str(subject), ' on Setting ', num2str(setting)]);
@@ -768,32 +770,38 @@ plot(lgForce)
 xlim([0 length(lgForce)])
 title('Level Ground')
 ylabel('Force (N)')
+set(gca,'FontSize',15)
 
 subplot(5,1,2)
 plot(urForce)
 xlim([0 length(urForce)])
 title('Up Ramp')
 ylabel('Force (N)')
+set(gca,'FontSize',15)
 
 subplot(5,1,3)
 plot(drForce)
 title('Down Ramp')
 xlim([0 length(drForce)])
 ylabel('Force (N)')
+set(gca,'FontSize',15)
 
 subplot(5,1,4)
 plot(usForce)
 title('Up Stairs')
 xlim([0 length(usForce)])
 ylabel('Force (N)')
+set(gca,'FontSize',15)
 
 subplot(5,1,5)
 plot(dsForce)
 title('Down Stairs')
 xlim([0 length(dsForce)])
 ylabel('Force (N)')
+set(gca,'FontSize',15)
 
 sgtitle(titleV)
+
 
 %Moment
 titleV=(['Moment Plot of Each Ambulation Mode for: Subject ', num2str(subject), ' on Setting ', num2str(setting)]);
@@ -803,30 +811,35 @@ plot(lgMoment, 'r')
 xlim([0 length(lgForce)])
 title('Level Ground')
 ylabel('Moment (Nm)')
+set(gca,'FontSize',15)
 
 subplot(5,1,2)
 plot(urMoment, 'r')
 xlim([0 length(urForce)])
 title('Up Ramp')
 ylabel('Moment (Nm)')
+set(gca,'FontSize',15)
 
 subplot(5,1,3)
 plot(drMoment, 'r')
 xlim([0 length(drForce)])
 title('Down Ramp')
 ylabel('Moment (Nm)')
+set(gca,'FontSize',15)
 
 subplot(5,1,4)
 plot(usMoment, 'r')
 xlim([0 length(usForce)])
 title('Up Stairs')
 ylabel('Moment (Nm)')
+set(gca,'FontSize',15)
 
 subplot(5,1,5)
 plot(dsMoment, 'r')
 xlim([0 length(dsForce)])
 title('Down Stairs')
 ylabel('Moment (Nm)')
+set(gca,'FontSize',15)
 
 sgtitle(titleV)
 
@@ -842,6 +855,7 @@ yyaxis right
 plot(lgMoment)
 ylabel('Moment (Nm)')
 title('Level Ground')
+set(gca,'FontSize',15)
 
 subplot(5,1,2)
 xlim([0 length(urForce)])
@@ -852,6 +866,7 @@ yyaxis right
 plot(urMoment)
 ylabel('Moment (Nm)')
 title('Up Ramp')
+set(gca,'FontSize',15)
 
 subplot(5,1,3)
 xlim([0 length(drForce)])
@@ -862,6 +877,7 @@ yyaxis right
 plot(drMoment)
 ylabel('Moment (Nm)')
 title('Down Ramp')
+set(gca,'FontSize',15)
 
 subplot(5,1,4)
 xlim([0 length(usForce)])
@@ -872,6 +888,7 @@ yyaxis right
 plot(usMoment)
 ylabel('Moment (Nm)')
 title('Up Stairs')
+set(gca,'FontSize',15)
 
 subplot(5,1,5)
 xlim([0 length(dsForce)])
@@ -884,3 +901,4 @@ ylabel('Moment (Nm)')
 title('Down Stairs')
 
 sgtitle(titleV)
+set(gca,'FontSize',15)
