@@ -11,16 +11,20 @@
 % Set subject and stiffness setting, this will find correct data in
 %matrices of provided, known values
 subject = 4;
-setting = 3;
+setting = 1;
 cd Data
 
 %Using vectorCalc3D file find the average A matrix and r vector for each
 %subject
 
 if subject == 4
-    A = [0.886823136938580,0.435497956852924,-0.0648307102313962;
-        -0.439068446651361,0.862786317116369,0.143708947456757;
-        0.131168338373478,-0.100967612281922,0.958981022880935];
+    A = [0.992990564863044,-0.115966190848998,0.0228381407506957;
+        0.118049900001980,0.963565044517528,-0.240013803964402;
+        0.00582745248778809,0.241027483005388,0.970500795071075];
+%     A = A + 2*[0.00160063739924877,0.00460682362164111,0.00232560959367942;
+%         0.00465882452728376,0.00158579909277376,0.00522040032965714;
+%         0.00266021935797665,0.00509193380884148,0.000128325700606441];
+
     r = [-0.0153846291312948,0.0223711649328470,0.196106641292572];
 end
 
@@ -501,6 +505,7 @@ for i = 1:length(F_shankframe)
     moment_all(i,:) = cross(r, F_shankframe(i,:));
 end
 
+clear moment_withXsensTime
 moment_withXsensTime(:,1) = newTime;
 moment_withXsensTime(:,2:4) = moment_all;
 
