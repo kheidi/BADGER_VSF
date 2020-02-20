@@ -7,13 +7,13 @@ RSK4_all = RSK4{1,1}(:,1:3);
 rKnee_all = RKNEE{1,1}(:,1:3);
 vsf_ankle_all = VSF_RANKLE{1,1}(:,1:3);
 
-frames = randi([410 870], 1, 3);
+frames = randi([410 870], 1, 300);
 wRip = cell(length(frames),1);
 r = zeros(length(frames),3);
 
 for i= 1: length(frames)
-    %fN = frames(i); %frame number
-    fN = 2256;
+    fN = frames(i); %frame number
+    %fN = 2256;
     shankframe_origen = [vsf_ankle_all(fN,:)];
     knee = rKnee_all(fN,:);
 
@@ -50,13 +50,14 @@ for i= 1: length(frames)
     temp = [F.',G.',H.'];
     identity = temp.'*temp;
     
-    shankangle = deg2rad(shankAngle_all(fN,:))
-    euler2rotm = eul2rotm(shankangle, 'XYZ')
+    shankangle = deg2rad(shankAngle_all(fN,:));
+    euler2rotm = eul2rotm(shankangle, 'XYZ');
     identity = euler2rotm.'*euler2rotm;
     wRs(i,:) = {euler2rotm};
     
     Acurr = wRs{i,:}.' * wRip{i,:};
     A(i,:) = {Acurr};
+    r(i,:) = transpose(Acurr * [r(i,1); r(i,2); r(i,3)]);
     identity = Acurr.'*Acurr;
     
 end

@@ -11,21 +11,22 @@
 % Set subject and stiffness setting, this will find correct data in
 %matrices of provided, known values
 subject = 4;
-setting = 1;
+setting = 3;
 cd Data
 
 %Using vectorCalc3D file find the average A matrix and r vector for each
 %subject
 
 if subject == 4
-    A = [0.943002841265898,-0.331155256489776,0.0324364943621740;
-        0.331677280688792,0.943289081570651,-0.0121289861041006;
-        -0.0265891547267582,0.0221987530183549,0.999386188735788];
-%     A = A + 2*[0.00160063739924877,0.00460682362164111,0.00232560959367942;
-%         0.00465882452728376,0.00158579909277376,0.00522040032965714;
-%         0.00266021935797665,0.00509193380884148,0.000128325700606441];
+    A = [0.943071963631529,-0.330951810333087,0.0324486338337264;
+        0.331480753040735,0.943349641245414,-0.0123907118118581;
+        -0.0265197758803160,0.0224446947434716,0.999378277248041];
+%     A = A + 2*[0.00174727427656611,0.00499215883793746,0.00232237406212035;
+%         0.00493591903103956,0.00171367888347061,0.00559735913011915;
+%         0.00227500298354999,0.00556119437295477,0.000118308210783904];
 
-    r = [-0.0197686973881597,0.0162834202994903,0.195677459314466];
+    r = [-0.0167216308672882,0.0115755375014926,0.196382747541239];
+%     r = r + 2*[0.0129213278965632,0.0481979683284418,0.00524388679407593];
 end
 
 % -----------------iPecs Data-----------------
@@ -410,9 +411,19 @@ title('Shifted Data Windows')
 ipFx = ipFx(ipStart:ipEnd);
 ipFy = ipFy(ipStart:ipEnd);
 ipFz = ipFz(ipStart:ipEnd);
+
 MxiPecs = MxiPecs(ipStart:ipEnd);
 MyiPecs = MyiPecs(ipStart:ipEnd);
 MziPecs = MziPecs(ipStart:ipEnd);
+
+for i = 1:length(ipFz)
+    iPecsMomentV(i,:) = transpose(A * [MxiPecs(i); MyiPecs(i); MziPecs(i)]);
+end
+
+MxiPecs = iPecsMomentV(:,1);
+MyiPecs = iPecsMomentV(:,2);
+MziPecs = iPecsMomentV(:,3);
+
 
 clear sagForce;
 sagForce = (ipFx.^2 + ipFy.^2 + ipFz.^2).^(1/2);
