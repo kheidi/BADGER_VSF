@@ -11,7 +11,7 @@
 % Set subject and stiffness setting, this will find correct data in
 %matrices of provided, known values
 subject = 4;
-setting = 3;
+setting = 1;
 cd Data
 
 %Using vectorCalc3D file find the average A matrix and r vector for each
@@ -126,7 +126,7 @@ ipFz = iPecsData(:,4) - iPecsCuts(subject, setting*3);
 ipTime = 1:length(ipFy);
 
 %Calculate vector with all resultant force
-sagForce = (ipFy.^2 + ipFz.^2 + ipFz.^2).^(1/2);
+sagForce = (ipFy.^2 + ipFz.^2).^(1/2);
 
 % This creates vectors that can be graphed to show the thresholds         
 thresholdFx(1:length(ipTime),1) = iPecsThresholds(subject, setting*3-2);
@@ -426,7 +426,7 @@ MziPecs = iPecsMomentV(:,3);
 
 
 clear sagForce;
-sagForce = (ipFx.^2 + ipFy.^2 + ipFz.^2).^(1/2);
+sagForce = (ipFy.^2 + ipFz.^2).^(1/2);
 
 %Get rid of HC and TO that are outside of the designated cuts
 
