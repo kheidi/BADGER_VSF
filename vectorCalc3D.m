@@ -25,42 +25,64 @@ for i= 1: length(frames)
     % Midpoint b/w RSK3 and RSK4
     mp1 = (rsk3 + rsk4)/2;
     iPecsMid = (mp1 + rsk2)/2;
-
+    
+    
     v_4to2 = rsk2 - rsk4;
     v_4to2 = v_4to2/norm(v_4to2);
     v_4to3 = rsk3 - rsk4;
     v_4to3 = v_4to3/norm(v_4to3);
-
+    % Find iPecs frame
     u_firstN = cross(v_4to3, v_4to2);
     u_firstN = u_firstN / norm(u_firstN);
-
     u_secondN = cross(v_4to3, u_firstN);
     u_secondN = u_secondN / norm(u_secondN);
-
+    
+    % These should all give ~0
     ucheck1 = dot(v_4to3, u_firstN);
     ucheck2 = dot(u_firstN, u_secondN);
     ucheck3 = dot(v_4to3, u_secondN);
-
-    F = u_secondN;
-    G = v_4to3;
-    H = u_firstN;
+    
+    
+    F = u_secondN; %X
+    G = v_4to3; %Y
+    H = u_firstN; %Z
+    
+    % Vector from world frame origen to middle of iPecs
     r(i,:) = iPecsMid - shankframe_origen;
 
+    % Puts X Y Z vectors in the correct matrix form, the following is the
+    % rotation matrix that puts the iPecs into the worldframe
     wRip(i,:) = {[F.',G.',H.']};
+    
+    % If all is going smoothly the following calculation should result in
+    % an identity matrix
     temp = [F.',G.',H.'];
     identity = temp.'*temp;
     
+    % Finding the shank in the world frame
+    % Converts shank angle to radians
     shankangle = deg2rad(shankAngle_all(fN,:));
-    euler2rotm = eul2rotm(shankangle, 'XYZ');
+    % Matlab function converts the set of XYZ angles into a rotation matrix
+    euler2rotm = eul2rotm(shankangle, 'XYZ'); 
+    % If all is going smoothly the following calculation should result in
+    % an identity matrix
     identity = euler2rotm.'*euler2rotm;
+    
+    % This is the rotation matrix that puts the shank into the world frame
     wRs(i,:) = {euler2rotm};
     
+    % Performing this multiplication creates the rotation matrix that sets
+    %the iPecs frame into the shank frame
     Acurr = wRs{i,:}.' * wRip{i,:};
     A(i,:) = {Acurr};
+    
     r(i,:) = transpose(Acurr * [r(i,1); r(i,2); r(i,3)]);
     identity = Acurr.'*Acurr;
     
 end
+
+% The following section finds the standard deviation of the A matrix and the
+%r vector
 
 %stdDev = cell(length(frames),1);
 %rows are column wise

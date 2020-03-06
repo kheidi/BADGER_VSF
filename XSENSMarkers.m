@@ -35,7 +35,8 @@ RSK4_all = RSK4{1,1}(:,1:3);
 %% Loop
 
 %Randomly generated frames from 410 - 870
-frames = randi([410 870], 1, 300);
+%frames = randi([410 870], 1, 300);
+frames = randi([410 2790], 1, 300);
 diff = zeros(length(frames),1);
 diffR = zeros(length(frames),1);
 iP_normaldiv = zeros(length(frames),3);

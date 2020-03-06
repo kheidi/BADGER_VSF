@@ -37,16 +37,23 @@ file_iPecs = fileName;
 %the iPecs data. If unsure of what cuts to use, run code until Figure 1 is
 %generated.
 %Row is subject, then y & z for each setting
-iPecsCuts = [-70, 335,0, 0,0,0 0,0,0;
-              -5,-25,0,-15,-25,0,-15,-25,0;
+% These were Jenny's cuts, I will attempt my own below
+iPecsCuts = [0,-70, 335, 0,0,0 0,0,0;
+              0,-5,-25,0,-15,-25,0,-15,-25;
               0,0,0,0,0,0,0,0,0;
-              -3,-50, 0, -15,-50,0, -15,-25,0];
-               % 0,0,-15,-50,-15,-25];
+              0,-3,-50, 0, -15,-50, 0, -15,-25];
+        
+
+% iPecsCuts = [0,-70, 335, 0,0,0 0,0,0;
+%               0,-5,-25,0,-15,-25,0,-15,-25;
+%               0,0,0,0,0,0,0,0,0;
+%              -5, 0.3, 25,-5, 0.3, 25,-5, 0.3, 25];
+
 %Similarily input iPecs Thresholds
 iPecsThresholds = [0,10, 20,0,0,0,0,0,0;
               0,10,20,0,10,20,0,10,20;
               0,10,20,0,0,20,0,0,20;
-              0,20,0,0,20,0,0,20,0];
+              0,0,20,0,0,20,0,0,20];
 
 % Add a row to the below matrices to manually trim the data to the correct
 % stop and stopping point.
@@ -112,7 +119,7 @@ ipLength = a;
 plot(1:ipLength, iPecsData(:,2), 'b-')
 plot(1:ipLength, iPecsData(:,3), 'r-')
 plot(1:ipLength, iPecsData(:,4), 'k-')
-legend('Y iPecs Force','Z iPecs Force')
+legend('X iPecs Force','Y iPecs Force','Z iPecs Force')
 xlabel('iPecs Time')
 ylabel('Force (N)')
 title('Raw iPecs Data (No Zeroing)')
@@ -147,6 +154,12 @@ plot(ipTime, thresholdFx, 'b:', 'LineWidth', 2)
 plot(ipTime, thresholdFy, 'r:', 'LineWidth', 2)
 plot(ipTime, thresholdFz, 'k:', 'LineWidth', 2)          
 legend('Fx','Fy','Fz', 'Fx Threshold', 'Fy Threshold', 'Fz Threshold')
+hold off
+subplot(2,1,1)
+hold on
+plot(ipTime, thresholdFx, 'b:', 'LineWidth', 2)
+plot(ipTime, thresholdFy, 'r:', 'LineWidth', 2)
+plot(ipTime, thresholdFz, 'k:', 'LineWidth', 2) 
 hold off
 
 figure
