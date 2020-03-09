@@ -1,7 +1,7 @@
 % Set subject and stiffness setting, this will find correct data in
 %matrices of provided, known values
 subject = 4;
-setting = 2;
+setting = 1;
 cd Data
 
 %Using vectorCalc3D file find the average A matrix and r vector for each
@@ -28,16 +28,21 @@ file_iPecs = fileName;
 %generated.
 %Row is subject, then y & z for each setting
 % These were Jenny's cuts, I will attempt my own below
-iPecsCuts = [0,-70, 335, 0,0,0 0,0,0;
-              0,-5,-25,0,-15,-25,0,-15,-25;
-              0,0,0,0,0,0,0,0,0;
-              0,-3,-50, 0, -15,-50, 0, -15,-25];
-        
-
 % iPecsCuts = [0,-70, 335, 0,0,0 0,0,0;
 %               0,-5,-25,0,-15,-25,0,-15,-25;
 %               0,0,0,0,0,0,0,0,0;
-%              -5, 0.3, 25,-5, 0.3, 25,-5, 0.3, 25];
+%               0,-3,-50, 0, -15,-50, 0, -15,-25];
+% cuts = [iPecsCuts(subject, setting*3-2);iPecsCuts(subject, setting*3-1);iPecsCuts(subject, setting*3)];
+% cuts = transpose(A*cuts);
+        
+
+iPecsCuts = [0,-70, 335, 0,0,0 0,0,0;
+              0,-5,-25,0,-15,-25,0,-15,-25;
+              0,0,0,0,0,0,0,0,0;
+             -5, 0.3, 25,-5, 0.3, 25,-5, 0.3, 25];
+
+cuts = [iPecsCuts(subject, setting*3-2);iPecsCuts(subject, setting*3-1);iPecsCuts(subject, setting*3)];
+cuts = transpose(A*cuts);
 
 %Similarily input iPecs Thresholds
 iPecsThresholds = [0,10, 20,0,0,0,0,0,0;
@@ -100,15 +105,20 @@ cd ..
 %% Apply Cuts and Trim Length
 % Apply cuts and thresholds
 % This actually cuts the data off and creates a vector
-ipFx = iPecsData(:,2) - iPecsCuts(subject, setting*3-2);
-ipFy = iPecsData(:,3) - iPecsCuts(subject, setting*3-1);
-ipFz = iPecsData(:,4) - iPecsCuts(subject, setting*3);
+ipFx = iPecsData(:,2) - cuts(1);
+ipFy = iPecsData(:,3) - cuts(2);
+ipFz = iPecsData(:,4) - cuts(3);
 MxiPecs = iPecsData(:,5);
 MyiPecs = iPecsData(:,6);
 MziPecs = iPecsData(:,7);
 ipTime = 1:length(ipFy);
 
 %Trim length of iPecs Data so that it aligns nicely with XSENS
+ipStart = ipStartValues(subject,setting);
+ipEnd = ipEndValues(subject,setting);
+xsensStart = xsensStartValues(subject,setting);
+xsensEnd = xsensEndValues(subject,setting);
+
 ipFx = ipFx(ipStart:ipEnd);
 ipFy = ipFy(ipStart:ipEnd);
 ipFz = ipFz(ipStart:ipEnd);
@@ -124,11 +134,6 @@ MziPecs = MziPecs(ipStart:ipEnd);
 % Doing this because time of events is marker in xsens so want to leave
 % that as is
 
-ipStart = ipStartValues(subject,setting);
-ipEnd = ipEndValues(subject,setting);
-xsensStart = xsensStartValues(subject,setting);
-xsensEnd = xsensEndValues(subject,setting);
-
 % Create multiplier for stretching xsens data to iPecs data length
 ipLength = ipEnd - ipStart;
 xsensLength = xsensEnd - xsensStart;
@@ -137,11 +142,12 @@ ipMultiplier = xsensLength/ipLength;
 newTime = (xsensStart:ipMultiplier:xsensEnd);
 
 %% SECTION ?: APPLY CUTS & ROTATION MATRICES
-
+F_shankframe = zeros(length(ipFx),3);
 for i = 1:length(ipFz)
     F_shankframe(i,:) = transpose(A * [ipFx(i); ipFy(i); ipFz(i)]);
 end
 
+iPecsMomentV = zeros(length(MxiPecs),3);
 for i = 1:length(ipFz)
     iPecsMomentV(i,:) = transpose(A * [MxiPecs(i); MyiPecs(i); MziPecs(i)]);
 end
@@ -151,17 +157,18 @@ MyiPecs = iPecsMomentV(:,2);
 MziPecs = iPecsMomentV(:,3);
 
 % Compute Saggital Force
-sagForce = (ipFy.^2 + ipFz.^2).^(1/2);
+sagForce = (F_shankframe(:,2).^2 + F_shankframe(:,3).^2).^(1/2);
 
 % Moment r X f
  clear moment_all
+moment_computed = zeros(length(F_shankframe),3);
 for i = 1:length(F_shankframe)
-    moment_all(i,:) = cross(r, F_shankframe(i,:));
+    moment_computed(i,:) = cross(r, F_shankframe(i,:));
 end
 
-moment_all(:,1) = moment_all(:,1) + MxiPecs(:,1);
-moment_all(:,2) = moment_all(:,2) + MyiPecs(:,1);
-moment_all(:,3) = moment_all(:,3) + MziPecs(:,1);
+moment_all(:,1) = moment_computed(:,1) + MxiPecs(:,1);
+moment_all(:,2) = moment_computed(:,2) + MyiPecs(:,1);
+moment_all(:,3) = moment_computed(:,3) + MziPecs(:,1);
 
 
 clear moment_withXsensTime
