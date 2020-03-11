@@ -1,12 +1,13 @@
 
 load visual3d_latest.mat
 shankAngle_all = shkang{1,1}(:,1:3);
-RSK2_all = RSK2{1,1}(:,1:3);
-RSK3_all = RSK3{1,1}(:,1:3);
-RSK4_all = RSK4{1,1}(:,1:3);
-rKnee_all = RKNEE{1,1}(:,1:3);
-vsf_ankle_all = VSF_RANKLE{1,1}(:,1:3);
+SK2_all = SK2{1,1}(:,1:3);
+SK3_all = SK3{1,1}(:,1:3);
+SK4_all = SK4{1,1}(:,1:3);
+Knee_all = KNEE{1,1}(:,1:3);
+vsf_ankle_all = VSF_ANKLE{1,1}(:,1:3);
 
+% -- Change this frame section for each subject! --
 frames = randi([410 870], 1, 300);
 wRip = cell(length(frames),1);
 r = zeros(length(frames),3);
@@ -15,21 +16,21 @@ for i= 1: length(frames)
     fN = frames(i); %frame number
     %fN = 2256;
     shankframe_origen = [vsf_ankle_all(fN,:)];
-    knee = rKnee_all(fN,:);
+    knee = Knee_all(fN,:);
 
-    rsk4 = RSK4_all(fN,:);
-    rsk3 = RSK3_all(fN,:);
-    rsk2 = RSK2_all(fN,:);
+    sk4 = SK4_all(fN,:);
+    sk3 = SK3_all(fN,:);
+    sk2 = SK2_all(fN,:);
     
     % Find iPecs center
     % Midpoint b/w RSK3 and RSK4
-    mp1 = (rsk3 + rsk4)/2;
-    iPecsMid = (mp1 + rsk2)/2;
+    mp1 = (sk3 + sk4)/2;
+    iPecsMid = (mp1 + sk2)/2;
     
     
-    v_4to2 = rsk2 - rsk4;
+    v_4to2 = sk2 - sk4;
     v_4to2 = v_4to2/norm(v_4to2);
-    v_4to3 = rsk3 - rsk4;
+    v_4to3 = sk3 - sk4;
     v_4to3 = v_4to3/norm(v_4to3);
     % Find iPecs frame
     u_firstN = cross(v_4to3, v_4to2);
@@ -107,18 +108,18 @@ AstdDev = std(AinCols);
 AstdDev = reshape(AstdDev, [3,3])
 
 wRsAverage = mean(wRsinCols);
-wRsAverage = reshape(wRsAverage, [3,3])
+wRsAverage = reshape(wRsAverage, [3,3]);
 
 figure 
-plot3(rsk4(1), rsk4(2), rsk4(3), '*')
+plot3(sk4(1), sk4(2), sk4(3), '*')
 hold on
-plot3([rsk4(1) AAverage(1,1)], [rsk4(2) AAverage(2,1)], [rsk4(3) AAverage(3,1)])
-plot3([rsk4(1) AAverage(1,2)], [rsk4(2) AAverage(2,2)], [rsk4(3) AAverage(3,2)])
-plot3([rsk4(1) AAverage(1,3)], [rsk4(2) AAverage(2,3)], [rsk4(3) AAverage(3,3)])
+plot3([sk4(1) AAverage(1,1)], [sk4(2) AAverage(2,1)], [sk4(3) AAverage(3,1)])
+plot3([sk4(1) AAverage(1,2)], [sk4(2) AAverage(2,2)], [sk4(3) AAverage(3,2)])
+plot3([sk4(1) AAverage(1,3)], [sk4(2) AAverage(2,3)], [sk4(3) AAverage(3,3)])
 plot3([0 wRsAverage(1,1)], [0 wRsAverage(2,1)], [0 wRsAverage(3,1)], '-r')
 plot3([0 wRsAverage(1,2)], [0 wRsAverage(2,2)], [0 wRsAverage(3,2)], '-g')
 plot3([0 wRsAverage(1,3)], [0 wRsAverage(2,3)], [0 wRsAverage(3,3)], '-b')
-plot3([shankframe_origen(1) rsk4(1)], [shankframe_origen(2) rsk4(2)], [shankframe_origen(3) rsk4(3)],...
+plot3([shankframe_origen(1) sk4(1)], [shankframe_origen(2) sk4(2)], [shankframe_origen(3) sk4(3)],...
     'LineWidth',3)
 plot3([shankframe_origen(1) knee(1)], [shankframe_origen(2) knee(2)], [shankframe_origen(3) knee(3)],...
     'LineWidth',3)

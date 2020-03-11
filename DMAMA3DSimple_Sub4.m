@@ -1,7 +1,7 @@
 % Set subject and stiffness setting, this will find correct data in
 %matrices of provided, known values
-subject = 4;
-setting = 1;
+subject = 2;
+setting = 3;
 cd Data
 
 %Using vectorCalc3D file find the average A matrix and r vector for each
@@ -423,150 +423,159 @@ text(1:length(Y),Y,num2str(Y'),'vert','bottom','horiz','center');
 set(gca,'FontSize',12)
 hold off
 
-% %% SECTION 11: EXTRA INFO GRAPHS
-% %Show the moment and force graphs, bad graph because its just showing
-% %stance phase, but good for seeing outliers and trends.
-% 
-% 
-% %Force
-% titleV=(['Force Plot of Each Ambulation Mode for: Subject ', num2str(subject), ' on Setting ', num2str(setting)]);
-% figure
-% subplot(5,1,1)
-% plot(lgForce)
-% xlim([0 length(lgForce)])
-% title('Level Ground')
-% ylabel('Force (N)')
-% set(gca,'FontSize',15)
-% 
-% subplot(5,1,2)
-% plot(urForce)
-% xlim([0 length(urForce)])
-% title('Up Ramp')
-% ylabel('Force (N)')
-% set(gca,'FontSize',15)
-% 
-% subplot(5,1,3)
-% plot(drForce)
-% title('Down Ramp')
-% xlim([0 length(drForce)])
-% ylabel('Force (N)')
-% set(gca,'FontSize',15)
-% 
-% subplot(5,1,4)
-% plot(usForce)
-% title('Up Stairs')
-% xlim([0 length(usForce)])
-% ylabel('Force (N)')
-% set(gca,'FontSize',15)
-% 
-% subplot(5,1,5)
-% plot(dsForce)
-% title('Down Stairs')
-% xlim([0 length(dsForce)])
-% ylabel('Force (N)')
-% set(gca,'FontSize',15)
-% 
-% sgtitle(titleV)
-% 
-% 
-% %Moment
-% titleV=(['Moment Plot of Each Ambulation Mode for: Subject ', num2str(subject), ' on Setting ', num2str(setting)]);
-% figure
-% subplot(5,1,1)
-% plot(lgMoment, 'r')
-% xlim([0 length(lgForce)])
-% title('Level Ground')
-% ylabel('Moment (Nm)')
-% set(gca,'FontSize',15)
-% 
-% subplot(5,1,2)
-% plot(urMoment, 'r')
-% xlim([0 length(urForce)])
-% title('Up Ramp')
-% ylabel('Moment (Nm)')
-% set(gca,'FontSize',15)
-% 
-% subplot(5,1,3)
-% plot(drMoment, 'r')
-% xlim([0 length(drForce)])
-% title('Down Ramp')
-% ylabel('Moment (Nm)')
-% set(gca,'FontSize',15)
-% 
-% subplot(5,1,4)
-% plot(usMoment, 'r')
-% xlim([0 length(usForce)])
-% title('Up Stairs')
-% ylabel('Moment (Nm)')
-% set(gca,'FontSize',15)
-% 
-% subplot(5,1,5)
-% plot(dsMoment, 'r')
-% xlim([0 length(dsForce)])
-% title('Down Stairs')
-% ylabel('Moment (Nm)')
-% set(gca,'FontSize',15)
-% 
-% sgtitle(titleV)
-% 
-% %Both
-% titleV=(['Force Plot of Each Ambulation Mode for: Subject ', num2str(subject), ' on Setting ', num2str(setting)]);
-% figure
-% subplot(5,1,1)
-% xlim([0 length(lgForce)])
-% yyaxis left
-% plot(lgForce)
-% ylabel('Force (N)')
-% yyaxis right
-% plot(lgMoment)
-% ylabel('Moment (Nm)')
-% title('Level Ground')
-% set(gca,'FontSize',15)
-% 
-% subplot(5,1,2)
-% xlim([0 length(urForce)])
-% yyaxis left
-% plot(urForce)
-% ylabel('Force (N)')
-% yyaxis right
-% plot(urMoment)
-% ylabel('Moment (Nm)')
-% title('Up Ramp')
-% set(gca,'FontSize',15)
-% 
-% subplot(5,1,3)
-% xlim([0 length(drForce)])
-% yyaxis left
-% plot(drForce)
-% ylabel('Force (N)')
-% yyaxis right
-% plot(drMoment)
-% ylabel('Moment (Nm)')
-% title('Down Ramp')
-% set(gca,'FontSize',15)
-% 
-% subplot(5,1,4)
-% xlim([0 length(usForce)])
-% yyaxis left
-% plot(usForce)
-% ylabel('Force (N)')
-% yyaxis right
-% plot(usMoment)
-% ylabel('Moment (Nm)')
-% title('Up Stairs')
-% set(gca,'FontSize',15)
-% 
-% subplot(5,1,5)
-% xlim([0 length(dsForce)])
-% yyaxis left
-% plot(dsForce)
-% ylabel('Force (N)')
-% yyaxis right
-% plot(dsMoment)
-% ylabel('Moment (Nm)')
-% title('Down Stairs')
-% 
-% sgtitle(titleV)
-% set(gca,'FontSize',15)
+%% SECTION 11: EXTRA INFO GRAPHS
+%Show the moment and force graphs, bad graph because its just showing
+%stance phase, but good for seeing outliers and trends.
+
+
+%Force
+titleV=(['Force Plot of Each Ambulation Mode for: Subject ', num2str(subject), ' on Setting ', num2str(setting)]);
+forceFigure = figure;
+subplot(5,1,1)
+plot(lgForce)
+xlim([0 length(lgForce)])
+title('Level Ground')
+ylabel('Force (N)')
+set(gca,'FontSize',15)
+
+subplot(5,1,2)
+plot(urForce)
+xlim([0 length(urForce)])
+title('Up Ramp')
+ylabel('Force (N)')
+set(gca,'FontSize',15)
+
+subplot(5,1,3)
+plot(drForce)
+title('Down Ramp')
+xlim([0 length(drForce)])
+ylabel('Force (N)')
+set(gca,'FontSize',15)
+
+subplot(5,1,4)
+plot(usForce)
+title('Up Stairs')
+xlim([0 length(usForce)])
+ylabel('Force (N)')
+set(gca,'FontSize',15)
+
+subplot(5,1,5)
+plot(dsForce)
+title('Down Stairs')
+xlim([0 length(dsForce)])
+ylabel('Force (N)')
+set(gca,'FontSize',15)
+
+sgtitle(titleV)
+shortTitle = ([pwd,'\Figures\forceSub',num2str(subject), 'Set', num2str(setting),'.pdf']);
+%set(gcf,'PaperPositionMode','auto')
+print(forceFigure,shortTitle, '-dpdf','-fillpage')
+%saveas(forceFigure, [pwd shortTitle]);
+
+%Moment
+titleV=(['Moment Plot of Each Ambulation Mode for: Subject ', num2str(subject), ' on Setting ', num2str(setting)]);
+momentFigure = figure;
+subplot(5,1,1)
+plot(lgMoment, 'r')
+xlim([0 length(lgForce)])
+title('Level Ground')
+ylabel('Moment (Nm)')
+set(gca,'FontSize',15)
+
+subplot(5,1,2)
+plot(urMoment, 'r')
+xlim([0 length(urForce)])
+title('Up Ramp')
+ylabel('Moment (Nm)')
+set(gca,'FontSize',15)
+
+subplot(5,1,3)
+plot(drMoment, 'r')
+xlim([0 length(drForce)])
+title('Down Ramp')
+ylabel('Moment (Nm)')
+set(gca,'FontSize',15)
+
+subplot(5,1,4)
+plot(usMoment, 'r')
+xlim([0 length(usForce)])
+title('Up Stairs')
+ylabel('Moment (Nm)')
+set(gca,'FontSize',15)
+
+subplot(5,1,5)
+plot(dsMoment, 'r')
+xlim([0 length(dsForce)])
+title('Down Stairs')
+ylabel('Moment (Nm)')
+set(gca,'FontSize',15)
+
+sgtitle(titleV)
+
+shortTitle = ([pwd,'\Figures\momentSub',num2str(subject), 'Set', num2str(setting),'.pdf']);
+print(momentFigure,shortTitle, '-dpdf','-fillpage')
+
+%Both
+titleV=(['Force Plot of Each Ambulation Mode for: Subject ', num2str(subject), ' on Setting ', num2str(setting)]);
+allFigure = figure
+subplot(5,1,1)
+xlim([0 length(lgForce)])
+yyaxis left
+plot(lgForce)
+ylabel('Force (N)')
+yyaxis right
+plot(lgMoment)
+ylabel('Moment (Nm)')
+title('Level Ground')
+set(gca,'FontSize',15)
+
+subplot(5,1,2)
+xlim([0 length(urForce)])
+yyaxis left
+plot(urForce)
+ylabel('Force (N)')
+yyaxis right
+plot(urMoment)
+ylabel('Moment (Nm)')
+title('Up Ramp')
+set(gca,'FontSize',15)
+
+subplot(5,1,3)
+xlim([0 length(drForce)])
+yyaxis left
+plot(drForce)
+ylabel('Force (N)')
+yyaxis right
+plot(drMoment)
+ylabel('Moment (Nm)')
+title('Down Ramp')
+set(gca,'FontSize',15)
+
+subplot(5,1,4)
+xlim([0 length(usForce)])
+yyaxis left
+plot(usForce)
+ylabel('Force (N)')
+yyaxis right
+plot(usMoment)
+ylabel('Moment (Nm)')
+title('Up Stairs')
+set(gca,'FontSize',15)
+
+subplot(5,1,5)
+xlim([0 length(dsForce)])
+yyaxis left
+plot(dsForce)
+ylabel('Force (N)')
+yyaxis right
+plot(dsMoment)
+ylabel('Moment (Nm)')
+title('Down Stairs')
+
+sgtitle(titleV)
+set(gca,'FontSize',15)
+
+shortTitle = ([pwd,'\Figures\allSub',num2str(subject), 'Set', num2str(setting),'.pdf']);
+print(allFigure,shortTitle, '-dpdf','-fillpage')
 
 
