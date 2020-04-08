@@ -1,7 +1,7 @@
 % Set subject and stiffness setting, this will find correct data in
 %matrices of provided, known values
 subject = 4;
-setting = 1;
+setting = 3;
 cd Data
 
 %Using vectorCalc3D file find the average A matrix and r vector for each
@@ -31,6 +31,17 @@ if subject == 4
 %     r = r + 2*[0.0129213278965632,0.0481979683284418,0.00524388679407593];
 end
 
+if subject == 12 %Using subject 4 in the meantime! While waiting for Visual3D data to get prelim results
+    A = [0.943071963631529,-0.330951810333087,0.0324486338337264;
+        0.331480753040735,0.943349641245414,-0.0123907118118581;
+        -0.0265197758803160,0.0224446947434716,0.999378277248041];
+%     A = A + 2*[0.00174727427656611,0.00499215883793746,0.00232237406212035;
+%         0.00493591903103956,0.00171367888347061,0.00559735913011915;
+%         0.00227500298354999,0.00556119437295477,0.000118308210783904];
+
+    r = [-0.0167216308672882,0.0115755375014926,0.196382747541239];
+%     r = r + 2*[0.0129213278965632,0.0481979683284418,0.00524388679407593];
+end
 
 % -----------------iPecs Data-----------------
 % iPecs Filename, forces & moments in X, Y, Z
@@ -51,7 +62,15 @@ file_iPecs = fileName;
 iPecsCuts = [0,-70, 335, 0,0,0 0,0,0;
               7.5,-5,-25,7.5,-5,-25,7.5,-5,-25;
               0,0,0,0,0,0,0,0,0;
-             -5, 0.3, 25,-5, 0.3, 25,-5, 0.3, 25];
+             -5, 0.3, 25,-5, 0.3, 25,-5, 0.3, 25;
+             0,0,0,0,0,0,0,0,0;
+             0,0,0,0,0,0,0,0,0;
+             0,0,0,0,0,0,0,0,0;
+             0,0,0,0,0,0,0,0,0;
+             0,0,0,0,0,0,0,0,0;
+             0,0,0,0,0,0,0,0,0;
+             0,0,0,0,0,0,0,0,0;
+             0,0,0,0,0,0,0,0,0];
 
 cuts = [iPecsCuts(subject, setting*3-2);iPecsCuts(subject, setting*3-1);iPecsCuts(subject, setting*3)];
 cuts = transpose(A*cuts);
@@ -60,7 +79,15 @@ cuts = transpose(A*cuts);
 iPecsThresholds = [0,10, 20,0,0,0,0,0,0;
               0,10,20,0,10,20,0,10,20;
               0,10,20,0,0,20,0,0,20;
-              0,0,20,0,0,20,0,0,20];
+              0,0,20,0,0,20,0,0,20;
+              0,0,0,0,0,0,0,0,0;
+              0,0,0,0,0,0,0,0,0;
+              0,0,0,0,0,0,0,0,0;
+              0,0,0,0,0,0,0,0,0;
+              0,0,0,0,0,0,0,0,0;
+              0,0,0,0,0,0,0,0,0;
+              0,0,0,0,0,0,0,0,0;
+              0,0,0,0,0,0,0,0,0];
 
 % Add a row to the below matrices to manually trim the data to the correct
 % stop and stopping point.
@@ -68,12 +95,28 @@ iPecsThresholds = [0,10, 20,0,0,0,0,0,0;
 ipStartValues = [2140,  0,      0;
               1045,     1860,   3728;
               0,        0,      0;
-              3280,     1488,   2332];
+              3280,     1488,   2332;
+              0,0,0;
+              0,0,0;
+              0,0,0;
+              0,0,0;
+              0,0,0;
+              0,0,0;
+              0,0,0;
+              0,0,0];
           
 ipEndValues = [34185,   0,      0;
               25986,    27943,  33040;
               0,        0,      0;
-              24003,    21688,  22758];
+              24003,    21688,  22758;
+              0,0,0;
+              0,0,0;
+              0,0,0;
+              0,0,0;
+              0,0,0;
+              0,0,0;
+              0,0,0;
+              0,0,0];
 
 % -----------------timeTracking Data-----------------          
 % timeTracking, file that holds time stamps for the different ambulation
@@ -85,8 +128,8 @@ file_ambModeTiming = 'timeTracking';
 % XSENS foot position data, used to align heel contact (and toe off) point
 %using position in the z-axis of the proximal foot (ankle). REALLY ONLY
 %USED FOR AMBULATION TASKS IDENTIFICATION. See 'proxPosRFT.txt' for format.
-fileName=(['heel', num2str(subject), num2str(setting),'.txt']);
-file_heelZPos = fileName;
+% fileName=(['heel', num2str(subject), num2str(setting),'.txt']);
+% file_heelZPos = fileName;
 fileName=(['toe', num2str(subject), num2str(setting),'.txt']);
 file_toeZPos = fileName;
 
@@ -96,23 +139,67 @@ file_toeZPos = fileName;
 xsensStartValues = [593,    0,      0;
                     400,    489,    609;
                     0,      0,      0;
-                    494,    448,    892];
+                    494,    448,    892;
+                      0,0,0;
+                      0,0,0;
+                      0,0,0;
+                      0,0,0;
+                      0,0,0;
+                      0,0,0;
+                      0,0,0;
+                      0,0,0];
                 
 xsensEndValues = [  13403,  0,      0;
                     10371,  10916,  12330;
                     0,      0,      0;
-                    8779,   8528,   9060]; 
+                    8779,   8528,   9060;
+                    0,0,0;
+                      0,0,0;
+                      0,0,0;
+                      0,0,0;
+                      0,0,0;
+                      0,0,0;
+                      0,0,0;
+                      0,0,0]; 
                 
 %% SECTION 1: IMPORT DATA
 
 % Imports the iPecs data, timetracking file, heel and toe Z position
 iPecsData = xlsread(file_iPecs);
 timeTrack = xlsread(file_ambModeTiming);
-tempFile = importdata(file_heelZPos);
-heelZPos = tempFile.data;
+% tempFile = importdata(file_heelZPos);
+% heelZPos = tempFile.data;
 tempFile = importdata(file_toeZPos);
-toeZPos = tempFile.data;
+if subject < 5
+    toePos = tempFile.data;
+end
+% toePos = tempFile;
 cd ..
+
+% i = toePos(:,1);
+% toePosZ = toePos(:,4);
+
+
+
+%% Initial Graphs
+
+% Figure 1: Raw iPecs Data
+figure
+subplot(2,1,1)
+hold on
+[a,b] = size(iPecsData);
+ipLength = a;
+plot(1:ipLength, iPecsData(:,2), 'b-')
+plot(1:ipLength, iPecsData(:,3), 'r-')
+plot(1:ipLength, iPecsData(:,4), 'k-')
+legend('X iPecs Force','Y iPecs Force','Z iPecs Force')
+xlabel('iPecs Time')
+ylabel('Force (N)')
+title('Raw iPecs Data (No Zeroing)')
+
+% subplot(2,1,2)
+% plot(i,toePosZ)
+
 
 %% Apply Cuts and Trim Length
 % Apply cuts and thresholds
@@ -230,6 +317,16 @@ if subject == 4
         tTY = 12;
     elseif setting == 3
         tTY = 11;
+    end
+end
+
+if subject == 12
+    if setting == 1
+        tTY = 28;
+    elseif setting == 2
+        tTY = 29;
+    elseif setting == 3
+        tTY = 30;
     end
 end
 
@@ -423,150 +520,159 @@ text(1:length(Y),Y,num2str(Y'),'vert','bottom','horiz','center');
 set(gca,'FontSize',12)
 hold off
 
-% %% SECTION 11: EXTRA INFO GRAPHS
-% %Show the moment and force graphs, bad graph because its just showing
-% %stance phase, but good for seeing outliers and trends.
-% 
-% 
-% %Force
-% titleV=(['Force Plot of Each Ambulation Mode for: Subject ', num2str(subject), ' on Setting ', num2str(setting)]);
-% figure
-% subplot(5,1,1)
-% plot(lgForce)
-% xlim([0 length(lgForce)])
-% title('Level Ground')
-% ylabel('Force (N)')
-% set(gca,'FontSize',15)
-% 
-% subplot(5,1,2)
-% plot(urForce)
-% xlim([0 length(urForce)])
-% title('Up Ramp')
-% ylabel('Force (N)')
-% set(gca,'FontSize',15)
-% 
-% subplot(5,1,3)
-% plot(drForce)
-% title('Down Ramp')
-% xlim([0 length(drForce)])
-% ylabel('Force (N)')
-% set(gca,'FontSize',15)
-% 
-% subplot(5,1,4)
-% plot(usForce)
-% title('Up Stairs')
-% xlim([0 length(usForce)])
-% ylabel('Force (N)')
-% set(gca,'FontSize',15)
-% 
-% subplot(5,1,5)
-% plot(dsForce)
-% title('Down Stairs')
-% xlim([0 length(dsForce)])
-% ylabel('Force (N)')
-% set(gca,'FontSize',15)
-% 
-% sgtitle(titleV)
-% 
-% 
-% %Moment
-% titleV=(['Moment Plot of Each Ambulation Mode for: Subject ', num2str(subject), ' on Setting ', num2str(setting)]);
-% figure
-% subplot(5,1,1)
-% plot(lgMoment, 'r')
-% xlim([0 length(lgForce)])
-% title('Level Ground')
-% ylabel('Moment (Nm)')
-% set(gca,'FontSize',15)
-% 
-% subplot(5,1,2)
-% plot(urMoment, 'r')
-% xlim([0 length(urForce)])
-% title('Up Ramp')
-% ylabel('Moment (Nm)')
-% set(gca,'FontSize',15)
-% 
-% subplot(5,1,3)
-% plot(drMoment, 'r')
-% xlim([0 length(drForce)])
-% title('Down Ramp')
-% ylabel('Moment (Nm)')
-% set(gca,'FontSize',15)
-% 
-% subplot(5,1,4)
-% plot(usMoment, 'r')
-% xlim([0 length(usForce)])
-% title('Up Stairs')
-% ylabel('Moment (Nm)')
-% set(gca,'FontSize',15)
-% 
-% subplot(5,1,5)
-% plot(dsMoment, 'r')
-% xlim([0 length(dsForce)])
-% title('Down Stairs')
-% ylabel('Moment (Nm)')
-% set(gca,'FontSize',15)
-% 
-% sgtitle(titleV)
-% 
-% %Both
-% titleV=(['Force Plot of Each Ambulation Mode for: Subject ', num2str(subject), ' on Setting ', num2str(setting)]);
-% figure
-% subplot(5,1,1)
-% xlim([0 length(lgForce)])
-% yyaxis left
-% plot(lgForce)
-% ylabel('Force (N)')
-% yyaxis right
-% plot(lgMoment)
-% ylabel('Moment (Nm)')
-% title('Level Ground')
-% set(gca,'FontSize',15)
-% 
-% subplot(5,1,2)
-% xlim([0 length(urForce)])
-% yyaxis left
-% plot(urForce)
-% ylabel('Force (N)')
-% yyaxis right
-% plot(urMoment)
-% ylabel('Moment (Nm)')
-% title('Up Ramp')
-% set(gca,'FontSize',15)
-% 
-% subplot(5,1,3)
-% xlim([0 length(drForce)])
-% yyaxis left
-% plot(drForce)
-% ylabel('Force (N)')
-% yyaxis right
-% plot(drMoment)
-% ylabel('Moment (Nm)')
-% title('Down Ramp')
-% set(gca,'FontSize',15)
-% 
-% subplot(5,1,4)
-% xlim([0 length(usForce)])
-% yyaxis left
-% plot(usForce)
-% ylabel('Force (N)')
-% yyaxis right
-% plot(usMoment)
-% ylabel('Moment (Nm)')
-% title('Up Stairs')
-% set(gca,'FontSize',15)
-% 
-% subplot(5,1,5)
-% xlim([0 length(dsForce)])
-% yyaxis left
-% plot(dsForce)
-% ylabel('Force (N)')
-% yyaxis right
-% plot(dsMoment)
-% ylabel('Moment (Nm)')
-% title('Down Stairs')
-% 
-% sgtitle(titleV)
-% set(gca,'FontSize',15)
+%% SECTION 11: EXTRA INFO GRAPHS
+%Show the moment and force graphs, bad graph because its just showing
+%stance phase, but good for seeing outliers and trends.
+
+
+%Force
+titleV=(['Force Plot of Each Ambulation Mode for: Subject ', num2str(subject), ' on Setting ', num2str(setting)]);
+forceFigure = figure;
+subplot(5,1,1)
+plot(lgForce)
+xlim([0 length(lgForce)])
+title('Level Ground')
+ylabel('Force (N)')
+set(gca,'FontSize',15)
+
+subplot(5,1,2)
+plot(urForce)
+xlim([0 length(urForce)])
+title('Up Ramp')
+ylabel('Force (N)')
+set(gca,'FontSize',15)
+
+subplot(5,1,3)
+plot(drForce)
+title('Down Ramp')
+xlim([0 length(drForce)])
+ylabel('Force (N)')
+set(gca,'FontSize',15)
+
+subplot(5,1,4)
+plot(usForce)
+title('Up Stairs')
+xlim([0 length(usForce)])
+ylabel('Force (N)')
+set(gca,'FontSize',15)
+
+subplot(5,1,5)
+plot(dsForce)
+title('Down Stairs')
+xlim([0 length(dsForce)])
+ylabel('Force (N)')
+set(gca,'FontSize',15)
+
+sgtitle(titleV)
+shortTitle = ([pwd,'\Figures\forceSub',num2str(subject), 'Set', num2str(setting),'.pdf']);
+%set(gcf,'PaperPositionMode','auto')
+print(forceFigure,shortTitle, '-dpdf','-fillpage')
+%saveas(forceFigure, [pwd shortTitle]);
+
+%Moment
+titleV=(['Moment Plot of Each Ambulation Mode for: Subject ', num2str(subject), ' on Setting ', num2str(setting)]);
+momentFigure = figure;
+subplot(5,1,1)
+plot(lgMoment, 'r')
+xlim([0 length(lgForce)])
+title('Level Ground')
+ylabel('Moment (Nm)')
+set(gca,'FontSize',15)
+
+subplot(5,1,2)
+plot(urMoment, 'r')
+xlim([0 length(urForce)])
+title('Up Ramp')
+ylabel('Moment (Nm)')
+set(gca,'FontSize',15)
+
+subplot(5,1,3)
+plot(drMoment, 'r')
+xlim([0 length(drForce)])
+title('Down Ramp')
+ylabel('Moment (Nm)')
+set(gca,'FontSize',15)
+
+subplot(5,1,4)
+plot(usMoment, 'r')
+xlim([0 length(usForce)])
+title('Up Stairs')
+ylabel('Moment (Nm)')
+set(gca,'FontSize',15)
+
+subplot(5,1,5)
+plot(dsMoment, 'r')
+xlim([0 length(dsForce)])
+title('Down Stairs')
+ylabel('Moment (Nm)')
+set(gca,'FontSize',15)
+
+sgtitle(titleV)
+
+shortTitle = ([pwd,'\Figures\momentSub',num2str(subject), 'Set', num2str(setting),'.pdf']);
+print(momentFigure,shortTitle, '-dpdf','-fillpage')
+
+%Both
+titleV=(['Force Plot of Each Ambulation Mode for: Subject ', num2str(subject), ' on Setting ', num2str(setting)]);
+allFigure = figure
+subplot(5,1,1)
+xlim([0 length(lgForce)])
+yyaxis left
+plot(lgForce)
+ylabel('Force (N)')
+yyaxis right
+plot(lgMoment)
+ylabel('Moment (Nm)')
+title('Level Ground')
+set(gca,'FontSize',15)
+
+subplot(5,1,2)
+xlim([0 length(urForce)])
+yyaxis left
+plot(urForce)
+ylabel('Force (N)')
+yyaxis right
+plot(urMoment)
+ylabel('Moment (Nm)')
+title('Up Ramp')
+set(gca,'FontSize',15)
+
+subplot(5,1,3)
+xlim([0 length(drForce)])
+yyaxis left
+plot(drForce)
+ylabel('Force (N)')
+yyaxis right
+plot(drMoment)
+ylabel('Moment (Nm)')
+title('Down Ramp')
+set(gca,'FontSize',15)
+
+subplot(5,1,4)
+xlim([0 length(usForce)])
+yyaxis left
+plot(usForce)
+ylabel('Force (N)')
+yyaxis right
+plot(usMoment)
+ylabel('Moment (Nm)')
+title('Up Stairs')
+set(gca,'FontSize',15)
+
+subplot(5,1,5)
+xlim([0 length(dsForce)])
+yyaxis left
+plot(dsForce)
+ylabel('Force (N)')
+yyaxis right
+plot(dsMoment)
+ylabel('Moment (Nm)')
+title('Down Stairs')
+
+sgtitle(titleV)
+set(gca,'FontSize',15)
+
+shortTitle = ([pwd,'\Figures\allSub',num2str(subject), 'Set', num2str(setting),'.pdf']);
+print(allFigure,shortTitle, '-dpdf','-fillpage')
 
 
