@@ -1,6 +1,7 @@
 % Set subject and stiffness setting, this will find correct data in
 %matrices of provided, known values
-subject = 4;
+clearvars -except collectF
+subject = 12;
 setting = 3;
 cd Data
 
@@ -10,13 +11,14 @@ cd Data
 if subject == 2
     A = [0.999421797371987,-0.0299351255331246,-0.00207784678786959;
         0.0296572581042341,0.996128500422157,-0.0810442961388628;
-        0.00450334414414811,0.0808845308407729,0.996606759468490]
+        0.00450334414414811,0.0808845308407729,0.996606759468490];
 %     A = A + 2*[0.000339240369236025,0.0131392759222300,0.00915101541532063;
 %           0.0127166208301486,0.00102537968856321,0.0108836250133737;
 %           0.00976049816795206,0.0108105566519519,0.000976925671012597];
     
     r = [0.0430225062955562,-0.0128729273132021,0.209246247039647];
 %     r = r + 2*[0.0111796678450822,0.0245802172837022,0.00949139156619026];
+    rknee = [-0.0459407184625700,-0.00487269631532575,-0.227434462583852];
 end
 
 if subject == 4
@@ -29,18 +31,35 @@ if subject == 4
 
     r = [-0.0167216308672882,0.0115755375014926,0.196382747541239];
 %     r = r + 2*[0.0129213278965632,0.0481979683284418,0.00524388679407593];
+    rknee = [0.0295414795355280,-0.0225584462073235,-0.263943783628032];
+end
+
+if subject == 11 %Using subject 4 in the meantime! While waiting for Visual3D data to get prelim results
+    A = [
+        1,0,0;
+        0,1,0;
+        0,0,1
+        ];
+    
+    %Average-ish from previous trials
+    r = [0,0,0.246];
+%     r = r + 2*[0.0111796678450822,0.0245802172837022,0.00949139156619026];
+    rknee = [0,0,-0.2457];
+    
 end
 
 if subject == 12 %Using subject 4 in the meantime! While waiting for Visual3D data to get prelim results
-    A = [0.943071963631529,-0.330951810333087,0.0324486338337264;
-        0.331480753040735,0.943349641245414,-0.0123907118118581;
-        -0.0265197758803160,0.0224446947434716,0.999378277248041];
-%     A = A + 2*[0.00174727427656611,0.00499215883793746,0.00232237406212035;
-%         0.00493591903103956,0.00171367888347061,0.00559735913011915;
-%         0.00227500298354999,0.00556119437295477,0.000118308210783904];
-
-    r = [-0.0167216308672882,0.0115755375014926,0.196382747541239];
-%     r = r + 2*[0.0129213278965632,0.0481979683284418,0.00524388679407593];
+    A = [
+        1,0,0;
+        0,1,0;
+        0,0,1
+        ];
+    
+    %Average-ish from previous trials
+    r = [0,0,0.246];
+%     r = r + 2*[0.0111796678450822,0.0245802172837022,0.00949139156619026];
+    rknee = [0,0,-0.2457];
+    
 end
 
 % -----------------iPecs Data-----------------
@@ -69,8 +88,8 @@ iPecsCuts = [0,-70, 335, 0,0,0 0,0,0;
              0,0,0,0,0,0,0,0,0;
              0,0,0,0,0,0,0,0,0;
              0,0,0,0,0,0,0,0,0;
-             0,0,0,0,0,0,0,0,0;
-             0,0,0,0,0,0,0,0,0];
+             0,0,615,0,0,605,0,0,605;
+             0,0,656,0,0,656,0,0,656];
 
 cuts = [iPecsCuts(subject, setting*3-2);iPecsCuts(subject, setting*3-1);iPecsCuts(subject, setting*3)];
 cuts = transpose(A*cuts);
@@ -86,8 +105,8 @@ iPecsThresholds = [0,10, 20,0,0,0,0,0,0;
               0,0,0,0,0,0,0,0,0;
               0,0,0,0,0,0,0,0,0;
               0,0,0,0,0,0,0,0,0;
-              0,0,0,0,0,0,0,0,0;
-              0,0,0,0,0,0,0,0,0];
+              0,0,50,0,0,50,0,0,50;
+              0,0,40,0,0,40,0,0,40];
 
 % Add a row to the below matrices to manually trim the data to the correct
 % stop and stopping point.
@@ -102,8 +121,8 @@ ipStartValues = [2140,  0,      0;
               0,0,0;
               0,0,0;
               0,0,0;
-              0,0,0;
-              0,0,0];
+              6789,2695,2005;
+              35730,6394,6420];
           
 ipEndValues = [34185,   0,      0;
               25986,    27943,  33040;
@@ -115,8 +134,8 @@ ipEndValues = [34185,   0,      0;
               0,0,0;
               0,0,0;
               0,0,0;
-              0,0,0;
-              0,0,0];
+              25840,23105,22957;
+              57240,27403,26390];
 
 % -----------------timeTracking Data-----------------          
 % timeTracking, file that holds time stamps for the different ambulation
@@ -146,8 +165,8 @@ xsensStartValues = [593,    0,      0;
                       0,0,0;
                       0,0,0;
                       0,0,0;
-                      0,0,0;
-                      0,0,0];
+                      226,1,1;
+                      808,151,144];
                 
 xsensEndValues = [  13403,  0,      0;
                     10371,  10916,  12330;
@@ -159,8 +178,8 @@ xsensEndValues = [  13403,  0,      0;
                       0,0,0;
                       0,0,0;
                       0,0,0;
-                      0,0,0;
-                      0,0,0]; 
+                      7849,8167,8376;
+                      9412,8553,8791]; 
                 
 %% SECTION 1: IMPORT DATA
 
@@ -260,19 +279,23 @@ sagForce = (F_shankframe(:,2).^2 + F_shankframe(:,3).^2).^(1/2);
 
 % Moment r X f
  clear moment_all
-moment_computed = zeros(length(F_shankframe),3);
+moment_ankle_computed = zeros(length(F_shankframe),3);
 for i = 1:length(F_shankframe)
-    moment_computed(i,:) = cross(r, F_shankframe(i,:));
+    moment_ankle_computed(i,:) = cross(r, F_shankframe(i,:));
+    moment_knee_computed(i,:) = cross(rknee, F_shankframe(i,:));
 end
 
-moment_all(:,1) = moment_computed(:,1) + MxiPecs(:,1);
-moment_all(:,2) = moment_computed(:,2) + MyiPecs(:,1);
-moment_all(:,3) = moment_computed(:,3) + MziPecs(:,1);
+moment_ankle(:,1) = moment_ankle_computed(:,1) + MxiPecs(:,1);
+moment_ankle(:,2) = moment_ankle_computed(:,2) + MyiPecs(:,1);
+moment_ankle(:,3) = moment_ankle_computed(:,3) + MziPecs(:,1);
 
+moment_knee(:,1) = moment_knee_computed(:,1) + MxiPecs(:,1);
+moment_knee(:,2) = moment_knee_computed(:,2) + MyiPecs(:,1);
+moment_knee(:,3) = moment_knee_computed(:,3) + MziPecs(:,1);
 
 clear moment_withXsensTime
 moment_withXsensTime(:,1) = newTime;
-moment_withXsensTime(:,2:4) = moment_all;
+moment_withXsensTime(:,2:4) = moment_ankle;
 
 %% SECTION 6: XSENS - GRAPH AMB MODES
 
@@ -317,6 +340,15 @@ if subject == 4
         tTY = 12;
     elseif setting == 3
         tTY = 11;
+    end
+end
+if subject == 11
+    if setting == 1
+        tTY = 25;
+    elseif setting == 2
+        tTY = 26;
+    elseif setting == 3
+        tTY = 27;
     end
 end
 
@@ -380,28 +412,94 @@ lgStart3 = find(moment_withXsensTime(:,1)>=lgStart3X,1,'first');
 lgEnd3 = find(moment_withXsensTime(:,1)>=lgEnd3X,1,'first');
 drStart2 = find(moment_withXsensTime(:,1)>=drStart2X,1,'first');
 drEnd2 = find(moment_withXsensTime(:,1)>=drEnd2X,1,'first');
+if isempty(drEnd2) == 1
+    drEnd2 = ipLength
+end
+allFinalTimings = [
+    urStart1;urEnd1;lgStart1;lgEnd1;drStart1;drEnd1;urStart2;
+    urEnd2;lgStart2;lgEnd2;usStart1;usEnd1;usStart2;usEnd2;
+    dsStart1;dsEnd1;dsStart2;dsEnd2;lgStart3;lgEnd3;drStart2;
+    drEnd2];
+
+%% Create Moment Plots
+
+%[kneeMo] = momentProcessing(moment_knee, ipFz, allFinalTimings,setting,collectF);
+%[ankleMo] = momentProcessing(moment_ankle, ipFz, allFinalTimings,setting,collectF);
+
 
 %% SECTION 9: FIND MEAN OF MOMENT AND SAG FORCE FOR EACH AMB TASK
 %These next sections will be broken up into each amb task
 
 % Here moment_all is set to moment arond the X since this is what we are
 % using for DMAMA
-moment_all = moment_all(:,1);
+moment_ankle = moment_ankle(:,1);
+
+%-----------------------------------------------------------
+% titleV=(['Toe Position in Z: Subject ', num2str(subject), ' on Setting ', num2str(setting)]);
+% subplot(2,1,2)
+% hold on
+% plot(toeZPos(xsensStart:xsensEnd,1), toeZPos(xsensStart:xsensEnd,4), 'r-')
+% xlim([xsensStart xsensEnd])
+% xline(urStart1X, ':b', 'UR1 Start','HandleVisibility','off');
+% xline(urEnd1X, ':r', 'UR1 End','HandleVisibility','off');
+% xline(lgStart1X, ':b', 'LG1 Start','HandleVisibility','off');
+% xline(lgEnd1X, ':r', 'LG1 End','HandleVisibility','off');
+% xline(drStart1X, ':b', 'DR1 Start','HandleVisibility','off');
+% xline(urStart2X, ':b', 'UR2 Start','HandleVisibility','off');
+% xline(lgStart2X, ':b', 'LG2 Start','HandleVisibility','off');
+% xline(usStart1X, ':b', 'US1 Start','HandleVisibility','off');
+% xline(usStart2X, ':b', 'US2 Start','HandleVisibility','off');
+% xline(dsStart1X, ':b', 'DS1 Start','HandleVisibility','off');
+% xline(dsStart2X, ':b', 'DS2 Start','HandleVisibility','off');
+% xline(lgStart3X, ':b', 'LG3 Start','HandleVisibility','off');
+% xline(drStart2X, ':b', 'DR2 Start','HandleVisibility','off');
+% xlabel('XSENS Frame/Time')
+% ylabel('Height (m)')
+% title(titleV)
+
+titleV=(['Toe Position in Z: Subject ', num2str(subject), ' on Setting ', num2str(setting)]);
+figure
+%subplot(2,1,2)
+yyaxis left
+plot(moment_knee(:,1), ' -b')
+ylabel('Knee Moment')
+%plot((-1)*moment_all, '-b')
+%ylabel('Moment')
+%ylim([-40 900])
+% yyaxis right
+% plot(sagForce, '-r')
+% ylabel('Force')
+%ylim([-40 900])
+xlim([-1000 length(moment_ankle)+1000])
+xline(urStart1, ':b', 'UR1 Start','HandleVisibility','off');
+xline(urEnd1, ':r', 'UR1 End','HandleVisibility','off');
+xline(lgStart1, ':b', 'LG1 Start','HandleVisibility','off');
+xline(lgEnd1, ':r', 'LG1 End','HandleVisibility','off');
+xline(drStart1, ':b', 'DR1 Start','HandleVisibility','off');
+xline(urStart2, ':b', 'UR2 Start','HandleVisibility','off');
+xline(lgStart2, ':b', 'LG2 Start','HandleVisibility','off');
+xline(usStart1, ':b', 'US1 Start','HandleVisibility','off');
+xline(usStart2, ':b', 'US2 Start','HandleVisibility','off');
+xline(dsStart1, ':b', 'DS1 Start','HandleVisibility','off');
+xline(dsStart2, ':b', 'DS2 Start','HandleVisibility','off');
+xline(lgStart3, ':b', 'LG3 Start','HandleVisibility','off');
+xline(drStart2, ':b', 'DR2 Start','HandleVisibility','off');
+%-----------------------------------------------------------
 
 %% Wrong direction of moment?
-moment_all = -1*(moment_all);
+moment_ankle = -1*(moment_ankle);
 %% SECTION 9A: UP RAMP ANALYSIS
 count = 0;
 sumForce = 0;
 sumMoment = 0;
-for i = 1:length(moment_all)
+for i = 1:length(moment_ankle)
     if i >= urStart1 && i < urEnd1 + 1 || ...
             i >= urStart2 && i < urEnd2 + 1
         count = count + 1;
         urForce(count,1) = sagForce(i,1);
-        urMoment(count,1) = moment_all(i,1);
+        urMoment(count,1) = moment_ankle(i,1);
         sumForce = sumForce + sagForce(i,1);
-        sumMoment = sumMoment + moment_all(i,1);
+        sumMoment = sumMoment + moment_ankle(i,1);
     end
 end
 %urStDev = std(urMomentArmPercentFoot)
@@ -414,15 +512,15 @@ urMomentArmPercentFootMean = (urMomentArmMean / 0.24)*100
 count = 0;
 sumForce = 0;
 sumMoment = 0;
-for i = 1:length(moment_all)
+for i = 1:length(moment_ankle)
     if i >= lgStart1 && i < lgEnd1 + 1 || ...
             i >= lgStart2 && i < lgEnd2 + 1 || ...
             i >= lgStart3 && i < lgEnd3 + 1
         count = count + 1;
         lgForce(count,1) = sagForce(i,1);
-        lgMoment(count,1) = moment_all(i,1);
+        lgMoment(count,1) = moment_ankle(i,1);
         sumForce = sumForce + sagForce(i,1);
-        sumMoment = sumMoment + moment_all(i,1);
+        sumMoment = sumMoment + moment_ankle(i,1);
     end
 end
 
@@ -436,14 +534,14 @@ lgMomentArmPercentFootMean = (lgMomentArmMean / 0.24)*100
 count = 0;
 sumForce = 0;
 sumMoment = 0;
-for i = 1:length(moment_all)
+for i = 1:length(moment_ankle)
     if i >= drStart1 && i < drEnd1 + 1 || ...
             i >= drStart2 && i < drEnd2 + 1
         count = count + 1;
         drForce(count,1) = sagForce(i,1);
-        drMoment(count,1) = moment_all(i,1);
+        drMoment(count,1) = moment_ankle(i,1);
         sumForce = sumForce + sagForce(i,1);
-        sumMoment = sumMoment + moment_all(i,1);
+        sumMoment = sumMoment + moment_ankle(i,1);
     end
 end
 
@@ -457,14 +555,14 @@ drMomentArmPercentFootMean = (drMomentArmMean / 0.24)*100
 count = 0;
 sumForce = 0;
 sumMoment = 0;
-for i = 1:length(moment_all)
+for i = 1:length(moment_ankle)
     if i >= usStart1 && i < usEnd1 + 1 || ...
             i >= usStart2 && i < usEnd2 + 1
         count = count + 1;
         usForce(count,1) = sagForce(i,1);
-        usMoment(count,1) = moment_all(i,1);
+        usMoment(count,1) = moment_ankle(i,1);
         sumForce = sumForce + sagForce(i,1);
-        sumMoment = sumMoment + moment_all(i,1);
+        sumMoment = sumMoment + moment_ankle(i,1);
     end
 end
 
@@ -480,14 +578,14 @@ usMomentArmPercentFootMean = (usMomentArmMean / 0.24)*100
 count = 0;
 sumForce = 0;
 sumMoment = 0;
-for i = 1:length(moment_all)
+for i = 1:length(moment_ankle)
     if i >= dsStart1 && i < dsEnd1 + 1 || ...
             i >= dsStart2 && i < dsEnd2 + 1
         count = count + 1;
         dsForce(count,1) = sagForce(i,1);
-        dsMoment(count,1) = moment_all(i,1);
+        dsMoment(count,1) = moment_ankle(i,1);
         sumForce = sumForce + sagForce(i,1);
-        sumMoment = sumMoment + moment_all(i,1);
+        sumMoment = sumMoment + moment_ankle(i,1);
     end
 end
 
@@ -513,7 +611,7 @@ figure
 bar(X,Y)
 hold on
 %errorbar(Y, error, '.')
-ylim([0 50])
+ylim([0 77])
 title(titleV)
 ylabel('DMAMA (% of foot length)')
 text(1:length(Y),Y,num2str(Y'),'vert','bottom','horiz','center');
