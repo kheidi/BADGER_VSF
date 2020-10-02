@@ -1,65 +1,81 @@
 % Set subject and stiffness setting, this will find correct data in
 %matrices of provided, known values
 clearvars -except collectF
-subject = 12;
-setting = 3;
+subject = 4;
+setting = 1;
 cd Data
-
+save = 1;
+saveknee = 0;
+saveJ = 0;
+smooth = 0; 
 %Using vectorCalc3D file find the average A matrix and r vector for each
 %subject
+collectF = figure()
 
+%% Start
 if subject == 2
-    A = [0.999421797371987,-0.0299351255331246,-0.00207784678786959;
-        0.0296572581042341,0.996128500422157,-0.0810442961388628;
-        0.00450334414414811,0.0808845308407729,0.996606759468490];
-%     A = A + 2*[0.000339240369236025,0.0131392759222300,0.00915101541532063;
+   A = [-0.993239120629994,-0.114585348945165,-0.00861786249837329;
+       -0.112372293774766,0.984257179420491,-0.135242669873135;
+       -0.0239398509428289,0.133347168304034,0.990643261896813];
+    %     A = A + 2*[0.000339240369236025,0.0131392759222300,0.00915101541532063;
 %           0.0127166208301486,0.00102537968856321,0.0108836250133737;
 %           0.00976049816795206,0.0108105566519519,0.000976925671012597];
-    
-    r = [0.0430225062955562,-0.0128729273132021,0.209246247039647];
+
+
+    r = [-0.00100072868489795,0.00126077455875971,0.199494900398026];
 %     r = r + 2*[0.0111796678450822,0.0245802172837022,0.00949139156619026];
-    rknee = [-0.0459407184625700,-0.00487269631532575,-0.227434462583852];
+    rknee = [0.00615033929366068,0.00869098430652593,-0.235855249190148];
 end
 
 if subject == 4
-    A = [0.943071963631529,-0.330951810333087,0.0324486338337264;
-        0.331480753040735,0.943349641245414,-0.0123907118118581;
-        -0.0265197758803160,0.0224446947434716,0.999378277248041];
-%     A = A + 2*[0.00174727427656611,0.00499215883793746,0.00232237406212035;
-%         0.00493591903103956,0.00171367888347061,0.00559735913011915;
-%         0.00227500298354999,0.00556119437295477,0.000118308210783904];
+    
+    A = [-0.946161342447878,-0.318121122887055,0.0595301126519236;
+        -0.321513308122892,0.944958542677973,-0.0602157396155866;
+        0.0371090364161133,0.0761165185323037,0.996390303936825];
 
-    r = [-0.0167216308672882,0.0115755375014926,0.196382747541239];
+
+    r = [0.00336289598446481,0.00272672758618676,0.201686384318682];
 %     r = r + 2*[0.0129213278965632,0.0481979683284418,0.00524388679407593];
-    rknee = [0.0295414795355280,-0.0225584462073235,-0.263943783628032];
-end
-
-if subject == 11 %Using subject 4 in the meantime! While waiting for Visual3D data to get prelim results
-    A = [
-        1,0,0;
-        0,1,0;
-        0,0,1
-        ];
-    
-    %Average-ish from previous trials
-    r = [0,0,0.246];
-%     r = r + 2*[0.0111796678450822,0.0245802172837022,0.00949139156619026];
-    rknee = [0,0,-0.2457];
-    
+    rknee = [-0.0113741964148886,0.0190419906687991,-0.273751753374518];
 end
 
 if subject == 12 %Using subject 4 in the meantime! While waiting for Visual3D data to get prelim results
-    A = [
-        1,0,0;
-        0,1,0;
-        0,0,1
-        ];
-    
+   A = [-0.785216882467160,-0.615334296806356,0.0612990023334411;
+       -0.618609731566289,0.785568749284867,-0.0342367014272276;
+       0.0270239407237535,0.0647717272959378,0.997510768990911];
+   
+    %     A = [
+%         1,0,0;
+%         0,1,0;
+%         0,0,1
+%         ];
+
+
     %Average-ish from previous trials
-    r = [0,0,0.246];
+    r = [0.000652062107279557,0.0111909117247841,0.153666711533084];
 %     r = r + 2*[0.0111796678450822,0.0245802172837022,0.00949139156619026];
-    rknee = [0,0,-0.2457];
+    rknee = [-0.0224486964719028,0.00844623880535997,-0.362389219842040];
     
+end
+
+if subject == 11 %Using subject 4 in the meantime! While waiting for Visual3D data to get prelim results
+%         A = [
+%         1,0,0;
+%         0,1,0;
+%         0,0,1
+%         ];
+    
+%     %Average-ish from previous trials
+%  r = [0,0,0.246];
+%     r = r + 2*[0.0111796678450822,0.0245802172837022,0.00949139156619026];
+%rknee = [0,0,-0.2457];
+ A = [-0.998141364711753,-0.0481916211904513,-0.00385982469701325;
+        -0.0453331179571604,0.997924111438259,-0.00173810765876967;
+        -0.00350984527530291,0.00147870444327958,0.999846740068188];
+    
+    r = [0.0255193138789372,-0.0270886088119814,0.144739975417214];
+    rknee = [0.0276542442939638,-0.0270886061706864,-0.287583813647859];
+%     
 end
 
 % -----------------iPecs Data-----------------
@@ -78,18 +94,32 @@ file_iPecs = fileName;
 % cuts = [iPecsCuts(subject, setting*3-2);iPecsCuts(subject, setting*3-1);iPecsCuts(subject, setting*3)];
 % cuts = transpose(A*cuts);
         
+% iPecsCuts = [0,-70, 335, 0,0,0 0,0,0;
+%               7.5,-5,-25,7.5,-5,-25,7.5,-5,-25;
+%               0,0,0,0,0,0,0,0,0;
+%              -5, 0.3, 25,-5, 0.3, 25,-5, 0.3, 25;
+%              0,0,0,0,0,0,0,0,0;
+%              0,0,0,0,0,0,0,0,0;
+%              0,0,0,0,0,0,0,0,0;
+%              0,0,0,0,0,0,0,0,0;
+%              0,0,0,0,0,0,0,0,0;
+%              0,0,0,0,0,0,0,0,0;
+%              0,0,615,0,0,605,0,0,605;
+%              0,0,656,0,0,656,0,0,656];
+
 iPecsCuts = [0,-70, 335, 0,0,0 0,0,0;
               7.5,-5,-25,7.5,-5,-25,7.5,-5,-25;
               0,0,0,0,0,0,0,0,0;
-             -5, 0.3, 25,-5, 0.3, 25,-5, 0.3, 25;
+              1.5,-3,-50,-5,-15,-50,10,-20,-40;
              0,0,0,0,0,0,0,0,0;
              0,0,0,0,0,0,0,0,0;
              0,0,0,0,0,0,0,0,0;
              0,0,0,0,0,0,0,0,0;
              0,0,0,0,0,0,0,0,0;
              0,0,0,0,0,0,0,0,0;
-             0,0,615,0,0,605,0,0,605;
-             0,0,656,0,0,656,0,0,656];
+             -25,-15,610,-25,-15,610,-25,-15,610;
+             0,0,660,0,0,656,0,0,656];
+
 
 cuts = [iPecsCuts(subject, setting*3-2);iPecsCuts(subject, setting*3-1);iPecsCuts(subject, setting*3)];
 cuts = transpose(A*cuts);
@@ -218,7 +248,14 @@ title('Raw iPecs Data (No Zeroing)')
 
 % subplot(2,1,2)
 % plot(i,toePosZ)
+%% Smooth
 
+if smooth ==1
+    collectionFrequency = 150;
+    [transformedData,frequency,t] = dataProcessing.fastFourier(iPecsData(:,3), collectionFrequency);
+    cutoffFrequency = 10;
+    iPecsData = dataProcessing.apply4OButter(iPecsData, collectionFrequency, cutoffFrequency);
+end
 
 %% Apply Cuts and Trim Length
 % Apply cuts and thresholds
@@ -229,7 +266,8 @@ ipFz = iPecsData(:,4) - cuts(3);
 MxiPecs = iPecsData(:,5);
 MyiPecs = iPecsData(:,6);
 MziPecs = iPecsData(:,7);
-ipTime = 1:length(ipFy);
+ipFrameTime = 1:length(ipFy);
+ipRealTime = iPecsData(:,1);
 
 %Trim length of iPecs Data so that it aligns nicely with XSENS
 ipStart = ipStartValues(subject,setting);
@@ -237,9 +275,12 @@ ipEnd = ipEndValues(subject,setting);
 xsensStart = xsensStartValues(subject,setting);
 xsensEnd = xsensEndValues(subject,setting);
 
+ipRealTime = ipRealTime(ipStart:ipEnd);
+
 ipFx = ipFx(ipStart:ipEnd);
 ipFy = ipFy(ipStart:ipEnd);
 ipFz = ipFz(ipStart:ipEnd);
+
 
 MxiPecs = MxiPecs(ipStart:ipEnd);
 MyiPecs = MyiPecs(ipStart:ipEnd);
@@ -260,6 +301,12 @@ ipMultiplier = xsensLength/ipLength;
 newTime = (xsensStart:ipMultiplier:xsensEnd);
 
 %% SECTION ?: APPLY CUTS & ROTATION MATRICES
+figure
+plot(ipFx)
+hold on 
+plot(ipFy)
+plot(ipFz)
+hold off
 F_shankframe = zeros(length(ipFx),3);
 for i = 1:length(ipFz)
     F_shankframe(i,:) = transpose(A * [ipFx(i); ipFy(i); ipFz(i)]);
@@ -270,28 +317,57 @@ for i = 1:length(ipFz)
     iPecsMomentV(i,:) = transpose(A * [MxiPecs(i); MyiPecs(i); MziPecs(i)]);
 end
 
+figure
+plot(ipFx)
+hold on 
+plot(ipFy)
+plot(ipFz)
+hold off
+
+
+
 MxiPecs = iPecsMomentV(:,1);
 MyiPecs = iPecsMomentV(:,2);
 MziPecs = iPecsMomentV(:,3);
+
+figure
+plot(MxiPecs)
+hold on 
+plot(MyiPecs)
+plot(MziPecs)
+hold off 
 
 % Compute Saggital Force
 sagForce = (F_shankframe(:,2).^2 + F_shankframe(:,3).^2).^(1/2);
 
 % Moment r X f
- clear moment_all
+clear moment_all
 moment_ankle_computed = zeros(length(F_shankframe),3);
 for i = 1:length(F_shankframe)
     moment_ankle_computed(i,:) = cross(r, F_shankframe(i,:));
     moment_knee_computed(i,:) = cross(rknee, F_shankframe(i,:));
 end
+figure
+plot(moment_ankle_computed(:,1),'-r')
+hold on
+plot(MxiPecs(:,1),'-b')
+moment_ankle(:,1) = moment_ankle_computed(:,1) - MxiPecs(:,1);
+plot(moment_ankle(:,1),'-g')
+hold off
+moment_ankle(:,2) = moment_ankle_computed(:,2) - MyiPecs(:,1);
+moment_ankle(:,3) = moment_ankle_computed(:,3) - MziPecs(:,1);
 
-moment_ankle(:,1) = moment_ankle_computed(:,1) + MxiPecs(:,1);
-moment_ankle(:,2) = moment_ankle_computed(:,2) + MyiPecs(:,1);
-moment_ankle(:,3) = moment_ankle_computed(:,3) + MziPecs(:,1);
+figure()
+plot(moment_knee_computed(:,1),'-r')
+hold on
+plot(MxiPecs,'-b')
 
-moment_knee(:,1) = moment_knee_computed(:,1) + MxiPecs(:,1);
-moment_knee(:,2) = moment_knee_computed(:,2) + MyiPecs(:,1);
-moment_knee(:,3) = moment_knee_computed(:,3) + MziPecs(:,1);
+
+moment_knee(:,1) = -moment_knee_computed(:,1) - MxiPecs(:,1);
+plot(moment_knee(:,1),'-g')
+hold off
+moment_knee(:,2) = -moment_knee_computed(:,2) - MyiPecs(:,1);
+moment_knee(:,3) = -moment_knee_computed(:,3) - MziPecs(:,1);
 
 clear moment_withXsensTime
 moment_withXsensTime(:,1) = newTime;
@@ -488,6 +564,10 @@ xline(drStart2, ':b', 'DR2 Start','HandleVisibility','off');
 
 %% Wrong direction of moment?
 moment_ankle = -1*(moment_ankle);
+
+ipMx = MxiPecs;
+ipMy = MyiPecs;
+ipMz = MziPecs;
 %% SECTION 9A: UP RAMP ANALYSIS
 count = 0;
 sumForce = 0;
@@ -496,10 +576,18 @@ for i = 1:length(moment_ankle)
     if i >= urStart1 && i < urEnd1 + 1 || ...
             i >= urStart2 && i < urEnd2 + 1
         count = count + 1;
-        urForce(count,1) = sagForce(i,1);
-        urMoment(count,1) = moment_ankle(i,1);
+        urSagForce(count,1) = sagForce(i,1);
+        urAnkleMoment(count,1) = moment_ankle(i,1);
+        urKneeMoment(count,1) = moment_knee(i,1);
+        urFx(count,1) = ipFx(i,1);
+        urFy(count,1) = ipFy(i,1);
+        urFz(count,1) = ipFz(i,1);
+        urMx(count,1) = ipMx(i,1);
+        urMy(count,1) = ipMy(i,1);
+        urMz(count,1) = ipMz(i,1);
         sumForce = sumForce + sagForce(i,1);
         sumMoment = sumMoment + moment_ankle(i,1);
+        urTime(count,1) = ipRealTime(i,1);
     end
 end
 %urStDev = std(urMomentArmPercentFoot)
@@ -517,10 +605,18 @@ for i = 1:length(moment_ankle)
             i >= lgStart2 && i < lgEnd2 + 1 || ...
             i >= lgStart3 && i < lgEnd3 + 1
         count = count + 1;
-        lgForce(count,1) = sagForce(i,1);
-        lgMoment(count,1) = moment_ankle(i,1);
+        lgSagForce(count,1) = sagForce(i,1);
+        lgAnkleMoment(count,1) = moment_ankle(i,1);
+        lgKneeMoment(count,1) = moment_knee(i,1);
+        lgFx(count,1) = ipFx(i,1);
+        lgFy(count,1) = ipFy(i,1);
+        lgFz(count,1) = ipFz(i,1);
+        lgMx(count,1) = ipMx(i,1);
+        lgMy(count,1) = ipMy(i,1);
+        lgMz(count,1) = ipMz(i,1);
         sumForce = sumForce + sagForce(i,1);
         sumMoment = sumMoment + moment_ankle(i,1);
+        lgTime(count,1) = ipRealTime(i,1);
     end
 end
 
@@ -538,10 +634,18 @@ for i = 1:length(moment_ankle)
     if i >= drStart1 && i < drEnd1 + 1 || ...
             i >= drStart2 && i < drEnd2 + 1
         count = count + 1;
-        drForce(count,1) = sagForce(i,1);
-        drMoment(count,1) = moment_ankle(i,1);
+        drSagForce(count,1) = sagForce(i,1);
+        drAnkleMoment(count,1) = moment_ankle(i,1);
+        drKneeMoment(count,1) = moment_knee(i,1);
+        drFx(count,1) = ipFx(i,1);
+        drFy(count,1) = ipFy(i,1);
+        drFz(count,1) = ipFz(i,1);
+        drMx(count,1) = ipMx(i,1);
+        drMy(count,1) = ipMy(i,1);
+        drMz(count,1) = ipMz(i,1);
         sumForce = sumForce + sagForce(i,1);
         sumMoment = sumMoment + moment_ankle(i,1);
+        drTime(count,1) = ipRealTime(i,1);
     end
 end
 
@@ -559,10 +663,18 @@ for i = 1:length(moment_ankle)
     if i >= usStart1 && i < usEnd1 + 1 || ...
             i >= usStart2 && i < usEnd2 + 1
         count = count + 1;
-        usForce(count,1) = sagForce(i,1);
-        usMoment(count,1) = moment_ankle(i,1);
+        usSagForce(count,1) = sagForce(i,1);
+        usAnkleMoment(count,1) = moment_ankle(i,1);
+        usKneeMoment(count,1) = moment_knee(i,1);
+        usFx(count,1) = ipFx(i,1);
+        usFy(count,1) = ipFy(i,1);
+        usFz(count,1) = ipFz(i,1);
+        usMx(count,1) = ipMx(i,1);
+        usMy(count,1) = ipMy(i,1);
+        usMz(count,1) = ipMz(i,1);
         sumForce = sumForce + sagForce(i,1);
         sumMoment = sumMoment + moment_ankle(i,1);
+        usTime(count,1) = ipRealTime(i,1);
     end
 end
 
@@ -582,10 +694,18 @@ for i = 1:length(moment_ankle)
     if i >= dsStart1 && i < dsEnd1 + 1 || ...
             i >= dsStart2 && i < dsEnd2 + 1
         count = count + 1;
-        dsForce(count,1) = sagForce(i,1);
-        dsMoment(count,1) = moment_ankle(i,1);
+        dsSagForce(count,1) = sagForce(i,1);
+        dsAnkleMoment(count,1) = moment_ankle(i,1);
+        dsKneeMoment(count,1) = moment_knee(i,1);
+        dsFx(count,1) = ipFx(i,1);
+        dsFy(count,1) = ipFy(i,1);
+        dsFz(count,1) = ipFz(i,1);
+        dsMx(count,1) = ipMx(i,1);
+        dsMy(count,1) = ipMy(i,1);
+        dsMz(count,1) = ipMz(i,1);
         sumForce = sumForce + sagForce(i,1);
         sumMoment = sumMoment + moment_ankle(i,1);
+        dsTime(count,1) = ipRealTime(i,1);
     end
 end
 
@@ -595,6 +715,84 @@ dsMomentMean = sumMoment/count;
 dsMomentArmMean = dsMomentMean / dsForceMean;
 dsMomentArmPercentFootMean = (dsMomentArmMean / 0.24)*100
 
+%% Write everthing to .csv
+if save == 1
+    cd dataExport
+
+    T = table(lgSagForce,lgAnkleMoment,lgKneeMoment,lgTime);
+    writetable(T,['T_',num2str(subject),'-', num2str(setting),'_levelGround','.csv'])
+    clear T
+
+    T = table(urSagForce,urAnkleMoment,urKneeMoment,urTime);
+    writetable(T,['T_',num2str(subject),'-', num2str(setting),'_upRamp','.csv'])
+    clear T
+
+    T = table(drSagForce,drAnkleMoment,drKneeMoment,drTime);
+    writetable(T,['T_',num2str(subject),'-', num2str(setting),'_downRamp','.csv'])
+    clear T
+
+    T = table(usSagForce,usAnkleMoment,usKneeMoment,usTime);
+    writetable(T,['T_',num2str(subject),'-', num2str(setting),'_upStairs','.csv'])
+    clear T
+
+    T = table(dsSagForce,dsAnkleMoment,dsKneeMoment,dsTime);
+    writetable(T,['T_',num2str(subject),'-', num2str(setting),'_downStairs','.csv'])
+    clear T
+
+    cd ..
+end
+if saveknee == 1
+    cd dataExport
+
+    T = table(lgSagForce,lgAnkleMoment,lgKneeMoment);
+    writetable(T,['KneeMo',num2str(subject),'-', num2str(setting),'_levelGround','.csv'])
+    clear T
+
+    T = table(urSagForce,urAnkleMoment,urKneeMoment);
+    writetable(T,['KneeMo',num2str(subject),'-', num2str(setting),'_upRamp','.csv'])
+    clear T
+
+    T = table(drSagForce,drAnkleMoment,drKneeMoment);
+    writetable(T,['KneeMo',num2str(subject),'-', num2str(setting),'_downRamp','.csv'])
+    clear T
+
+    T = table(usSagForce,usAnkleMoment,usKneeMoment);
+    writetable(T,['KneeMo',num2str(subject),'-', num2str(setting),'_upStairs','.csv'])
+    clear T
+
+    T = table(dsSagForce,dsAnkleMoment,dsKneeMoment);
+    writetable(T,['KneeMo',num2str(subject),'-', num2str(setting),'_downStairs','.csv'])
+    clear T
+
+    cd ..
+end
+    
+if saveJ == 1
+    cd dataExportJ
+
+    T = table(lgFx,lgFy,lgFz,lgMx,lgMy,lgMz,lgAnkleMoment,lgKneeMoment,lgSagForce);
+    writetable(T,[num2str(subject),'-', num2str(setting),'_levelGround','.csv'])
+    clear T
+
+    T = table(urFx,urFy,urFz,urMx,urMy,urMz,urAnkleMoment,urKneeMoment,urSagForce);
+    writetable(T,[num2str(subject),'-', num2str(setting),'_upRamp','.csv'])
+    clear T
+
+    T = table(drFx,drFy,drFz,drMx,drMy,drMz,drAnkleMoment,drKneeMoment,drSagForce);
+    writetable(T,[num2str(subject),'-', num2str(setting),'_downRamp','.csv'])
+    clear T
+
+    T = table(usFx,usFy,usFz,usMx,usMy,usMz,usAnkleMoment,usKneeMoment,usSagForce);
+    writetable(T,[num2str(subject),'-', num2str(setting),'_upStairs','.csv'])
+    clear T
+
+    T = table(dsFx,dsFy,dsFz,dsMx,dsMy,dsMz,dsAnkleMoment,dsKneeMoment,dsSagForce);
+    writetable(T,[num2str(subject),'-', num2str(setting),'_downStairs','.csv'])
+    clear T
+
+    cd ..
+end
+    
 
 %% SECTION 10: GRAPH DMAMA
 
@@ -627,37 +825,37 @@ hold off
 titleV=(['Force Plot of Each Ambulation Mode for: Subject ', num2str(subject), ' on Setting ', num2str(setting)]);
 forceFigure = figure;
 subplot(5,1,1)
-plot(lgForce)
-xlim([0 length(lgForce)])
+plot(lgSagForce)
+xlim([0 length(lgSagForce)])
 title('Level Ground')
 ylabel('Force (N)')
 set(gca,'FontSize',15)
 
 subplot(5,1,2)
-plot(urForce)
-xlim([0 length(urForce)])
+plot(urSagForce)
+xlim([0 length(urSagForce)])
 title('Up Ramp')
 ylabel('Force (N)')
 set(gca,'FontSize',15)
 
 subplot(5,1,3)
-plot(drForce)
+plot(drSagForce)
 title('Down Ramp')
-xlim([0 length(drForce)])
+xlim([0 length(drSagForce)])
 ylabel('Force (N)')
 set(gca,'FontSize',15)
 
 subplot(5,1,4)
-plot(usForce)
+plot(usSagForce)
 title('Up Stairs')
-xlim([0 length(usForce)])
+xlim([0 length(usSagForce)])
 ylabel('Force (N)')
 set(gca,'FontSize',15)
 
 subplot(5,1,5)
-plot(dsForce)
+plot(dsSagForce)
 title('Down Stairs')
-xlim([0 length(dsForce)])
+xlim([0 length(dsSagForce)])
 ylabel('Force (N)')
 set(gca,'FontSize',15)
 
@@ -671,36 +869,36 @@ print(forceFigure,shortTitle, '-dpdf','-fillpage')
 titleV=(['Moment Plot of Each Ambulation Mode for: Subject ', num2str(subject), ' on Setting ', num2str(setting)]);
 momentFigure = figure;
 subplot(5,1,1)
-plot(lgMoment, 'r')
-xlim([0 length(lgForce)])
+plot(lgAnkleMoment, 'r')
+xlim([0 length(lgSagForce)])
 title('Level Ground')
 ylabel('Moment (Nm)')
 set(gca,'FontSize',15)
 
 subplot(5,1,2)
-plot(urMoment, 'r')
-xlim([0 length(urForce)])
+plot(urAnkleMoment, 'r')
+xlim([0 length(urSagForce)])
 title('Up Ramp')
 ylabel('Moment (Nm)')
 set(gca,'FontSize',15)
 
 subplot(5,1,3)
-plot(drMoment, 'r')
-xlim([0 length(drForce)])
+plot(drAnkleMoment, 'r')
+xlim([0 length(drSagForce)])
 title('Down Ramp')
 ylabel('Moment (Nm)')
 set(gca,'FontSize',15)
 
 subplot(5,1,4)
-plot(usMoment, 'r')
-xlim([0 length(usForce)])
+plot(usAnkleMoment, 'r')
+xlim([0 length(usSagForce)])
 title('Up Stairs')
 ylabel('Moment (Nm)')
 set(gca,'FontSize',15)
 
 subplot(5,1,5)
-plot(dsMoment, 'r')
-xlim([0 length(dsForce)])
+plot(dsAnkleMoment, 'r')
+xlim([0 length(dsSagForce)])
 title('Down Stairs')
 ylabel('Moment (Nm)')
 set(gca,'FontSize',15)
@@ -714,56 +912,56 @@ print(momentFigure,shortTitle, '-dpdf','-fillpage')
 titleV=(['Force Plot of Each Ambulation Mode for: Subject ', num2str(subject), ' on Setting ', num2str(setting)]);
 allFigure = figure
 subplot(5,1,1)
-xlim([0 length(lgForce)])
+xlim([0 length(lgSagForce)])
 yyaxis left
-plot(lgForce)
+plot(lgSagForce)
 ylabel('Force (N)')
 yyaxis right
-plot(lgMoment)
+plot(lgAnkleMoment)
 ylabel('Moment (Nm)')
 title('Level Ground')
 set(gca,'FontSize',15)
 
 subplot(5,1,2)
-xlim([0 length(urForce)])
+xlim([0 length(urSagForce)])
 yyaxis left
-plot(urForce)
+plot(urSagForce)
 ylabel('Force (N)')
 yyaxis right
-plot(urMoment)
+plot(urAnkleMoment)
 ylabel('Moment (Nm)')
 title('Up Ramp')
 set(gca,'FontSize',15)
 
 subplot(5,1,3)
-xlim([0 length(drForce)])
+xlim([0 length(drSagForce)])
 yyaxis left
-plot(drForce)
+plot(drSagForce)
 ylabel('Force (N)')
 yyaxis right
-plot(drMoment)
+plot(drAnkleMoment)
 ylabel('Moment (Nm)')
 title('Down Ramp')
 set(gca,'FontSize',15)
 
 subplot(5,1,4)
-xlim([0 length(usForce)])
+xlim([0 length(usSagForce)])
 yyaxis left
-plot(usForce)
+plot(usSagForce)
 ylabel('Force (N)')
 yyaxis right
-plot(usMoment)
+plot(usAnkleMoment)
 ylabel('Moment (Nm)')
 title('Up Stairs')
 set(gca,'FontSize',15)
 
 subplot(5,1,5)
-xlim([0 length(dsForce)])
+xlim([0 length(dsSagForce)])
 yyaxis left
-plot(dsForce)
+plot(dsSagForce)
 ylabel('Force (N)')
 yyaxis right
-plot(dsMoment)
+plot(dsAnkleMoment)
 ylabel('Moment (Nm)')
 title('Down Stairs')
 
@@ -773,4 +971,17 @@ set(gca,'FontSize',15)
 shortTitle = ([pwd,'\Figures\allSub',num2str(subject), 'Set', num2str(setting),'.pdf']);
 print(allFigure,shortTitle, '-dpdf','-fillpage')
 
+
+%% Whole thing
+titleV=(['Force Plot of Each Ambulation Mode for: Subject ', num2str(subject), ' on Setting ', num2str(setting)]);
+allFigure = figure
+yyaxis left
+plot(sagForce)
+ylim([-350 1400])
+ylabel('Force (N)')
+yyaxis right
+plot(moment_ankle)
+ylabel('Moment (Nm)')
+title('All')
+set(gca,'FontSize',15)
 
