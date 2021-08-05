@@ -1,5 +1,5 @@
 
-load visual3d_latest.mat
+load visual3d_02.mat
 shankAngle_all = shkang{1,1}(:,1:3);
 SK2_all = SK2{1,1}(:,1:3);
 SK3_all = SK3{1,1}(:,1:3);
@@ -15,7 +15,10 @@ vsf_ankle_all = VSF_ANKLE{1,1}(:,1:3);
 % vsf_ankle_all = VSF_LANKLE{1,1}(:,1:3);
 
 % -- Change this frame section for each subject! --
-frames = randi([410 870], 1, 300); %[410 870] for subject 4
+%subject 2
+frames = [950:950+300-1];
+
+% frames = randi([410 870], 1, 300); %[410 870] for subject 4
 r = zeros(length(frames),3);
 
 for i= 1: length(frames)
