@@ -31,3 +31,10 @@ ehthumbs.db
 Thumbs.db
 *.asv
 scratch.m
+
+/Data
+/StdDev
+/Velocity
+/dataExport
+/dataExportJ
+/Origin
