@@ -1,6 +1,6 @@
 clear
 
-load visual3d_11.mat
+load visual3d_12.mat
 shankAngle_all = shkang{1,1}(:,1:3);
 SK2_all = SK2{1,1}(:,1:3); %RS Marker 1; inline with #3, lateral marker
 SK3_all = SK3{1,1}(:,1:3); %RS Marker 2; posterior side of ipecs
@@ -16,7 +16,8 @@ vsf_ankle_all = VSF_ANKLE{1,1}(:,1:3);
 % vsf_ankle_all = VSF_LANKLE{1,1}(:,1:3);
 
 % -- Change this frame section for each subject! --
-frames = randi([3580 3781], 1, 200); %[3580 3781] for subject 11, [8532 9032] for subject 12
+% frames = randi([3580 3781], 1, 200); %[3580 3781] for subject 11, [8532 9032] for subject 12
+frames = [8532:8532+299]
 r = zeros(length(frames),3);
 shankL = zeros(10,1);
 
@@ -26,15 +27,15 @@ for i= 1: length(frames)
     shankframe_origen = [vsf_ankle_all(fN,:)];
     knee = Knee_all(fN,:);
 
-    LiPMark = SK4_all(fN,:) - [0,0,0.04872]; % the subraction lowers the markers since they were on a plate above the iPecs
-    BiPMark = SK3_all(fN,:) - [0,0,0.04872];
-    RiPMark = SK2_all(fN,:) - [0,0,0.04872];
+    % Need to fix
+    LiPMark = SK4_all(fN,:); % the subraction lowers the markers since they were on a plate above the iPecs
+    BiPMark = SK3_all(fN,:); %[0,0,0.04872]
+    RiPMark = SK2_all(fN,:);
     
     % Find iPecs center
     % Midpoint b/w RSK2 and RSK4
    
     iPecsMid = ((RiPMark + LiPMark)/2); % in LAB frame 
-    
     
     v_iMid2iR = RiPMark - iPecsMid;
     v_iMid2iR = v_iMid2iR/norm(v_iMid2iR);
@@ -44,25 +45,35 @@ for i= 1: length(frames)
     % Find iPecs frame
     u_iMid2iB = (BiPMark-iPecsMid);
     u_iMid2iB = u_iMid2iB / norm(u_iMid2iB);
-    u_iUp = cross(v_iMid2iR, u_iMid2iB);
-    u_iUp = u_iUp / norm(u_iUp);
     u_iMid2iF = -1*u_iMid2iB;
+    u_iUp = cross(v_iMid2iR, u_iMid2iF);
+    u_iUp = u_iUp / norm(u_iUp);
+    
     v_iMid2iL = -1*v_iMid2iR;
     
     % These should all give ~0
-    ucheck1 = dot(v_iL2iB, u_iUp);
-    ucheck2 = dot(u_iUp, u_iMid2iF);
-    ucheck3 = dot(v_iL2iB, u_iMid2iF);
+    ucheck1 = dot(v_iMid2iR, u_iUp)
+    ucheck2 = dot(u_iUp, u_iMid2iF)
+    ucheck3 = dot(v_iMid2iR, u_iMid2iF)
+    
+    Av = iPecsMid;
+    Bv = RiPMark;
+    Cv = BiPMark;
+    
+    V1 = (Bv-Av)/norm(Bv-Av,2); % mid to right
+    V2 = -1*cross(V1,(Cv-Av))/norm(cross(V1,(Cv-Av)),2); % mid to back
+    V3 = cross(V1,V2); % up
+   
+    
+%     iX = v_iMid2iR; %X
+%     iY = u_iMid2iF; %Y
+%     iZ = u_iUp; %Z
+%     
+    iX = V1; %X
+    iY = V2; %Y
+    iZ = V3; %Z
     
     
-    iX = v_iMid2iR; %X
-    iY = u_iMid2iF; %Y
-    iZ = u_iUp; %Z
-    
-    % Vector from shank frame origen to middle of iPecs in world frame
-    r(i,:) = iPecsMid - shankframe_origen;
-    ank2knee(i,:) = knee - shankframe_origen;
-
     % Puts X Y Z vectors in the correct matrix form, the following is the
     % rotation matrix that puts the iPecs into the worldframe
     wRip(i,:) = {[iX.',iY.',iZ.']};
@@ -90,6 +101,14 @@ for i= 1: length(frames)
     A(i,:) = {Acurr};
     rodriguesV(i,:) = rotationMatrixToVector(Acurr);
     
+    % Vector from shank frame origen to middle of iPecs in world frame
+    iPMidshankF = wRs{i,:}.'*iPecsMid.';
+    iPMidshankF = iPMidshankF - [0;0;0.04872];
+    iPecsMid = (wRs{i,:}*iPMidshankF).';
+    
+    r(i,:) = iPecsMid - shankframe_origen;
+    ank2knee(i,:) = knee - shankframe_origen;
+    
     r(i,:) = transpose(wRs{i,:}.' * [r(i,1); r(i,2); r(i,3)]);
     identity = Acurr.'*Acurr;
     
@@ -98,6 +117,7 @@ for i= 1: length(frames)
     r2knee(i,:) = r(i,:)-sknee(i,:);
     
     shankL(i) = norm(sknee(i,:));
+    
 end
 
 % The following section finds the standard deviation of the A matrix and the
