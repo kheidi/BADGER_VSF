@@ -17,7 +17,7 @@ vsf_ankle_all = VSF_ANKLE{1,1}(:,1:3);
 
 % -- Change this frame section for each subject! --
 % frames = randi([3580 3781], 1, 200); %[3580 3781] for subject 11, [8532 9032] for subject 12
-frames = [8532:8532+299]
+frames = [8532:8532+299];
 r = zeros(length(frames),3);
 shankL = zeros(10,1);
 
@@ -31,6 +31,10 @@ for i= 1: length(frames)
     LiPMark = SK4_all(fN,:); % the subraction lowers the markers since they were on a plate above the iPecs
     BiPMark = SK3_all(fN,:); %[0,0,0.04872]
     RiPMark = SK2_all(fN,:);
+    
+    LiPMark = SK4_all(fN,:); % the subraction lowers the markers since they were on a plate above the iPecs
+    BiPMark = SK2_all(fN,:); %[0,0,0.04872]
+    RiPMark = SK3_all(fN,:);
     
     % Find iPecs center
     % Midpoint b/w RSK2 and RSK4
@@ -50,28 +54,33 @@ for i= 1: length(frames)
     u_iUp = u_iUp / norm(u_iUp);
     
     v_iMid2iL = -1*v_iMid2iR;
-    
-    % These should all give ~0
-    ucheck1 = dot(v_iMid2iR, u_iUp)
-    ucheck2 = dot(u_iUp, u_iMid2iF)
-    ucheck3 = dot(v_iMid2iR, u_iMid2iF)
+   
     
     Av = iPecsMid;
     Bv = RiPMark;
     Cv = BiPMark;
     
+%     V1 = (Bv-Av)/norm(Bv-Av,2); % mid to right
+%     V2 = cross(V1,(Cv-Av))/norm(cross(V1,(Cv-Av)),2); % mid to back
+%     V3 = cross(V1,V2)/norm(cross(V1,V2)); % up
+    
     V1 = (Bv-Av)/norm(Bv-Av,2); % mid to right
-    V2 = -1*cross(V1,(Cv-Av))/norm(cross(V1,(Cv-Av)),2); % mid to back
-    V3 = cross(V1,V2); % up
+    V2 = cross(V1,(Cv-Av))/norm(cross(V1,(Cv-Av)),2); % mid to right cross mid to back: down
+    V3 = cross(V1,V2)/norm(cross(V1,V2)); % forward
+    
+    % These should all give ~0
+    ucheck1 = dot(V1, V2);
+    ucheck2 = dot(V2, V3);
+    ucheck3 = dot(V1, V3);
    
     
 %     iX = v_iMid2iR; %X
 %     iY = u_iMid2iF; %Y
 %     iZ = u_iUp; %Z
 %     
-    iX = V1; %X
-    iY = V2; %Y
-    iZ = V3; %Z
+    iX = -V3; %X
+    iY = V1; %Y
+    iZ = -V2; %Z
     
     
     % Puts X Y Z vectors in the correct matrix form, the following is the

@@ -1,12 +1,12 @@
 % Set subject and stiffness setting, this will find correct data in
 %matrices of provided, known values
 clearvars -except collectF
-subject = 4;
-setting = 3;
+subject = 12;
+setting = 1;
 cd Data
-save = 1;
+save = 0;
 saveknee = 0;
-saveJ = 1;
+saveJ = 0;
 smooth = 0; 
 %Using vectorCalc3D file find the average A matrix and r vector for each
 %subject
@@ -41,9 +41,10 @@ if subject == 4
 end
 
 if subject == 12 %Using subject 4 in the meantime! While waiting for Visual3D data to get prelim results
-   A = [0.999637653311479,0.00298814550185706,0.0267513190026023;
-       -0.000904206808663282,0.996986031804717,-0.0775759936857414;
-       -0.0269024997345307,0.0775236955565378,0.996627479119099];
+   A = [-0.996770162640083,-0.0519533202593868,0.0612380223757094;
+       0.0499309815773039,-0.998170187750211,-0.0341053275227779;
+       0.0628978532955556,-0.0309374982947005,0.997540340663011];
+   A = [1 0 0; 0 1 0; 0 0 1];
    
     %     A = [
 %         1,0,0;
@@ -53,9 +54,9 @@ if subject == 12 %Using subject 4 in the meantime! While waiting for Visual3D da
 
 
     %Average-ish from previous trials
-    r = [0.000652062107279557,0.0111909117247841,0.153666711533084];
+    r = [0.0361009496053564,0.0118603205904783,0.148998821308886];
 %     r = r + 2*[0.0111796678450822,0.0245802172837022,0.00949139156619026];
-    rknee = [-0.0224486964719028,0.00844623880535997,-0.362389219842040];
+    rknee = [0.0129992729454744,0.0104358210051803,-0.365558552065082];
     
 end
 
