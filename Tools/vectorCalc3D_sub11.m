@@ -78,7 +78,7 @@ for i= 1: length(frames)
 %     iY = u_iMid2iF; %Y
 %     iZ = u_iUp; %Z
 %     
-    iX = -V3; %X
+    iX = V3; %X
     iY = V1; %Y
     iZ = -V2; %Z
     
@@ -112,7 +112,7 @@ for i= 1: length(frames)
     
     % Vector from shank frame origen to middle of iPecs in world frame
     iPMidshankF = wRs{i,:}.'*iPecsMid.';
-    iPMidshankF = iPMidshankF - [0;0;0.04872];
+    iPMidshankF = iPMidshankF - [0;0;((0.04572/2)+0.003)];
     iPecsMid = (wRs{i,:}*iPMidshankF).';
     
     r(i,:) = iPecsMid - shankframe_origen;
@@ -156,16 +156,16 @@ rodR = rotationVectorToMatrix(meanRodri)
 AstdDev = std(AinCols);
 AstdDev = reshape(AstdDev, [3,3]);
 
-wRsAverage = mean(wRsinCols);
-wRsAverage = reshape(wRsAverage, [3,3]);
+wRsAverage = wRs{i,:};
+% wRsAverage = reshape(wRsAverage, [3,3]);
 rkneeAverage = mean(r2knee);
 shankLength = mean(shankL)
 figure 
 plot3(iPecsMid(1), iPecsMid(2), iPecsMid(3), '*')
 hold on
-plot3([iPecsMid(1) AAverage(1,1)], [iPecsMid(2) AAverage(2,1)], [iPecsMid(3) AAverage(3,1)])
-plot3([iPecsMid(1) AAverage(1,2)], [iPecsMid(2) AAverage(2,2)], [iPecsMid(3) AAverage(3,2)])
-plot3([iPecsMid(1) AAverage(1,3)], [iPecsMid(2) AAverage(2,3)], [iPecsMid(3) AAverage(3,3)])
+plot3([iPecsMid(1) Acurr(1,1)], [iPecsMid(2) Acurr(2,1)], [iPecsMid(3) Acurr(3,1)])
+plot3([iPecsMid(1) Acurr(1,2)], [iPecsMid(2) Acurr(2,2)], [iPecsMid(3) Acurr(3,2)])
+plot3([iPecsMid(1) Acurr(1,3)], [iPecsMid(2) Acurr(2,3)], [iPecsMid(3) Acurr(3,3)])
 plot3([0 wRsAverage(1,1)], [0 wRsAverage(2,1)], [0 wRsAverage(3,1)], '-r')
 plot3([0 wRsAverage(1,2)], [0 wRsAverage(2,2)], [0 wRsAverage(3,2)], '-g')
 plot3([0 wRsAverage(1,3)], [0 wRsAverage(2,3)], [0 wRsAverage(3,3)], '-b')
