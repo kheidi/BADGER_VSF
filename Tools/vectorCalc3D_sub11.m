@@ -149,12 +149,12 @@ shankLength = mean(shankL)
 figure 
 plot3(iPecsMid(1), iPecsMid(2), iPecsMid(3), '*')
 hold on
-plot3([iPecsMid(1) Acurr(1,1)], [iPecsMid(2) Acurr(2,1)], [iPecsMid(3) Acurr(3,1)])
-plot3([iPecsMid(1) Acurr(1,2)], [iPecsMid(2) Acurr(2,2)], [iPecsMid(3) Acurr(3,2)])
-plot3([iPecsMid(1) Acurr(1,3)], [iPecsMid(2) Acurr(2,3)], [iPecsMid(3) Acurr(3,3)])
-plot3([0 wRsAverage(1,1)], [0 wRsAverage(2,1)], [0 wRsAverage(3,1)], '-r')
-plot3([0 wRsAverage(1,2)], [0 wRsAverage(2,2)], [0 wRsAverage(3,2)], '-g')
-plot3([0 wRsAverage(1,3)], [0 wRsAverage(2,3)], [0 wRsAverage(3,3)], '-b')
+plot3([iPecsMid(1) Acurr(1,1)], [iPecsMid(2) Acurr(2,1)], [iPecsMid(3) Acurr(3,1)],'-r')
+plot3([iPecsMid(1) Acurr(1,2)], [iPecsMid(2) Acurr(2,2)], [iPecsMid(3) Acurr(3,2)],'-g')
+plot3([iPecsMid(1) Acurr(1,3)], [iPecsMid(2) Acurr(2,3)], [iPecsMid(3) Acurr(3,3)],'-b')
+plot3([iPecsMid(1) wRsAverage(1,1)], [iPecsMid(2) wRsAverage(2,1)], [iPecsMid(3) wRsAverage(3,1)], '--r')
+plot3([iPecsMid(1) wRsAverage(1,2)], [iPecsMid(2) wRsAverage(2,2)], [iPecsMid(3) wRsAverage(3,2)], '--g')
+plot3([iPecsMid(1) wRsAverage(1,3)], [iPecsMid(2) wRsAverage(2,3)], [iPecsMid(3) wRsAverage(3,3)], '--b')
 plot3([shankframe_origen(1) iPecsMid(1)], [shankframe_origen(2) iPecsMid(2)], [shankframe_origen(3) iPecsMid(3)],...
     'LineWidth',3)
 plot3([shankframe_origen(1) knee(1)], [shankframe_origen(2) knee(2)], [shankframe_origen(3) knee(3)],...
