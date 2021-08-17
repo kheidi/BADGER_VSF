@@ -2,7 +2,7 @@
 %matrices of provided, known values
 clearvars -except collectF
 subject = 11;
-setting = 1;
+setting = 2;
 cd Data
 save = 0;
 saveknee = 0;
@@ -44,18 +44,9 @@ if subject == 4
 end
 
 if subject == 12 %Using subject 4 in the meantime! While waiting for Visual3D data to get prelim results
-   A =  -1*[0.995238237327942,-0.00147214458527217,0.0974611909977056;
+   A =  [1,0,0;0 -1 0; 0 0 -1]*-1*[0.995238237327942,-0.00147214458527217,0.0974611909977056;
        0.00171476820772269,0.999995636021459,-0.00240572401398886;
        -0.0974572241055787,0.00256139187898943,0.995236418516363];
-   
-    
-   
-    %     A = [
-%         1,0,0;
-%         0,1,0;
-%         0,0,1
-%         ];
-
 
     %Average-ish from previous trials
     r = [0.0361009496053564,0.0118603205904783,0.171858821308886];
@@ -65,23 +56,6 @@ if subject == 12 %Using subject 4 in the meantime! While waiting for Visual3D da
 end
 
 if subject == 11 %Using subject 4 in the meantime! While waiting for Visual3D data to get prelim results
-%         A = [
-%         1,0,0;
-%         0,1,0;
-%         0,0,1
-%         ];
-    
-%     %Average-ish from previous trials
-%  r = [0,0,0.246];
-%     r = r + 2*[0.0111796678450822,0.0245802172837022,0.00949139156619026];
-%rknee = [0,0,-0.2457];
- A = -1*[0.999624911047254,-0.0246886788528556,-0.0118535374580907;
-     0.0245994980693051,0.999668411130790,-0.00761133903994592;
-     0.0120375208622063,0.00731689303894165,0.999900775661140];
- 
-%  A = [-0.998141364711753,-0.0481916211904513,-0.00385982469701325;
-%         -0.0453331179571604,0.997924111438259,-0.00173810765876967;
-%         -0.00350984527530291,0.00147870444327958,0.999846740068188];
 
 A = [1,0,0;0 -1 0; 0 0 -1]*-1*[0.999624911047254,-0.0246886788528556,-0.0118535374580907;
      0.0245994980693051,0.999668411130790,-0.00761133903994592;
@@ -91,7 +65,6 @@ A = [1,0,0;0 -1 0; 0 0 -1]*-1*[0.999624911047254,-0.0246886788528556,-0.01185353
 %         0,-1,0;
 %         0,0,-1
 %         ];
-
 
     r = [0.00775120131537105,-0.00344310279541798,0.153703323156651];
     rknee = [0.00719117569484395,-0.00344310181265697,-0.274829208038666];
@@ -138,8 +111,8 @@ iPecsCuts = [0,-70, 335, 0,0,0 0,0,0;
              0,0,0,0,0,0,0,0,0;
              0,0,0,0,0,0,0,0,0;
              0,0,0,0,0,0,0,0,0;
-             0,0,610,-25,-15,-610,-25,-15,-610;
-             0,0,-660,0,0,-656,0,0,-656];
+             0,0,610,-25,-15,610,-25,-15,610;
+             0,0,660,0,0,660,0,0,660];
 
 
 cuts = [iPecsCuts(subject, setting*3-2);iPecsCuts(subject, setting*3-1);iPecsCuts(subject, setting*3)];
@@ -267,7 +240,13 @@ xlabel('iPecs Time')
 ylabel('Force (N)')
 title('Raw iPecs Data (No Zeroing)')
 
-% subplot(2,1,2)
+subplot(2,1,2)
+hold on
+[a,b] = size(iPecsData);
+ipLength = a;
+plot(1:ipLength, iPecsData(:,5), 'b-')
+plot(1:ipLength, iPecsData(:,6), 'r-')
+plot(1:ipLength, iPecsData(:,7), 'k-')
 % plot(i,toePosZ)
 %% Smooth
 
@@ -345,6 +324,9 @@ plot(ipFy)
 plot(ipFz)
 hold off
 
+ogMxiP = MxiPecs;
+ogMyiP = MyiPecs;
+ogMziP = MziPecs;
 
 
 MxiPecs = iPecsMomentV(:,1);
@@ -603,9 +585,9 @@ for i = 1:length(moment_ankle)
         urFx(count,1) = ipFx(i,1);
         urFy(count,1) = ipFy(i,1);
         urFz(count,1) = ipFz(i,1);
-        urMx(count,1) = ipMx(i,1);
-        urMy(count,1) = ipMy(i,1);
-        urMz(count,1) = ipMz(i,1);
+        urMx(count,1) = ogMxiP(i,1);
+        urMy(count,1) = ogMyiP(i,1);
+        urMz(count,1) = ogMziP(i,1);
         sumForce = sumForce + sagForce(i,1);
         sumMoment = sumMoment + moment_ankle(i,1);
         urTime(count,1) = ipRealTime(i,1);
@@ -632,9 +614,9 @@ for i = 1:length(moment_ankle)
         lgFx(count,1) = ipFx(i,1);
         lgFy(count,1) = ipFy(i,1);
         lgFz(count,1) = ipFz(i,1);
-        lgMx(count,1) = ipMx(i,1);
-        lgMy(count,1) = ipMy(i,1);
-        lgMz(count,1) = ipMz(i,1);
+        lgMx(count,1) = ogMxiP(i,1);
+        lgMy(count,1) = ogMyiP(i,1);
+        lgMz(count,1) = ogMziP(i,1);
         sumForce = sumForce + sagForce(i,1);
         sumMoment = sumMoment + moment_ankle(i,1);
         lgTime(count,1) = ipRealTime(i,1);
@@ -661,9 +643,9 @@ for i = 1:length(moment_ankle)
         drFx(count,1) = ipFx(i,1);
         drFy(count,1) = ipFy(i,1);
         drFz(count,1) = ipFz(i,1);
-        drMx(count,1) = ipMx(i,1);
-        drMy(count,1) = ipMy(i,1);
-        drMz(count,1) = ipMz(i,1);
+        drMx(count,1) = ogMxiP(i,1);
+        drMy(count,1) = ogMyiP(i,1);
+        drMz(count,1) = ogMziP(i,1);
         sumForce = sumForce + sagForce(i,1);
         sumMoment = sumMoment + moment_ankle(i,1);
         drTime(count,1) = ipRealTime(i,1);
@@ -690,9 +672,9 @@ for i = 1:length(moment_ankle)
         usFx(count,1) = ipFx(i,1);
         usFy(count,1) = ipFy(i,1);
         usFz(count,1) = ipFz(i,1);
-        usMx(count,1) = ipMx(i,1);
-        usMy(count,1) = ipMy(i,1);
-        usMz(count,1) = ipMz(i,1);
+        usMx(count,1) = ogMxiP(i,1);
+        usMy(count,1) = ogMyiP(i,1);
+        usMz(count,1) = ogMziP(i,1);
         sumForce = sumForce + sagForce(i,1);
         sumMoment = sumMoment + moment_ankle(i,1);
         usTime(count,1) = ipRealTime(i,1);
@@ -721,9 +703,9 @@ for i = 1:length(moment_ankle)
         dsFx(count,1) = ipFx(i,1);
         dsFy(count,1) = ipFy(i,1);
         dsFz(count,1) = ipFz(i,1);
-        dsMx(count,1) = ipMx(i,1);
-        dsMy(count,1) = ipMy(i,1);
-        dsMz(count,1) = ipMz(i,1);
+        dsMx(count,1) = ogMxiP(i,1);
+        dsMy(count,1) = ogMyiP(i,1);
+        dsMz(count,1) = ogMziP(i,1);
         sumForce = sumForce + sagForce(i,1);
         sumMoment = sumMoment + moment_ankle(i,1);
         dsTime(count,1) = ipRealTime(i,1);
