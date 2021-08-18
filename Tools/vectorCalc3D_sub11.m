@@ -66,10 +66,15 @@ for i= 1: length(frames)
     ucheck2 = dot(V2, V3);
     ucheck3 = dot(V1, V3);
     
+    % 11
     iX = V1; %X
     iY = V3; %Y
     iZ = -V2; %Z
-    
+
+    % 12
+    iX = V1; %X
+    iY = -V3; %Y
+    iZ = V2; %Z
     
     % Puts X Y Z vectors in the correct matrix form, the following is the
     % rotation matrix that puts the iPecs into the worldframe

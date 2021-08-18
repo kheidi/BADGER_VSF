@@ -7,7 +7,7 @@ setting = 3;
 cd Data
 save = 0;
 saveknee = 0;
-saveJ = 0;
+saveJ = 1;
 smooth = 0; 
 %Using vectorCalc3D file find the average A matrix and r vector for each
 %subject  
@@ -45,9 +45,9 @@ if subject == 4
 end
 
 if subject == 12 %Using subject 4 in the meantime! While waiting for Visual3D data to get prelim results
-   A =  [0.784930915472032,-0.616549847781658,0.0612351462532080;
-       0.618993845672667,0.784654922491231,-0.0341067680914330;
-       -0.0270199362619520,0.0646756353714020,0.997540467967945];
+   A =  [0.784928369608924,0.616552889665954,-0.0612371523475584;
+       0.618997314795591,-0.784651706984789,0.0341177813127678;
+       -0.0270144194630212,-0.0646856473293718,-0.997539968207117];
 
     %Average-ish from previous trials
     r = [0.0361009496053564,0.0118603205904783,0.171858821308886];
@@ -789,23 +789,23 @@ if saveJ == 1
     cd dataExportJ
 
     T = table(lgTime,lgFx,lgFy,lgFz,lgMx,lgMy,lgMz,lgAnkleMoment,lgKneeMoment,lgSagForce);
-    writetable(T,['CwTime_',num2str(subject),'-', num2str(setting),'_levelGround','.csv'])
+    writetable(T,['wTime_',num2str(subject),'-', num2str(setting),'_levelGround','.csv'])
     clear T
 
     T = table(urTime,urFx,urFy,urFz,urMx,urMy,urMz,urAnkleMoment,urKneeMoment,urSagForce);
-    writetable(T,['CwTime_',num2str(subject),'-', num2str(setting),'_upRamp','.csv'])
+    writetable(T,['wTime_',num2str(subject),'-', num2str(setting),'_upRamp','.csv'])
     clear T
 
     T = table(drTime,drFx,drFy,drFz,drMx,drMy,drMz,drAnkleMoment,drKneeMoment,drSagForce);
-    writetable(T,['CwTime_',num2str(subject),'-', num2str(setting),'_downRamp','.csv'])
+    writetable(T,['wTime_',num2str(subject),'-', num2str(setting),'_downRamp','.csv'])
     clear T
 
     T = table(usTime,usFx,usFy,usFz,usMx,usMy,usMz,usAnkleMoment,usKneeMoment,usSagForce);
-    writetable(T,['CwTime_',num2str(subject),'-', num2str(setting),'_upStairs','.csv'])
+    writetable(T,['wTime_',num2str(subject),'-', num2str(setting),'_upStairs','.csv'])
     clear T
 
     T = table(dsTime,dsFx,dsFy,dsFz,dsMx,dsMy,dsMz,dsAnkleMoment,dsKneeMoment,dsSagForce);
-    writetable(T,['CwTime_',num2str(subject),'-', num2str(setting),'_downStairs','.csv'])
+    writetable(T,['wTime_',num2str(subject),'-', num2str(setting),'_downStairs','.csv'])
     clear T
 
     cd ..
