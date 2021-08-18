@@ -28,6 +28,8 @@ for i= 1: length(frames)
     knee = Knee_all(fN,:);
 
     % For sub 11: sk2 is marker1, sk2 is marker2, sk3 is marker3
+    % Sub 11 top view: right is "marker 3" aka, sk3
+    % Sub 11 top view: left is "marker 1" aka, sk1
     LiPMark = SK2_all(fN,:); % the subraction lowers the markers since they were on a plate above the iPecs
     BiPMark = SK3_all(fN,:); %[0,0,0.04872]
     RiPMark = SK4_all(fN,:);
@@ -65,8 +67,8 @@ for i= 1: length(frames)
     ucheck3 = dot(V1, V3);
     
     iX = V1; %X
-    iY = V3; %Y
-    iZ = -V2; %Z
+    iY = -V3; %Y
+    iZ = V2; %Z
     
     
     % Puts X Y Z vectors in the correct matrix form, the following is the
