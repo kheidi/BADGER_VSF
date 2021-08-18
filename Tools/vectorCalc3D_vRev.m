@@ -1,5 +1,5 @@
 clear
-load visual3d_04.mat
+load visual3d_02.mat
 shankAngle_all = shkang{1,1}(:,1:3);
 SK2_all = SK2{1,1}(:,1:3);
 SK3_all = SK3{1,1}(:,1:3);
@@ -9,6 +9,7 @@ vsf_ankle_all = VSF_ANKLE{1,1}(:,1:3);
 
 % -- Change this frame section for each subject! --
 frames = [410:410+299]; %[410 870] for subject 4, [665:665+299] for sub 2
+frames = [665:665+299];
 r = zeros(length(frames),3);
 
 for i= 1: length(frames)
@@ -17,7 +18,7 @@ for i= 1: length(frames)
     shankframe_origen = vsf_ankle_all(fN,:);
     knee = Knee_all(fN,:);
 
-    BackLeftiP = SK4_all(fN,:);
+    BackLeftiP = SK4_all(fN,:); %left as viewed when facing the person, regardless of lef it's on
     FrontLeftiP = SK3_all(fN,:);
     RightiP = SK2_all(fN,:);
     
@@ -44,8 +45,13 @@ for i= 1: length(frames)
     ucheck3 = dot(BackLeft2FrontLeft, u_Right2Left);
     
     F = u_Right2Left; %X
-    G = -1*BackLeft2FrontLeft; %Y
-    H = -1*u_iPUp; %Z
+    G = -BackLeft2FrontLeft; %Y
+    H = -u_iPUp; %Z
+    
+%     F = -u_Right2Left; %X
+%     G = -BackLeft2FrontLeft; %Y
+%     H = u_iPUp; %Z
+%     
     
     % Vector from world frame origen to middle of iPecs
     r(i,:) = iPecsMid - shankframe_origen;
