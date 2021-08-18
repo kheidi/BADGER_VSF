@@ -1,10 +1,10 @@
 clear
 
-load visual3d_11.mat
+load visual3d_12.mat
 shankAngle_all = shkang{1,1}(:,1:3);
-SK2_all = SK2{1,1}(:,1:3); %RS Marker 1; inline with #3, lateral marker
-SK3_all = SK3{1,1}(:,1:3); %RS Marker 2; posterior side of ipecs
-SK4_all = SK4{1,1}(:,1:3); %RS Marker 3; medial marker
+Left_all = SK2{1,1}(:,1:3); %RS Marker 1; inline with #3, lateral marker
+Back_all = SK3{1,1}(:,1:3); %RS Marker 2; posterior side of ipecs
+Right_all = SK4{1,1}(:,1:3); %RS Marker 3; medial marker
 Knee_all = KNEE{1,1}(:,1:3);
 vsf_ankle_all = VSF_ANKLE{1,1}(:,1:3);
 
@@ -17,7 +17,7 @@ vsf_ankle_all = VSF_ANKLE{1,1}(:,1:3);
 
 % -- Change this frame section for each subject! --
 frames = [3425:3725]; %[3580 3781] for subject 11, [8532 9032] for subject 12
-% frames = [8532:8532+299];
+frames = [8532:8532+299];
 r = zeros(length(frames),3);
 shankL = zeros(10,1);
 
@@ -30,9 +30,9 @@ for i= 1: length(frames)
     % For sub 11: sk2 is marker1, sk2 is marker2, sk3 is marker3
     % Sub 11 top view: right is "marker 3" aka, sk3
     % Sub 11 top view: left is "marker 1" aka, sk1
-    LiPMark = SK2_all(fN,:); % the subraction lowers the markers since they were on a plate above the iPecs
-    BiPMark = SK3_all(fN,:); %[0,0,0.04872]
-    RiPMark = SK4_all(fN,:);
+    LiPMark = Left_all(fN,:); % the subraction lowers the markers since they were on a plate above the iPecs
+    BiPMark = Back_all(fN,:); %[0,0,0.04872]
+    RiPMark = Right_all(fN,:);
     
     % Find iPecs center
     % Midpoint b/w RSK2 and RSK4
