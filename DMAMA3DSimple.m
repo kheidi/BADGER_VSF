@@ -2,14 +2,14 @@
 %matrices of provided, known values
 clearvars -except collectF
 subject = 11;
-setting = 2;
+setting = 1;
 cd Data
 save = 0;
 saveknee = 0;
-saveJ = 0;
+saveJ = 1;
 smooth = 0; 
 %Using vectorCalc3D file find the average A matrix and r vector for each
-%subject
+%subject  
 collectF = figure()
 
 %%%Check
@@ -44,9 +44,9 @@ if subject == 4
 end
 
 if subject == 12 %Using subject 4 in the meantime! While waiting for Visual3D data to get prelim results
-   A =  [1,0,0;0 -1 0; 0 0 -1]*-1*[0.995238237327942,-0.00147214458527217,0.0974611909977056;
+   A =  -1*[0.995238237327942,-0.00147214458527217,0.0974611909977056;
        0.00171476820772269,0.999995636021459,-0.00240572401398886;
-       -0.0974572241055787,0.00256139187898943,0.995236418516363];
+       -0.0974572241055787,0.00256139187898943,0.995236418516363]*[1,0,0;0 -1 0; 0 0 -1];
 
     %Average-ish from previous trials
     r = [0.0361009496053564,0.0118603205904783,0.171858821308886];
@@ -57,9 +57,9 @@ end
 
 if subject == 11 %Using subject 4 in the meantime! While waiting for Visual3D data to get prelim results
 
-A = [1,0,0;0 -1 0; 0 0 -1]*-1*[0.999624911047254,-0.0246886788528556,-0.0118535374580907;
+A = -1*[0.999624911047254,-0.0246886788528556,-0.0118535374580907;
      0.0245994980693051,0.999668411130790,-0.00761133903994592;
-     0.0120375208622063,0.00731689303894165,0.999900775661140];
+     0.0120375208622063,0.00731689303894165,0.999900775661140]*[1,0,0;0 -1 0; 0 0 -1];
 %          A = [
 %         1,0,0;
 %         0,-1,0;
@@ -111,7 +111,7 @@ iPecsCuts = [0,-70, 335, 0,0,0 0,0,0;
              0,0,0,0,0,0,0,0,0;
              0,0,0,0,0,0,0,0,0;
              0,0,0,0,0,0,0,0,0;
-             0,0,610,-25,-15,610,-25,-15,610;
+             30,0,610,-25,-15,610,-25,-15,610;
              0,0,660,0,0,660,0,0,660];
 
 
@@ -285,6 +285,20 @@ ipFz = ipFz(ipStart:ipEnd);
 MxiPecs = MxiPecs(ipStart:ipEnd);
 MyiPecs = MyiPecs(ipStart:ipEnd);
 MziPecs = MziPecs(ipStart:ipEnd);
+
+figure
+hold on
+[a,b] = size(iPecsData);
+ipLength = a;
+plot(ipFx, 'b-')
+plot(ipFy, 'r-')
+plot(ipFz, 'k-')
+yline(0)
+legend('X iPecs Force','Y iPecs Force','Z iPecs Force')
+xlabel('iPecs Time')
+ylabel('Force (N)')
+title('Raw iPecs Data Zeroed')
+
 
 
 %% SECTION 8: DATA ALIGNMENT CODE
