@@ -1,6 +1,6 @@
 clear
 
-load visual3d_11.mat
+load visual3d_12.mat
 shankAngle_all = shkang{1,1}(:,1:3);
 Left_all = SK2{1,1}(:,1:3); %RS Marker 1; inline with #3, lateral marker
 Back_all = SK3{1,1}(:,1:3); %RS Marker 2; posterior side of ipecs
@@ -17,7 +17,7 @@ vsf_ankle_all = VSF_ANKLE{1,1}(:,1:3);
 
 % -- Change this frame section for each subject! --
 frames = [3425:3725]; %[3580 3781] for subject 11, [8532 9032] for subject 12
-% frames = [8532:8532+299];
+frames = [8532:8532+299];
 r = zeros(length(frames),3);
 shankL = zeros(10,1);
 
