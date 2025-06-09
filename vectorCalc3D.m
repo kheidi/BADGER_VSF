@@ -1,11 +1,18 @@
 
 load visual3d_latest.mat
+% shankAngle_all = shkang{1,1}(:,1:3);
+% SK2_all = SK2{1,1}(:,1:3);
+% SK3_all = SK3{1,1}(:,1:3);
+% SK4_all = SK4{1,1}(:,1:3);
+% Knee_all = KNEE{1,1}(:,1:3);
+% vsf_ankle_all = VSF_ANKLE{1,1}(:,1:3);
+
 shankAngle_all = shkang{1,1}(:,1:3);
-SK2_all = SK2{1,1}(:,1:3);
-SK3_all = SK3{1,1}(:,1:3);
-SK4_all = SK4{1,1}(:,1:3);
-Knee_all = KNEE{1,1}(:,1:3);
-vsf_ankle_all = VSF_ANKLE{1,1}(:,1:3);
+SK2_all = LSK2{1,1}(:,1:3);
+SK3_all = LSK3{1,1}(:,1:3);
+SK4_all = LSK4{1,1}(:,1:3);
+Knee_all = LKNEE{1,1}(:,1:3);
+vsf_ankle_all = VSF_LANKLE{1,1}(:,1:3);
 
 % -- Change this frame section for each subject! --
 frames = randi([410 870], 1, 300);
@@ -50,6 +57,7 @@ for i= 1: length(frames)
     
     % Vector from world frame origen to middle of iPecs
     r(i,:) = iPecsMid - shankframe_origen;
+    rknee(i,:) = knee - shankframe_origen;
 
     % Puts X Y Z vectors in the correct matrix form, the following is the
     % rotation matrix that puts the iPecs into the worldframe
@@ -76,9 +84,13 @@ for i= 1: length(frames)
     %the iPecs frame into the shank frame
     Acurr = wRs{i,:}.' * wRip{i,:};
     A(i,:) = {Acurr};
-    
+    rodriguesV(i,:) = rotationMatrixToVector(Acurr);
     r(i,:) = transpose(Acurr * [r(i,1); r(i,2); r(i,3)]);
     identity = Acurr.'*Acurr;
+    
+    %find rknee in shank frame
+    sknee(i,:) = transpose(Acurr * [rknee(i,1); rknee(i,2); rknee(i,3)]);
+    r2knee(i,:) = r(i,:)-sknee(i,:);
     
 end
 
@@ -104,11 +116,14 @@ rAverage = mean(r)
 rstdDev = std(r)
 AAverage = mean(AinCols);
 AAverage = reshape(AAverage, [3,3])
+meanRodri = mean(rodriguesV);
+rodR = rotationVectorToMatrix(meanRodri)
 AstdDev = std(AinCols);
 AstdDev = reshape(AstdDev, [3,3])
 
 wRsAverage = mean(wRsinCols);
 wRsAverage = reshape(wRsAverage, [3,3]);
+rkneeAverage = mean(r2knee)
 
 figure 
 plot3(sk4(1), sk4(2), sk4(3), '*')

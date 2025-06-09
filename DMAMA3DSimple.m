@@ -1,8 +1,8 @@
-% Set subject and stiffness setting, this will find correct data in
+    % Set subject and stiffness setting, this will find correct data in
 %matrices of provided, known values
 clearvars -except collectF
-subject = 12;
-setting = 3;
+subject = 4;
+setting = 1;
 cd Data
 save = 1;
 saveknee = 0;
@@ -573,7 +573,7 @@ count = 0;
 sumForce = 0;
 sumMoment = 0;
 for i = 1:length(moment_ankle)
-    if i >= urStart1 && i < urEnd1 + 1 || ...
+    if i >= z && i < urEnd1 + 1 || ...
             i >= urStart2 && i < urEnd2 + 1
         count = count + 1;
         urSagForce(count,1) = sagForce(i,1);
